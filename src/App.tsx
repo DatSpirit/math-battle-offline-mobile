@@ -59,9 +59,6 @@ function App() {
   const { isAuthenticated } = useAuthStore();
   const { playBGM } = useSound();
 
-  if (!hasHydrated) return <LoadingScreen isLoading={true} message="Đang nạp dữ liệu..." />;
-
-
   useEffect(() => {
     // Tự động nhận diện cấu hình máy nếu chưa có thiết lập (lần đầu chạy)
     if (hasHydrated && !localStorage.getItem('math-battle-perf-set')) {
@@ -83,7 +80,9 @@ function App() {
 
 
   useEffect(() => {
-    checkAndResetQuests();
+    if (hasHydrated) {
+      checkAndResetQuests();
+    }
     
     const handleFirstInteraction = () => {
       if (isAuthenticated) {
@@ -100,7 +99,11 @@ function App() {
       window.removeEventListener('click', handleFirstInteraction);
       window.removeEventListener('keydown', handleFirstInteraction);
     };
-  }, [checkAndResetQuests, isAuthenticated, playBGM]);
+  }, [checkAndResetQuests, isAuthenticated, playBGM, hasHydrated]);
+
+  if (!hasHydrated) {
+    return <LoadingScreen isLoading={true} message="Đang nạp dữ liệu..." />;
+  }
 
   return (
     <ErrorBoundary>
@@ -127,6 +130,7 @@ function App() {
     </ErrorBoundary>
   );
 }
+
 
 export default App;
 

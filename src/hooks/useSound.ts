@@ -10,22 +10,22 @@ import { usePlayerStore } from '../store/playerStore';
  * Lưu ý: Tên file phải khớp chính xác kể cả chữ hoa/thường
  */
 const SOUNDS = {
-  click: '/sounds/click.ogg',         // Tiếng click chuột/nút bấm chung
-  place: '/sounds/place.ogg',         // Tiếng khi đặt thẻ bài vào ô trống
-  submit: '/sounds/submit.ogg',       // Tiếng khi xác nhận lượt đánh
-  win: '/sounds/win.ogg',             // Tiếng khi thắng trận đấu
-  loss: '/sounds/loss.ogg',           // Tiếng khi thua trận đấu
-  combo: '/sounds/combo.ogg',         // Tiếng khi đạt chuỗi tính toán đúng
-  timer: '/sounds/timer.ogg',         // Tiếng đếm ngược thời gian
-  drawer_open: '/sounds/click.ogg',   // Tiếng khi mở các bảng điều khiển
-  drawer_close: '/sounds/click.ogg',  // Tiếng khi đóng các bảng điều khiển
-  reward: '/sounds/reward.ogg',       // Tiếng khi nhận phần thưởng
-  upgrade: '/sounds/upgrade.ogg',     // Tiếng khi nâng cấp thẻ bài
-  skill: '/sounds/skill.ogg',         // Tiếng khi kích hoạt kỹ năng đặc biệt
-  attack: '/sounds/attack.ogg',       // Tiếng khi tấn công đối thủ
-  defense: '/sounds/defense.ogg',     // Tiếng khi phòng thủ hoặc chặn đòn
-  summon: '/sounds/summon.ogg',       // Tiếng khi thực hiện triệu hồi thẻ
-  bgm: '/sounds/bgm.ogg',             // Nhạc nền (Background Music)
+  click: 'sounds/click.ogg',         // Tiếng click chuột/nút bấm chung
+  place: 'sounds/place.ogg',         // Tiếng khi đặt thẻ bài vào ô trống
+  submit: 'sounds/submit.ogg',       // Tiếng khi xác nhận lượt đánh
+  win: 'sounds/win.ogg',             // Tiếng khi thắng trận đấu
+  loss: 'sounds/loss.ogg',           // Tiếng khi thua trận đấu
+  combo: 'sounds/combo.ogg',         // Tiếng khi đạt chuỗi tính toán đúng
+  timer: 'sounds/timer.ogg',         // Tiếng đếm ngược thời gian
+  drawer_open: 'sounds/click.ogg',   // Tiếng khi mở các bảng điều khiển
+  drawer_close: 'sounds/click.ogg',  // Tiếng khi đóng các bảng điều khiển
+  reward: 'sounds/reward.ogg',       // Tiếng khi nhận phần thưởng
+  upgrade: 'sounds/upgrade.ogg',     // Tiếng khi nâng cấp thẻ bài
+  skill: 'sounds/skill.ogg',         // Tiếng khi kích hoạt kỹ năng đặc biệt
+  attack: 'sounds/attack.ogg',       // Tiếng khi tấn công đối thủ
+  defense: 'sounds/defense.ogg',     // Tiếng khi phòng thủ hoặc chặn đòn
+  summon: 'sounds/summon.ogg',       // Tiếng khi thực hiện triệu hồi thẻ
+  bgm: 'sounds/bgm.ogg',             // Nhạc nền (Background Music)
 };
 
 type SoundName = keyof typeof SOUNDS;

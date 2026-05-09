@@ -36,8 +36,8 @@ coverage/
 .env.*.local
 
 # Capacitor / Mobile
-/android/
-/ios/
+# /android/
+# /ios/
 
 # Specific user requests
 map.md
