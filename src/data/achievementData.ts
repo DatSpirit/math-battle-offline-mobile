@@ -67,18 +67,6 @@ export const ACHIEVEMENTS_DATA: Achievement[] = [
     category: 'mastery', rarity: 'silver',  goal: 10, progress: 0, isUnlocked: false, reward: 4000,
   },
 
-  // ── Mastery (Cấp độ tài khoản) ──
-  {
-    id: 'level_5',       title: 'Học Viên Siêng Năng',        emoji: '📖',
-    description: 'Đạt cấp độ 5.',
-    category: 'mastery', rarity: 'bronze',  goal: 5,  progress: 0, isUnlocked: false, reward: 1500,
-  },
-  {
-    id: 'level_10',      title: 'Thủ Lĩnh Khoa Học',          emoji: '🔬',
-    description: 'Đạt cấp độ 10.',
-    category: 'mastery', rarity: 'silver',  goal: 10, progress: 0, isUnlocked: false, reward: 4000,
-  },
-
   // ── Economy ──
   {
     id: 'coins_10000',   title: 'Đại Thương Gia',             emoji: '💰',

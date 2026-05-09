@@ -8,10 +8,13 @@ import AchievementToast from '../feedback/AchievementToast';
 import RewardToast from '../feedback/RewardToast';
 import NotificationToast from '../feedback/NotificationToast';
 import ConfirmModal from '../feedback/ConfirmModal';
+import ProfileSettingsModal from '../modals/ProfileSettingsModal';
+import { useUIStore } from '../../store/uiStore';
 
 const Layout: React.FC = () => {
   const location = useLocation();
   const performanceMode = usePlayerStore(s => s.performanceMode);
+  const { isProfileOpen, setIsProfileOpen } = useUIStore();
   const isArena = location.pathname.includes('/battle/arena');
   const showNav = !isArena;
 
@@ -22,7 +25,7 @@ const Layout: React.FC = () => {
       {/* Structural Spacer: Ensures content starts below the fixed header */}
       {showNav && <div className='h-[calc(3.5rem+env(safe-area-inset-top,0))]' />}
 
-      <main className={`flex-1 overflow-y-auto relative flex flex-col ${showNav ? 'pb-24' : ''}`}>
+      <main className={`flex-1 relative flex flex-col min-h-0 ${showNav ? 'pb-24' : ''}`}>
         <AnimatePresence mode="popLayout">
           <motion.div
             key={location.pathname}
@@ -44,6 +47,7 @@ const Layout: React.FC = () => {
       <RewardToast />
       <NotificationToast />
       <ConfirmModal />
+      <ProfileSettingsModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </div>
   );
 };

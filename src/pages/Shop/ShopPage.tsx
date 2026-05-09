@@ -25,7 +25,7 @@ const MobileShop: React.FC = () => {
   const { shopDailyLimits } = usePlayerStore();
 
   return (
-    <div className="flex flex-col h-full bg-[#fcf9f2] pb-28 relative font-body overflow-x-hidden">
+    <div className="flex-1 flex flex-col min-h-0 bg-[#fcf9f2] pb-40 relative font-body overflow-y-auto custom-scrollbar overflow-x-hidden">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.03] hologram-grid"></div>
       <div className="math-particle-shop text-4xl top-40 right-10 opacity-[0.05]">Σ</div>

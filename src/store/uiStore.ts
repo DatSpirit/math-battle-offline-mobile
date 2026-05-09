@@ -23,6 +23,8 @@ interface UIState {
   closeConfirm: () => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  isProfileOpen: boolean;
+  setIsProfileOpen: (open: boolean) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -50,4 +52,6 @@ export const useUIStore = create<UIState>((set) => ({
   closeConfirm: () => set({ confirm: null }),
   isLoading: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
+  isProfileOpen: false,
+  setIsProfileOpen: (open) => set({ isProfileOpen: open }),
 }));

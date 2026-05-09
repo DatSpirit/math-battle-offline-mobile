@@ -41,6 +41,8 @@ export const createEconomySlice = (
   setPerformanceMode: (mode: 'ECO' | 'BALANCED' | 'ULTRA') => set({ performanceMode: mode } as Partial<PlayerState>),
   /** Bật/Tắt âm thanh */
   toggleMute: () => set((s: PlayerState) => ({ isMuted: !s.isMuted }) as Partial<PlayerState>),
+  /** Thiết lập trạng thái đã cấu hình hiệu năng */
+  setIsPerformanceSet: (val: boolean) => set({ isPerformanceSet: val } as Partial<PlayerState>),
 
   /** Thêm Vàng vào tài khoản */
   addCoins: (amount: number) => set((state: PlayerState) => {

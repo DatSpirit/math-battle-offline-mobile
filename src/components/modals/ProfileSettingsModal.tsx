@@ -1,7 +1,8 @@
 /**
  * MODAL: Profile & Settings (Modernized Bento)
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore } from '../../store/authStore';
 import { usePlayerStore } from '../../store/playerStore';
@@ -23,8 +24,16 @@ const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOpen, onC
   const { user, updateProfile, logout } = useAuthStore();
   const { achievements, performanceMode, isMuted, setPerformanceMode, toggleMute } = usePlayerStore();
   const { playSound } = useSound();
+  const location = useLocation();
   const [newName, setNewName] = useState(user?.name || '');
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || '🧙‍♂️');
+
+  // Tự động đóng modal khi chuyển trang
+  useEffect(() => {
+    if (isOpen) {
+      onClose();
+    }
+  }, [location.pathname]);
 
   if (!isOpen) return null;
 
@@ -45,12 +54,13 @@ const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOpen, onC
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/40 backdrop-blur-md">
+      <div className="fixed inset-0 z-1000 flex items-center justify-center bg-white">
         <motion.div 
-          initial={{ scale: 0.95, opacity: 0, y: 30 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 30 }}
-          className="profile-modal-glass max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col relative"
+          initial={{ opacity: 0, x: '100%' }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="w-full h-full overflow-hidden flex flex-col relative bg-[#fcf9f2]"
         >
           {/* Header */}
           <div className="px-6 md:px-10 pt-6 md:pt-10 pb-4 md:pb-6 flex items-center justify-between relative z-10 shrink-0">
@@ -172,7 +182,8 @@ const ProfileSettingsModal: React.FC<ProfileSettingsModalProps> = ({ isOpen, onC
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-4 stealth-scroll-v2">
-                   {achievements.map((ach) => (
+                   {/* Deduplicate achievements by ID to fix legacy data issues */}
+                   {Array.from(new Map(achievements.map(a => [a.id, a])).values()).map((ach) => (
                      <div 
                        key={ach.id} 
                        className={`achievement-badge-hologram p-4 flex items-center gap-4 ${ach.isUnlocked ? 'unlocked' : 'opacity-40 grayscale'}`}

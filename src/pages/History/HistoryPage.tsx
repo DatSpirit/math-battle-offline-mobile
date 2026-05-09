@@ -48,7 +48,7 @@ const MobileHistory: React.FC = () => {
   const newestMatchId = matches.length > 0 ? [...matches].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0].id : null;
 
   return (
-    <div className="flex flex-col h-full bg-[#fcf9f2] relative font-body overflow-hidden">
+    <div className="flex-1 flex flex-col min-h-0 bg-[#fcf9f2] relative font-body overflow-hidden">
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none opacity-[0.02] hologram-grid"></div>
       
@@ -98,7 +98,7 @@ const MobileHistory: React.FC = () => {
       </header>
 
       {/* History List Container */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar history-list-scroll flex flex-col pb-24">
+      <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar history-list-scroll flex flex-col pb-40">
          {matches.length === 0 ? (
             <div className="p-20 text-center flex flex-col items-center opacity-20 mt-10">
                <ActivityIcon size={64} />

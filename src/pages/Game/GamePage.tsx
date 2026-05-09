@@ -239,7 +239,7 @@ const MobileGamePage: React.FC = () => {
               </div>
             </div>
 
-            <div id="arena-hand-area" className="relative h-[18vh] min-h-[110px] max-h-[170px] flex justify-center items-end mb-1 px-2 overflow-visible">
+            <div id="arena-hand-area" className="relative h-[clamp(110px,18vh,220px)] sm:h-[clamp(150px,22vh,300px)] flex justify-center items-end mb-1 px-2 overflow-visible">
                {g.activeHand.map((card, i) => {
                   const total = g.activeHand.length;
                   const mid = (total - 1) / 2;
@@ -284,13 +284,15 @@ const MobileGamePage: React.FC = () => {
         <AnimatePresence>
           {g.isTutorial && (
             <TutorialOverlay 
+              key="tutorial-overlay"
               onClose={() => g.setTutorialStep(0)} 
             />
           )}
-          <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} turn={g.currentTurn} />
-          {g.phase === 'round_result' && g.showResultModal && <RoundResult result={g.lastResult!} onNext={g.nextTurn} />}
+          <HelpModal key="help-modal" isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} turn={g.currentTurn} />
+          {g.phase === 'round_result' && g.showResultModal && <RoundResult key="round-result" result={g.lastResult!} onNext={g.nextTurn} />}
            {g.phase === 'game_over' && (
               <GameOver
+                key="game-over"
                 history={g.history}
                 playerScore={g.player1Score}
                 aiScore={g.player2Score}

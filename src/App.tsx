@@ -55,18 +55,18 @@ function PageLoader() {
 }
 
 function App() {
-  const { checkAndResetQuests, hasHydrated, performanceMode, setPerformanceMode } = usePlayerStore();
+  const { checkAndResetQuests, hasHydrated, performanceMode, setPerformanceMode, isPerformanceSet, setIsPerformanceSet } = usePlayerStore();
   const { isAuthenticated } = useAuthStore();
   const { playBGM } = useSound();
 
   useEffect(() => {
     // Tự động nhận diện cấu hình máy nếu chưa có thiết lập (lần đầu chạy)
-    if (hasHydrated && !localStorage.getItem('math-battle-perf-set')) {
+    if (hasHydrated && !isPerformanceSet) {
       const detected = detectHardwarePerformance();
       setPerformanceMode(detected);
-      localStorage.setItem('math-battle-perf-set', 'true');
+      setIsPerformanceSet(true);
     }
-  }, [hasHydrated, setPerformanceMode]);
+  }, [hasHydrated, isPerformanceSet, setPerformanceMode, setIsPerformanceSet]);
 
   useEffect(() => {
     const mode = performanceMode ?? 'BALANCED';

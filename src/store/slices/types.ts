@@ -95,6 +95,8 @@ export interface PlayerState extends CampaignSliceState {
   isMuted: boolean;
   /** Trạng thái dữ liệu đã được tải lên từ LocalStorage */
   hasHydrated: boolean;
+  /** Trạng thái đã cấu hình hiệu năng lần đầu */
+  isPerformanceSet: boolean;
   /** Phần thưởng hàng ngày đã nhận */
   lastDailyRewardClaimed: string | null;
   /** Phần thưởng hàng tuần đã nhận */
@@ -111,6 +113,8 @@ export interface PlayerState extends CampaignSliceState {
   setPerformanceMode: (mode: 'ECO' | 'BALANCED' | 'ULTRA') => void;
   /** Thiết lập trạng thái Hydrated */
   setHasHydrated: (val: boolean) => void;
+  /** Thiết lập trạng thái đã cấu hình hiệu năng */
+  setIsPerformanceSet: (val: boolean) => void;
   /** Xóa toàn bộ dữ liệu tài khoản (Reset Account) */
   resetAccount: () => void;
   /** Chỉ reset tiến trình chơi (giữ lại thẻ/tiền nếu cần) */

@@ -6,12 +6,12 @@
 /* ─── Arena Container ─── */
 .battle-arena {
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   border-radius: var(--radius-2xl);
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(139, 80, 0, 0.05);
@@ -38,8 +38,8 @@
 
 /* ─── Individual Slot ─── */
 .arena-slot {
-  width: 100px;
-  height: 140px;
+  width: clamp(70px, 12vw, 130px);
+  height: clamp(100px, 18vw, 180px);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;

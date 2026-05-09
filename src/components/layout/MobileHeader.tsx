@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { usePlayerStore } from '../../store/playerStore';
 import { CoinIcon, VolumeIcon, VolumeMuteIcon } from '../shared/Icons';
 import { useSound } from '../../hooks/useSound';
-import ProfileSettingsModal from '../modals/ProfileSettingsModal';
+import { useUIStore } from '../../store/uiStore';
 
 const MobileHeader: React.FC = () => {
   const { user } = useAuthStore();
   const { level, coins, redAscensionBooks, isMuted, toggleMute } = usePlayerStore();
   const { playSound } = useSound();
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { setIsProfileOpen } = useUIStore();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-100 h-14 px-4 flex items-center justify-between">
@@ -51,7 +51,6 @@ const MobileHeader: React.FC = () => {
         </div>
       </div>
 
-      <ProfileSettingsModal isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
     </header>
   );
 };

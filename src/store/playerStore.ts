@@ -52,6 +52,7 @@ const INITIAL_ECONOMY = {
   lastShopReset: new Date().toISOString(),
   lastDailyReset: new Date().toISOString(),
   freeSummonsUsed: {},
+  isPerformanceSet: false,
 };
 
 /**
@@ -110,6 +111,14 @@ export const usePlayerStore = create<PlayerState>()(
         set({ hasHydrated: val } as Partial<PlayerState>);
         // Khi tải dữ liệu xong, tự động kiểm tra reset hàng ngày
         get().checkDailyReset();
+
+        // Tự động làm sạch dữ liệu thành tựu nếu bị trùng lặp (do lỗi cũ trong Storage)
+        const currentAchievements = get().achievements || [];
+        const unique = Array.from(new Map(currentAchievements.map(a => [a.id, a])).values());
+        if (unique.length !== currentAchievements.length) {
+          console.log('[System] Deduplicating achievements in storage...');
+          set({ achievements: unique } as Partial<PlayerState>);
+        }
       },
 
       /** Hàm khung cho việc xóa toàn bộ tài khoản (hiện chưa triển khai logic sâu) */

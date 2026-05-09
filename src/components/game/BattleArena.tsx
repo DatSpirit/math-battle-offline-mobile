@@ -134,8 +134,8 @@ const BattleArena: React.FC<BattleArenaProps> = ({
         </p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-start sm:justify-center gap-4 sm:gap-6 w-full mt-2 sm:mt-0">
-        <div className="flex-1 flex flex-col items-center justify-start sm:justify-center gap-4 sm:gap-6 w-full">
+      <div className="flex-1 flex flex-col items-center justify-evenly gap-4 sm:gap-6 w-full mt-2 sm:mt-0">
+        <div className="flex-1 flex flex-col items-center justify-evenly gap-4 sm:gap-6 w-full">
         {/* Opponent Side */}
         {opponentSlots && (
           <div className="flex flex-col items-center gap-2">
@@ -143,7 +143,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
               className="slots-container mb-2 opacity-90"
               style={{ 
                   width: '100%',
-                  maxWidth: slotsCount * 120
+                  maxWidth: Math.min(900, slotsCount * 150)
               }}
             >
               {Array.from({ length: slotsCount }, (_, i) => {
@@ -262,7 +262,7 @@ const BattleArena: React.FC<BattleArenaProps> = ({
               className="slots-container"
               style={{ 
                   width: '100%',
-                  maxWidth: typeof window !== 'undefined' && window.innerWidth < 640 ? '100%' : slotsCount * 120
+                  maxWidth: Math.min(900, slotsCount * 150)
               }}
             >
               {Array.from({ length: slotsCount }, (_, i) => (
