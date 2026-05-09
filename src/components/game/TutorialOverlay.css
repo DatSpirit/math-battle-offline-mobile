@@ -1,0 +1,78 @@
+.tutorial-overlay-wrap {
+    position: fixed;
+    bottom: 240px; /* Above the hand on mobile */
+    left: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+}
+
+@media (min-width: 1024px) {
+    .tutorial-overlay-wrap {
+        bottom: 40px;
+        left: auto;
+        right: 40px;
+        width: 350px;
+    }
+}
+
+.tutorial-card {
+    pointer-events: auto;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 24px;
+    padding: 20px;
+    color: white;
+}
+
+.tutorial-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.bulb-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+}
+
+.tutorial-label {
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.2em;
+    color: #818cf8;
+}
+
+.tutorial-body p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin: 0 0 16px 0;
+}
+
+.tutorial-btn {
+    width: 100%;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}

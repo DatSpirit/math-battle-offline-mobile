@@ -1,0 +1,367 @@
+.go-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(252, 250, 228, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 600;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.go-card {
+  width: min(720px, 98vw);
+  border-radius: 32px; /* Bubble base */
+  padding: 2rem;
+  background: var(--bg-card);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: auto;
+}
+
+/* Banner */
+.go-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 1rem;
+  border-radius: 999px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.go-banner--player {
+  background: rgba(74, 222, 128, 0.12);
+  color: #4ade80;
+}
+
+.go-banner--ai {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+}
+
+.go-banner--tie {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+}
+
+/* Scores */
+.go-scores {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.go-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 1rem 2rem;
+  border-radius: 24px;
+  background: var(--bg-dark);
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.go-score-box--win {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.go-score-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+}
+
+.go-score-num {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.go-score-max {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.go-score-sep {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* Table Design */
+.go-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.go-table th {
+  text-align: left;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  text-transform: uppercase;
+}
+
+.go-table td {
+  padding: 1rem 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  vertical-align: middle;
+}
+
+.go-turn-cell {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: var(--accent-primary);
+  opacity: 0.8;
+  width: 40px;
+}
+
+.go-play-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.go-expr {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.go-val {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.go-pts-split {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.go-pts-logic {
+  background: rgba(139, 80, 0, 0.1);
+  color: #8b5000;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.go-pts-plus {
+  font-size: 10px;
+  font-weight: 900;
+  opacity: 0.3;
+  color: var(--text-primary);
+}
+
+.go-pts-tactical {
+  background: rgba(34, 197, 94, 0.1);
+  color: #16a34a;
+  font-size: 9px;
+  font-weight: 900;
+  padding: 2px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.go-vs-cell {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--text-secondary);
+  opacity: 0.3;
+  width: 30px;
+  text-transform: lowercase;
+}
+
+.go-result-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-align: center;
+  min-width: 64px;
+  letter-spacing: 0.05em;
+}
+
+.go-result-badge--player { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+.go-result-badge--ai     { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+.go-result-badge--tie    { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+
+.go-row--player { background: rgba(74, 222, 128, 0.02); }
+.go-row--ai     { background: rgba(248, 113, 113, 0.02); }
+.go-row--tie    { background: rgba(251, 191, 36, 0.02); }
+
+/* Action Buttons */
+.go-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 12px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.go-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  border: none;
+  border-radius: 20px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-transform: uppercase;
+}
+
+.go-btn--primary {
+  background: linear-gradient(135deg, var(--accent-primary), #ffb870);
+  color: #fff;
+  box-shadow: var(--glow-button), inset 0 -4px 0 rgba(0,0,0,0.15);
+}
+
+.go-btn--secondary {
+  background: #f1efd9;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-glass);
+}
+
+.go-btn--accent {
+  background: var(--bg-card);
+  color: var(--accent-secondary);
+  border: 2px solid var(--accent-secondary);
+  box-shadow: 0 8px 24px rgba(0, 100, 147, 0.1);
+}
+
+/* Rewards Section */
+.go-rewards {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(139, 80, 0, 0.05);
+  border-radius: 28px;
+  border: 1px solid rgba(139, 80, 0, 0.1);
+}
+
+.go-reward-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.go-reward-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #8b5000;
+  opacity: 0.5;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.go-reward-val {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #8b5000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-style: italic;
+}
+
+.go-streak-badge {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background: #ff4747;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  box-shadow: 0 8px 20px rgba(255, 71, 71, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) rotate(5deg); }
+  50% { transform: translateY(-5px) rotate(5deg); }
+}
+
+/* Campaign Stars */
+.go-stars-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.go-stars-container svg {
+  filter: drop-shadow(0 4px 12px rgba(245, 158, 11, 0.3));
+}
+
+.go-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.go-btn {
+  flex: 1;
+  max-width: 240px;
+}
+
+@media (max-width: 600px) {
+  .go-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .go-btn {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .go-card { padding: 1.25rem; gap: 1rem; }
+  .go-score-num { font-size: 2rem; }
+}

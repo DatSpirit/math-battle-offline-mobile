@@ -1,0 +1,524 @@
+/* ══════════════════════════════════════════
+   ATOM: Math Card
+   SKILL_UI: Atomic Design Layer 1
+   ══════════════════════════════════════════ */
+
+/* ─── Base (Khung cơ bản của thẻ bài) ─── */
+.math-card {
+  position: relative;
+  width: 100px; /* Chiều rộng cố định cho desktop */
+  height: 140px; /* Chiều cao cố định cho desktop */
+  border-radius: var(--radius-md); /* Giảm bo góc theo yêu cầu */
+  background: var(--color-surface); 
+  border: 2px solid #000000; /* Viền đen đồng nhất */
+  cursor: grab; /* Con trỏ dạng bàn tay để kéo thả */
+  overflow: hidden; /* Cắt bỏ phần thừa ra ngoài bo góc */
+  flex-shrink: 0; /* Không bị bóp méo khi nằm trong flex container */
+  box-shadow: var(--shadow-sm); /* Đổ bóng nhẹ tạo độ nổi */
+  /* Khóa tỉ lệ chữ để không bị vỡ trên Android/iOS khi người dùng chỉnh font hệ thống to */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  contain: layout paint;
+}
+
+/* Biến thể thẻ bài nhỏ gọn trong trận đấu (80% kích thước gốc) */
+.math-card--in-game {
+  transform: scale(0.85);
+  transform-origin: center;
+}
+
+@media (max-width: 480px) {
+  .math-card--in-game {
+    transform: scale(0.8); /* Trong trận đấu nhỏ hơn một chút trên mobile */
+  }
+}
+
+.math-card:active { cursor: grabbing; } /* Đổi icon chuột khi đang nhấn giữ */
+
+/* ─── Number Card (Thẻ số - Gradient trắng kem) ─── */
+.math-card--number, .math-card--operator {
+  background: linear-gradient(180deg, #ffffff 0%, #f7f6f0 100%);
+}
+
+.math-card--operator .card-value {
+  color: var(--color-text);
+  font-size: 32px; /* Dùng px cố định thay cho rem */
+  font-weight: 900;
+}
+
+.math-card--operator .card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.math-card--operator .card-main-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 0 2px;
+}
+
+/* ─── Rarity Variants (Biến thể theo phẩm chất thẻ) ─── */
+.math-card.math-card--normal {
+  border: 2px solid #000000; /* Thẻ thường viền đen */
+  background: #ffffff;
+}
+
+.math-card.math-card--rare {
+  border: 2px solid #22c55e; /* Thẻ hiếm viền xanh lá */
+  background: #f0fdf4; /* Xanh lá nhạt */
+  box-shadow: 0 4px 8px rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.math-card.math-card--super {
+  border: 2px solid #f97316; /* Thẻ siêu hiếm viền cam */
+  background: #fff7ed; /* Cam nhạt */
+  box-shadow: 0 6px 16px rgba(249, 115, 22, 0.2);
+  color: #f97316;
+}
+
+.math-card.math-card--ultra {
+  border: 2px solid #000000; 
+  background: #fef2f2; 
+  box-shadow: 0 8px 24px rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.math-card--glowing {
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.7), 0 0 50px rgba(251, 191, 36, 0.3) !important;
+  z-index: 50;
+  border-color: #fbbf24 !important;
+}
+
+/* Hào quang đỏ rực cho thẻ đã thăng hoa Sao Đỏ */
+.math-card.math-card--has-red-star.math-card--glowing {
+  box-shadow: 0 0 25px rgba(239, 68, 68, 0.8), 0 0 50px rgba(239, 68, 68, 0.4) !important;
+  border-color: #ef4444 !important;
+}
+
+@keyframes card-pulse {
+  from {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+  }
+  to {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.8);
+  }
+}
+
+/* ─── Selected State (Trạng thái khi được chọn) ─── */
+.math-card--selected {
+  /* Hiệu ứng viền kép (Dual Ring): 1 lớp nền trắng + 1 lớp viền chính */
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-primary),
+    var(--shadow-lg) !important;
+  z-index: 20; /* Đưa thẻ lên trên các thẻ khác */
+}
+
+/* ─── Card Inner Layout (Bố cục nội dung bên trong) ─── */
+.card-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Đẩy header lên đầu, footer xuống cuối */
+  padding: 6px;
+  box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước thực tế */
+}
+
+/* ─── Top Row: Stars & Rarity (Hàng trên: Sao và Phẩm chất) ─── */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Đổi về center để cân đối hơn khi to ra */
+  width: 100%;
+  height: 20px; /* Tăng chiều cao để chứa sao to hơn */
+}
+
+.card-star-bar {
+  display: flex;
+  gap: 2px;
+}
+
+.mini-star {
+  font-size: 12px; /* Tăng cho Desktop */
+  color: #ffffff; /* Sao mặc định màu trắng (chưa kích hoạt) */
+  text-shadow: 0 0 1px rgba(0,0,0,0.2);
+  line-height: 1;
+}
+
+.mini-star.active {
+  color: #f59e0b;
+  text-shadow: 0 0 3px rgba(245, 158, 11, 0.6);
+}
+
+.mini-star.red-active {
+  color: #ef4444; /* Đỏ rực rỡ cho Sao Đỏ */
+  text-shadow: 0 0 5px rgba(239, 68, 68, 0.8);
+}
+
+.card-rarity-badge {
+  font-size: 10px; /* Tăng cho Desktop */
+  font-weight: 900;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 6px; /* Bo góc mượt hơn */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px); /* Hiệu ứng kính mờ giúp nền "trong" hơn */
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Viền mảnh giúp tách biệt với nền card */
+}
+
+/* ─── Center: Main Content (Phần giữa: Giá trị thẻ và Thông tin) ─── */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* Đẩy lên trên để tận dụng không gian bên dưới */
+  flex: 1;
+  min-height: 0;
+  padding-top: 0px; /* Đưa số lên sát hàng sao */
+}
+
+.card-value {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 38px; /* Cố định px để không bị vỡ layout */
+  font-weight: 900;
+  /* Hiệu ứng đổ màu cao cấp cho con số */
+  background: linear-gradient(180deg, #1a1a1a 30%, var(--color-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 0.9; /* Thu hẹp không gian dọc */
+  letter-spacing: -0.06em; /* Ép chữ lại cho mạnh mẽ */
+  font-style: italic;
+  margin-bottom: 2px;
+  margin-top: -4px; /* Kéo số lên gần sao hơn */
+  padding-right: 6px; /* Chống bị cắt chữ khi nghiêng (Italic clipping fix) */
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15));
+}
+
+/* TỐI ƯU HIỆU NẤNG CHO THẺ BÀI */
+.perf-eco .card-value {
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: #1a1a1a;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.perf-balanced .card-value {
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1)) !important;
+}
+
+.card-type-tag, .card-level-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+}
+
+.perf-eco .card-type-tag, .perf-eco .card-level-tag {
+  opacity: 1; /* Hiển thị rõ hơn khi không có hiệu ứng */
+}
+
+.card-main-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 0 2px;
+}
+
+.card-name-label {
+  font-size: 8px; /* Thu nhỏ tên thẻ */
+  font-weight: 900;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em; /* Tăng khoảng cách chữ cho sang trọng */
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
+.card-flavor-text {
+  font-size: 8px; /* Tăng cho Desktop */
+  font-weight: 600;
+  color: var(--color-primary);
+  opacity: 0.6;
+  font-style: italic;
+  line-height: 1.2;
+  margin-top: 2px;
+  /* Bỏ line-clamp để text tự do chiếm dụng không gian cho đến khi chạm chân thẻ */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Bottom Row: Type & Level (Hàng dưới: Loại thẻ và Cấp độ) ─── */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Đổi về center cho cân đối badge */
+  width: 100%;
+  padding-top: 2px;
+}
+
+.card-type-tag {
+  font-size: 8px;
+  font-weight: 900;
+  opacity: 0.8; /* Tăng độ đậm để nhìn rõ hơn */
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+/* Phân biệt màu sắc nhẹ nhàng (không nền) */
+.math-card--number .card-type-tag {
+  color: #0284c7; /* Xanh dương đậm nhưng dịu */
+}
+
+.math-card--operator .card-type-tag {
+  color: #9333ea; /* Tím đậm nhưng dịu */
+}
+
+.card-lv-tag {
+  font-size: 8px;
+  font-weight: 900;
+  color: #1a1a1a;
+  opacity: 0.7; /* Đậm nét cấp độ */
+  letter-spacing: 0.05em;
+}
+
+/* Đảm bảo không có viền/nền */
+.math-card--number .card-type-tag,
+.math-card--operator .card-type-tag {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* ─── Premium FX Layers (Các lớp hiệu ứng cao cấp) ─── */
+.card-fx-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none; /* Không cản trở click chuột */
+  z-index: 1;
+}
+
+/* Hiệu ứng phản chiếu ánh nắng cho thẻ Ultra (Sunlight Reflection) */
+.math-card--ultra .card-shimmer {
+  background: 
+    linear-gradient(135deg, 
+      rgba(255,255,255,0) 0%, 
+      rgba(255,255,255,0) 35%, 
+      rgba(255,255,255,0.9) 50%, 
+      rgba(255,255,255,0) 65%, 
+      rgba(255,255,255,0) 100%
+    );
+  background-size: 300% 300%;
+  animation: sun-flare 6s infinite ease-in-out; /* Chậm lại thành 6s */
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  will-change: background-position;
+}
+
+@keyframes sun-flare {
+  0% { background-position: -150% -150%; }
+  100% { background-position: 150% 150%; }
+}
+
+/* Hiệu ứng Shimmer tiêu chuẩn cho thẻ Rare/Super */
+.math-card--rare .card-shimmer,
+.math-card--super .card-shimmer {
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 5s ease-in-out infinite;
+  opacity: 0.5;
+  will-change: background-position; /* Offload to GPU to prevent layout jitter */
+}
+
+/* Hiệu ứng hạt bụi (Đã vô hiệu hóa để tránh lỗi vòng lặp layout) */
+.card-particles {
+  display: none !important;
+}
+
+/* ─── Rarity Border Glow (Vòng sáng tỏa ra từ viền cho thẻ hiếm) ─── */
+.math-card--rare::after {
+  content: '';
+  position: absolute;
+  inset: -2px; /* Tràn ra ngoài viền chính một chút */
+  border-radius: calc(var(--radius-lg) + 2px);
+  background: linear-gradient(135deg, #22c55e, transparent 60%);
+  z-index: -1;
+  opacity: 0.18;
+}
+
+.math-card--super::after {
+  content: '';
+  position: absolute;
+  inset: -2.5px;
+  border-radius: calc(var(--radius-lg) + 3px);
+  background: linear-gradient(135deg, #f97316, transparent 60%);
+  z-index: -1;
+  opacity: 0.24;
+}
+
+/* Hiệu ứng xoay vòng ánh sáng cho thẻ Cực Hiếm (Ultra) */
+.math-card--ultra::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: calc(var(--radius-lg) + 1.5px);
+  background: conic-gradient(from 0deg, #ef4444, #fca5a5, #ef4444);
+  z-index: -1;
+  opacity: 0.4;
+  animation: rotate 6s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* ─── RESPONSIVE (Thích ứng Mobile) ─── */
+@media (max-width: 768px) {
+  .math-card {
+    width: 86px; 
+    height: 124px; 
+    border-radius: 12px; /* Đồng nhất bo góc mobile */
+  }
+  .card-inner { padding: 4px; }
+  .card-header { height: 16px; }
+  .mini-star { font-size: 7px; } /* Giảm nhẹ để không đè lên chất */
+  .card-star-bar { gap: 0.5px; } /* Thu hẹp khoảng cách sao */
+  .card-rarity-badge { font-size: 6.5px; padding: 1px 3px; border-radius: 4px; }
+  .card-value { font-size: 28px; margin-top: -2px; letter-spacing: -0.08em; }
+  .card-name-label { font-size: 5px; letter-spacing: 0.05em; }
+  .card-flavor-text { font-size: 4px; }
+  .card-type-tag, .card-lv-tag { font-size: 6px; }
+}
+
+@media (max-width: 480px) {
+  .math-card {
+    width: 80px; 
+    height: 118px; 
+    border-radius: 10px; /* Đồng nhất bo góc mobile bé */
+  }
+  .card-inner { padding: 3px; }
+  .card-header { height: 12px; }
+  .mini-star { font-size: 6px; } /* Thu nhỏ hơn nữa cho màn hình bé */
+  .card-star-bar { gap: 0; } 
+  .card-rarity-badge { font-size: 5.5px; padding: 0.5px 2px; }
+  .card-value { font-size: 20px; }
+  .card-name-label { font-size: 5px; }
+  .card-flavor-text { font-size: 3.5px; line-height: 1.1; }
+  .card-type-tag, .card-lv-tag { font-size: 5px; }
+}
+
+/* ─── Card Tooltip (Thông tin kỹ năng khi hover chuột - Desktop) ─── */
+.card-tooltip {
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 140px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.math-card:hover .card-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.tooltip-title {
+  display: block;
+  font-size: 8px;
+  font-weight: 900;
+  color: #6366f1;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+
+.tooltip-text {
+  font-size: 9px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* ─── PERFORMANCE OVERRIDES (Ghi đè hiệu năng) ─── */
+.perf-eco .math-card {
+  box-shadow: none !important;
+  border-width: 1.5px !important;
+}
+
+.perf-eco .math-card--rare,
+.perf-eco .math-card--super,
+.perf-eco .math-card--ultra {
+  background: #ffffff !important; 
+  box-shadow: none !important;
+}
+
+/* Ẩn các lớp hào quang trong ECO */
+.perf-eco .math-card::after,
+.perf-eco .card-fx-layer,
+.perf-eco .card-shimmer {
+  display: none !important;
+}
+
+/* Tối ưu hiệu ứng kích hoạt kỹ năng trong ECO - Linh hoạt theo màu viền */
+.perf-eco .math-card--glowing {
+  border-width: 4px !important; 
+  box-shadow: none !important;
+  z-index: 100;
+}
+
+.perf-eco .math-card--rare.math-card--glowing { border-color: #22c55e !important; }
+.perf-eco .math-card--super.math-card--glowing { border-color: #f97316 !important; }
+.perf-eco .math-card--ultra.math-card--glowing { border-color: #ef4444 !important; }
+.perf-eco .math-card--normal.math-card--glowing { border-color: #000000 !important; }
+
+.perf-eco .math-card--glowing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0.1;
+  pointer-events: none;
+}

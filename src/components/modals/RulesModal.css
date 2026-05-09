@@ -1,0 +1,230 @@
+.rules-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 20px;
+}
+
+.rules-paper {
+  background: #fff;
+  width: 100%;
+  max-width: 500px;
+  min-height: 600px;
+  border-radius: 4px;
+  position: relative;
+  box-shadow: 
+    0 20px 50px rgba(0,0,0,0.5),
+    inset 0 0 100px rgba(0,0,0,0.05);
+  background-image: 
+    linear-gradient(#e5e5e5 1px, transparent 1px),
+    linear-gradient(90deg, #ff9999 1px, transparent 1px);
+  background-size: 100% 28px, 40px 100%;
+  background-position: 0 45px, 0 0;
+  padding: 60px 40px 40px 60px;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .rules-paper {
+    min-height: auto;
+    padding: 50px 20px 30px 45px;
+    background-position: 0 35px, 0 0;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+}
+
+.rules-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: radial-gradient(circle, transparent 70%, #fff 72%);
+  background-size: 30px 40px;
+  background-position: 0 -20px;
+}
+
+.rules-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #ff4444;
+  font-size: 32px;
+  cursor: pointer;
+  z-index: 10;
+  font-family: Arial, sans-serif;
+  transition: transform 0.2s;
+}
+
+.rules-close-btn:hover {
+  transform: scale(1.2) rotate(90deg);
+}
+
+.scribble-title {
+  margin: 0 0 20px 0;
+  font-size: 32px;
+  color: #2b6cb0;
+  text-decoration: underline wavy #ff9999;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .scribble-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+}
+
+.scribble-section {
+  margin-bottom: 25px;
+}
+
+.scribble-text {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  color: #38a169;
+}
+
+@media (max-width: 768px) {
+  .scribble-text {
+    font-size: 16px;
+  }
+}
+
+.scribble-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.scribble-list li {
+  font-size: 15px;
+  color: #4a5568;
+  margin-bottom: 6px;
+  position: relative;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .scribble-list li {
+    font-size: 13px;
+  }
+}
+
+.scribble-list li::before {
+  content: '•';
+  color: #f6ad55;
+  position: absolute;
+  left: -20px;
+  font-weight: bold;
+}
+
+.math-box {
+  background: #f7fafc;
+  border: 2px dashed #cbd5e0;
+  padding: 12px;
+  text-align: center;
+  font-size: 18px;
+  color: #2d3748;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.highlight-blue { color: #3182ce; font-weight: bold; }
+.highlight-red { color: #e53e3e; font-weight: bold; }
+.double { background: #fff5f5; border-bottom: 2px solid #feb2b2; padding: 0 4px; }
+.triple { background: #fffaf0; border-bottom: 2px solid #fbd38d; padding: 0 4px; }
+
+.multiplier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: rgba(49, 130, 206, 0.05);
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(49, 130, 206, 0.1);
+}
+
+.m-item {
+  font-size: 14px;
+  color: #4a5568;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.m-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: #3182ce;
+}
+
+@media (max-width: 768px) {
+  .m-item { font-size: 11px; }
+  .m-val { font-size: 14px; }
+  .multiplier-grid { padding: 10px; gap: 5px; }
+}
+
+.next-btn {
+  background: #3182ce;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #2c5282;
+  transition: all 0.1s;
+}
+
+.next-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #2c5282;
+}
+
+.scribble-subtext {
+  font-size: 15px;
+  color: #718096;
+  margin: 5px 0;
+}
+
+.scribble-footer {
+  margin-top: 40px;
+  border-top: 1px solid #edf2f7;
+  padding-top: 20px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.scribble-footer p {
+  margin: 0;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+.crayon-doodle {
+  font-size: 20px;
+  margin-top: 10px;
+  letter-spacing: 8px;
+}
+
+@media (max-width: 768px) {
+  .scribble-footer { margin-top: 20px; padding-top: 10px; }
+  .scribble-footer p { font-size: 11px; }
+  .crayon-doodle { font-size: 16px; letter-spacing: 5px; }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

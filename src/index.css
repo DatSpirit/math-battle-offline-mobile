@@ -1,0 +1,398 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8b5000;
+  --color-primary-container: #ffdcbe;
+  --color-primary-fixed: #ffdcbe;
+  
+  --color-secondary: #3e6a00;
+  --color-secondary-container: #b9f474;
+  
+  --color-tertiary: #006493;
+  --color-tertiary-container: #cae6ff;
+  
+  --color-background: #fcfae4;
+  
+  --color-surface: #fcfae4;
+  --color-surface-variant: #e5e3ce;
+  --color-surface-container: #f1efd9;
+  
+  --color-on-surface: #1c1c0f;
+  
+  --font-headline: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
+  
+  --animate-bounce-slow: bounce 3s infinite;
+  --animate-pulse-glow: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  --animate-shake: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+  
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 1; filter: brightness(1); }
+    50% { opacity: 0.8; filter: brightness(1.2); }
+  }
+  
+  @keyframes shake {
+    /* Đã rút gọn để giảm complexity */
+    0%, 100% { transform: translate3d(0, 0, 0); }
+  }
+}
+
+/* ══════════════════════════════════════════
+   DESIGN TOKENS — Math Card Battle v2.0
+   Atomic Design: These are the atoms of
+   all visual decisions in the system.
+   ══════════════════════════════════════════ */
+:root {
+  /* ─── Color Palette ─── */
+  --color-bg:          #faf9f4;   /* Warm off-white background */
+  --color-surface:     #ffffff;   /* Card / Panel surfaces */
+  --color-surface-dim: #f1efd9;   /* Sidebar, muted areas */
+  --color-border:      #e8e5d0;   /* Subtle borders */
+
+  --color-primary:     #8b5000;   /* Brand brown */
+  --color-primary-10:  rgba(139, 80, 0, 0.10);
+  --color-primary-20:  rgba(139, 80, 0, 0.20);
+
+  --color-secondary:   #006493;   /* Blue accent */
+  --color-success:     #3e6a00;   /* Green / win */
+  --color-danger:      #c0392b;   /* Red / lose */
+  --color-warn:        #d97706;   /* Amber / timer */
+
+  --color-text:        #1c1c0f;   /* Primary text */
+  --color-text-muted:  #6b6147;   /* Secondary text */
+  --color-text-ghost:  rgba(28, 28, 15, 0.30);
+
+  /* ─── Rarity ─── */
+  --color-rarity-normal: #dddbc6;
+  --color-rarity-rare:   #006493;
+  --color-rarity-super:  #3e6a00;
+
+  /* ─── Shadows ─── */
+  --shadow-xs:  0 1px 3px rgba(0,0,0,0.04);
+  --shadow-sm:  0 4px 12px rgba(139, 80, 0, 0.07);
+  --shadow-md:  0 8px 24px rgba(139, 80, 0, 0.10);
+  --shadow-lg:  0 20px 48px rgba(139, 80, 0, 0.13);
+  --shadow-xl:  0 32px 80px rgba(139, 80, 0, 0.15);
+
+  /* ─── Radius ─── */
+  --radius-sm:  10px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+  --radius-2xl: 40px;
+  --radius-pill: 9999px;
+
+  /* ─── Motion ─── */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ─── Typography ─── */
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-size: 16px;
+  color-scheme: light;
+
+  /* ─── Safe Area (Mobile) ─── */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+
+  /* Legacy aliases (don't remove — used in existing components) */
+  --bg-dark:        var(--color-bg);
+  --bg-card:        var(--color-surface);
+  --border-glass:   var(--color-border);
+  --text-primary:   var(--color-text);
+  --text-secondary: var(--color-text-muted);
+  --accent-primary:   var(--color-primary);
+  --accent-secondary: var(--color-secondary);
+  --rarity-normal: var(--color-rarity-normal);
+  --rarity-rare:   var(--color-rarity-rare);
+  --rarity-super:  var(--color-rarity-super);
+  --glow-button:   var(--shadow-md);
+}
+
+/* ══════════════════════════════════════════
+   RESET
+   ══════════════════════════════════════════ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+
+
+/* ══════════════════════════════════════════
+   BASE STYLES
+   ══════════════════════════════════════════ */
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+body {
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  background-color: var(--color-bg);
+  /* Subtle ambient gradients — pushed to corners so they never overlap content */
+  background-image:
+    radial-gradient(ellipse 60% 50% at 0% 0%,   rgba(255, 218, 140, 0.18) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 45% at 100% 100%, rgba(185, 244, 116, 0.14) 0%, transparent 100%),
+    radial-gradient(ellipse 45% 40% at 100% 0%,  rgba(202, 230, 255, 0.18) 0%, transparent 100%);
+  color: var(--color-text);
+  overflow: hidden;
+  overscroll-behavior: none;
+  padding: var(--sat) var(--sar) var(--sab) var(--sal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ══════════════════════════════════════════
+   UTILITY CLASSES
+   ══════════════════════════════════════════ */
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Sidebar surface */
+.bg-surface-dim { background-color: var(--color-surface-dim); }
+.bg-surface     { background-color: var(--color-surface); }
+
+/* Scrollbar */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+::-webkit-scrollbar { width: 3px; height: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(139, 80, 0, 0.15); border-radius: 4px; }
+
+/* ══════════════════════════════════════════
+   ANIMATIONS
+   ══════════════════════════════════════════ */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.7; }
+  70%  { transform: scale(1.1);  opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shake-1 {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+}
+
+@keyframes shake-2 {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-4px, 4px); }
+  40% { transform: translate(4px, -4px); }
+  60% { transform: translate(-4px, -4px); }
+  80% { transform: translate(4px, 4px); }
+}
+
+@keyframes shake-3 {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-6px, 6px); }
+  20% { transform: translate(6px, -6px); }
+  30% { transform: translate(-6px, -6px); }
+  40% { transform: translate(6px, 6px); }
+  50% { transform: translate(-6px, 6px); }
+  60% { transform: translate(6px, -6px); }
+  70% { transform: translate(-6px, -6px); }
+  80% { transform: translate(6px, 6px); }
+}
+
+/* Đã vô hiệu hóa để tối ưu tài nguyên di động */
+.shake-1, .shake-2, .shake-3 { animation: none !important; }
+
+/* ══════════════════════════════════════════
+   LITE MODE — Performance for low-end devices
+   ══════════════════════════════════════════ */
+.lite-mode body,
+body.lite-mode {
+  background-image: none !important;
+  background-color: var(--color-bg) !important;
+}
+
+body.lite-mode .glass {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: white !important;
+}
+
+body.lite-mode .card-shimmer { display: none !important; }
+
+body.lite-mode * {
+  animation-duration: 0s !important;
+  transition-duration: 0.05s !important;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  :root { font-size: 15px; }
+}
+
+@media (max-width: 480px) {
+  :root { font-size: 14px; }
+}
+
+/* ══════════════════════════════════════════
+   PERFORMANCE TIERS (SMART OPTIMIZATION)
+   ══════════════════════════════════════════ */
+
+/* --- Default UI Variables (Balanced/Standard) --- */
+:root {
+  --hud-glass-bg: rgba(255, 255, 255, 0.8);
+  --hud-glass-blur: 12px;
+  --hud-glass-border: rgba(255, 255, 255, 0.5);
+  --hud-shadow: var(--shadow-md);
+  --anim-speed: 0.3s;
+}
+
+/* --- ECO: Siêu tiết kiệm (Extreme Efficiency & Solid UI) --- */
+body.perf-eco {
+  --hud-glass-bg: #ffffff; /* Hoàn toàn đặc để dễ nhìn */
+  --hud-glass-blur: 0px;
+  --hud-glass-border: #e8e5d0;
+  --hud-shadow: none;
+  --anim-speed: 0.001s;
+  
+  --blur-on: none;
+  --shadow-on: none;
+  --glow-intensity: 0;
+}
+
+body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge) {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transition: none !important;
+  text-shadow: none !important;
+}
+
+body.perf-eco .onboarding-background,
+body.perf-eco .blob,
+body.perf-eco .card-shimmer,
+body.perf-eco .achievement-icon-glow,
+body.perf-eco .arena-divider::before,
+body.perf-eco .hologram-slot::before,
+body.perf-eco .hologram-grid {
+  display: none !important;
+}
+
+/* --- BALANCED: Cân bằng (Standard Experience) --- */
+body.perf-balanced {
+  --hud-glass-bg: rgba(255, 255, 255, 0.85);
+  --hud-glass-blur: 10px;
+  --hud-glass-border: rgba(255, 255, 255, 0.4);
+  
+  --blur-on: blur(10px);
+  --shadow-on: var(--shadow-sm);
+  --anim-speed: 0.3s;
+  --glow-intensity: 0.5;
+}
+
+body.perf-balanced .blob {
+  opacity: 0.05;
+  filter: blur(50px);
+}
+
+body.perf-balanced .card-shimmer {
+  opacity: 0.3;
+}
+
+/* --- ULTRA: Tối đa (Cinematic Experience) --- */
+body.perf-ultra {
+  --hud-glass-bg: rgba(255, 255, 255, 0.65);
+  --hud-glass-blur: 32px;
+  --hud-glass-border: rgba(255, 255, 255, 0.6);
+  --hud-shadow: var(--shadow-xl);
+  
+  --blur-on: blur(24px);
+  --shadow-on: var(--shadow-lg);
+  --anim-speed: 0.6s;
+  --glow-intensity: 1;
+}
+
+body.perf-ultra .achievement-icon-glow {
+  filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.6));
+}
+
+body.perf-ultra .card-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+/* Common UI Glass Class */
+.hud-glass {
+  background: var(--hud-glass-bg);
+  backdrop-filter: blur(var(--hud-glass-blur));
+  -webkit-backdrop-filter: blur(var(--hud-glass-blur));
+  border: 1.5px solid var(--hud-glass-border);
+  box-shadow: var(--hud-shadow);
+  transition: all var(--anim-speed) ease;
+}
+
+/* PERFORMANCE OVERRIDES FOR UI ELEMENTS */
+.perf-eco .shadow-2xl, 
+.perf-eco .shadow-xl,
+.perf-eco .shadow-lg {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+}
+
+.perf-eco .border-b-4,
+.perf-eco .border-b-8 {
+  border-bottom-width: 1px !important;
+}
+
+.perf-eco .btn-shimmer::after {
+  display: none !important;
+}
+
+.perf-eco .hud-glass {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  background: white !important;
+}
+
+.perf-balanced .shadow-2xl {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+}
+
+.perf-balanced .border-b-8 {
+  border-bottom-width: 4px !important;
+}

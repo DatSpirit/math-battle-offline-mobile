@@ -1,0 +1,181 @@
+/* 🥛 SIGNATURE CREAM BACKGROUND FOR DECKS */
+.deck-cream-bg {
+  background-color: #fcf9f2;
+  background-image: 
+    radial-gradient(#e5e1d5 1px, transparent 1px);
+  background-size: 24px 24px;
+  position: relative;
+}
+
+.deck-cream-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.02) 100%);
+  pointer-events: none;
+}
+
+/**
+ * DECKS PAGE: Cyber-Math Bento & HUD
+ */
+
+.decks-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-auto-rows: 160px;
+    gap: 12px;
+}
+
+/* Featured UR Card in Bento */
+.decks-bento-item-large {
+    grid-column: span 2;
+    grid-row: span 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 220, 190, 0.4) 100%);
+    border: 4px solid white;
+}
+
+/* Inspector HUD */
+.inspector-hud {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(40px);
+    border: 3px solid white;
+    border-radius: 24px !important;
+    box-shadow: 0 20px 60px rgba(139, 80, 0, 0.1);
+}
+
+.inspector-hud::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.02) 50%), 
+                linear-gradient(90deg, rgba(139, 80, 0, 0.02), rgba(0, 0, 0, 0), rgba(139, 80, 0, 0.02));
+    background-size: 100% 4px, 10% 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* HUD Corners */
+.hud-corner {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--primary);
+    opacity: 0.4;
+    z-index: 10;
+}
+.hud-corner-tl { top: 20px; left: 20px; border-top: 2px solid; border-left: 2px solid; }
+.hud-corner-tr { top: 20px; right: 20px; border-top: 2px solid; border-right: 2px solid; }
+.hud-corner-bl { bottom: 20px; left: 20px; border-bottom: 2px solid; border-left: 2px solid; }
+.hud-corner-br { bottom: 20px; right: 20px; border-bottom: 2px solid; border-right: 2px solid; }
+
+/* Shimmer Progress */
+.progress-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: shimmer-slide 2s infinite;
+}
+
+@keyframes shimmer-slide {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* Card Rarity Glows - Works with Selection Outline */
+.glow-ur { box-shadow: 0 0 40px rgba(255, 184, 112, 0.4); border-color: rgba(255, 184, 112, 0.6) !important; }
+.glow-super { box-shadow: 0 0 35px rgba(0, 100, 147, 0.3); border-color: rgba(0, 100, 147, 0.5) !important; }
+.glow-rare { box-shadow: 0 0 30px rgba(62, 106, 0, 0.2); border-color: rgba(62, 106, 0, 0.4) !important; }
+
+/* Enhanced Selection Border - High Visibility */
+.card-selected-ring {
+    position: absolute;
+    inset: 0;
+    border: 4px solid #fff;
+    border-radius: 32px;
+    z-index: 50;
+    pointer-events: none;
+    box-shadow: 0 0 0 4px var(--primary);
+    animation: selection-pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes selection-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.02); }
+}
+
+/* Reward Button Glow */
+.reward-glow-pulse {
+    animation: reward-pulse 1.5s infinite alternate;
+}
+
+.red-glow-pulse {
+    animation: red-pulse 1.5s infinite alternate;
+}
+
+@keyframes reward-pulse {
+    from {
+        box-shadow: 0 0 5px #fbbf24, 0 0 10px #fbbf24;
+        filter: brightness(1);
+    }
+    to {
+        box-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b;
+        filter: brightness(1.3);
+    }
+}
+
+@keyframes red-pulse {
+    from {
+        box-shadow: 0 0 5px #ef4444, 0 0 10px #ef4444;
+        filter: brightness(1);
+    }
+    to {
+        box-shadow: 0 0 20px #ef4444, 0 0 30px #dc2626;
+        filter: brightness(1.3);
+    }
+}
+
+/* Math Particles Decks */
+.math-particle-decks {
+    position: absolute;
+    font-weight: 900;
+    color: var(--primary);
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+    font-family: var(--font-display);
+}
+
+/* Sidebar Adjustment for Decks */
+.decks-sidebar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(24px);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    z-index: 40;
+    border: 2px solid white;
+}

@@ -1,0 +1,222 @@
+/* ══════════════════════════════════════════
+   HOME PAGE PREMIUM STYLES
+   Glassmorphism 2.0 + Bento Grid
+   ══════════════════════════════════════════ */
+
+.home-premium-container {
+  min-height: 100%;
+  background-color: var(--color-bg);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px 0 rgba(139, 80, 0, 0.1);
+  /* Force hardware acceleration to prevent flickering */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, box-shadow;
+}
+
+.dark .glass-panel {
+  background: rgba(28, 28, 15, 0.55);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+
+
+/* Metallic Shimmer Animation */
+.metallic-shimmer {
+  background: linear-gradient(135deg, #8b5000 0%, #b36b00 50%, #ffdcbe 51%, #8b5000 100%);
+  background-size: 200% 200%;
+  animation: shimmer 4s infinite linear;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 200% 200%; }
+}
+
+/* Math Particles Background */
+.math-particle {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.08;
+  font-family: var(--font-headline);
+  font-weight: 900;
+  color: var(--color-primary);
+  user-select: none;
+}
+
+/* Bento Card Transitions */
+.bento-card {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.bento-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Difficulty Button Styling */
+.difficulty-chip {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.difficulty-chip.active {
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 80, 0, 0.3);
+}
+
+.difficulty-chip.inactive {
+  background-color: var(--color-surface-container);
+  color: var(--color-text-muted);
+}
+
+.difficulty-chip.inactive:hover {
+  border-color: var(--color-primary-20);
+  color: var(--color-primary);
+}
+
+/* Custom Gradients */
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #ffb870 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Squish effect for buttons */
+.btn-squish {
+  transition: transform 0.1s ease;
+}
+
+.btn-squish:active {
+  transform: scale(0.96) translateY(2px);
+}
+
+/* Floating Animation */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(2deg); }
+}
+
+.animate-float {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+/* 📱 HEIGHT RESPONSIVE SCENARIOS */
+
+/* 1. Tall Screens (iPhone Pro Max, Pixel 7 Pro, etc.) */
+@media (min-height: 850px) {
+  .home-mobile-main {
+    gap: 3vh !important;
+    padding-top: 5vh !important;
+  }
+  .home-mode-stack {
+    gap: 2.5vh !important;
+  }
+  .home-main-card {
+    padding: 2rem !important;
+  }
+}
+
+/* 2. Short Screens (iPhone SE, Small Androids) */
+@media (max-height: 740px) {
+  .home-mobile-main {
+    padding-top: 1vh !important;
+    gap: 0.5vh !important;
+  }
+  .home-header {
+    margin-bottom: 0.5rem !important;
+  }
+  .home-header h1 {
+    font-size: 1.5rem !important;
+  }
+  .home-header p {
+    font-size: 0.75rem !important;
+  }
+  .home-mode-stack {
+    gap: 0.5vh !important;
+  }
+  .home-main-card {
+    padding: 0.75rem 1rem !important;
+    border-width: 2px !important;
+  }
+  .home-main-card h2 {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.15rem !important;
+  }
+  .home-main-card p {
+    margin-bottom: 0.5rem !important;
+    font-size: 0.7rem !important;
+  }
+  .difficulty-selector {
+    margin-bottom: 0.5rem !important;
+    gap: 0.25rem !important;
+  }
+  .difficulty-chip {
+    padding: 0.25rem 0.75rem !important;
+    font-size: 0.7rem !important;
+  }
+  .compact-mode-card {
+    padding: 0.5rem 0.75rem !important;
+    border-width: 2px !important;
+    gap: 0.5rem !important;
+  }
+  .compact-mode-card h3 {
+    font-size: 0.9rem !important;
+  }
+  .compact-mode-card p {
+    display: none; /* Hide descriptions on very short screens */
+  }
+  .compact-mode-card .p-3 {
+    padding: 0.5rem !important;
+  }
+  .compact-mode-card svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  .compact-mode-card button {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    font-size: 0.6rem !important;
+  }
+}
+
+/* 3. Ultra-Short Screens / Landscape */
+@media (max-height: 600px) {
+  .home-header {
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 1rem !important;
+    margin-bottom: 0 !important;
+  }
+  .home-header h1 {
+    font-size: 1.1rem !important;
+  }
+  .home-header p, .home-header .mb-4 {
+    display: none !important;
+  }
+  .home-main-card {
+    flex-direction: row !important;
+    text-align: left !important;
+    gap: 1rem !important;
+  }
+  .home-main-card .mb-6 {
+    margin-bottom: 0 !important;
+  }
+  .difficulty-selector {
+    display: none !important; /* Hide complexity in landscape */
+  }
+}

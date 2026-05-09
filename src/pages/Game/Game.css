@@ -1,0 +1,124 @@
+/* 💎 GAME ARENA PREMIUM STYLES */
+
+.hud-glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 25px 50px -12px rgba(139, 80, 0, 0.15);
+}
+
+.hud-panel {
+  background: rgba(28, 28, 15, 0.03);
+  border: 2px solid rgba(139, 80, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.hud-panel::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(139, 80, 0, 0.03) 2px);
+  pointer-events: none;
+}
+
+.hologram-slot {
+  background: rgba(139, 80, 0, 0.05);
+  border: 2px dashed rgba(139, 80, 0, 0.2);
+  position: relative;
+}
+
+.hologram-slot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(139, 80, 0, 0.05) 50%, transparent 100%);
+  animation: hologram-scan 4s linear infinite;
+}
+
+@keyframes hologram-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.timer-pulse {
+  animation: pulse-red 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* Perspective for Fan Hand */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.spaceship-hud {
+  position: relative;
+  overflow: hidden;
+}
+
+.spaceship-hud::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(139, 80, 0, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Shimmer Effect for Primary Buttons */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 45%, rgba(255, 255, 255, 0.3) 50%, transparent 55%);
+  animation: btn-shimmer-anim 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes btn-shimmer-anim {
+  0% { transform: translate(-30%, -30%); }
+  100% { transform: translate(30%, 30%); }
+}
+
+/* Custom HUD Score Shadow */
+.hud-score-text {
+  text-shadow: 0 4px 12px rgba(139, 80, 0, 0.15);
+}
+/* 📱 RESPONSIVE HEIGHT FIXES FOR MOBILE */
+/* 📱 TỐI ƯU HÓA CHIỀU CAO CHO DI ĐỘNG (HEIGHT RESPONSIVE) */
+
+/* Màn hình trung bình (iPhone Pro, v.v.) - Giảm bớt các khoảng trống thừa */
+@media (max-height: 750px) {
+  .battle-arena { gap: 0.5rem !important; }
+  .slots-container { gap: 0.25rem !important; }
+  .arena-score-box { padding: 0.25rem 0.75rem !important; margin: 0 !important; }
+  footer .hud-glass { padding: 0.75rem !important; }
+  /* Điều chỉnh lại spacing Tailwind khi bị thu hẹp */
+  footer .space-y-6 { --tw-space-y-reverse: 0; margin-top: calc(0.5rem * calc(1 - 0)); margin-bottom: calc(0.5rem * 0); }
+}
+
+/* Màn hình ngắn (iPhone SE, các dòng máy cũ) - Ép chặt giao diện */
+@media (max-height: 680px) {
+  .battle-arena { padding-top: 0 !important; }
+  .hud-glass { padding: 0.25rem 0.5rem !important; }
+  .arena-divider { margin: 0.1rem 0 !important; }
+  header, section { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+}
+
+/* Màn hình cực ngắn - Thu nhỏ tỉ lệ thẻ bài để không bị tràn */
+@media (max-height: 600px) {
+  .math-card--in-game { transform: scale(0.7) !important; }
+  .arena-slot { width: 60px !important; height: 90px !important; }
+}
