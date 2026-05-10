@@ -159,7 +159,7 @@ body {
   color: var(--color-text);
   overflow: hidden;
   overscroll-behavior: none;
-  padding: var(--sat) var(--sar) var(--sab) var(--sal);
+  padding: var(--sat) var(--sar) 0 var(--sal);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -286,13 +286,14 @@ body.lite-mode * {
    ══════════════════════════════════════════ */
 @media (max-width: 768px) {
   :root { font-size: 15px; }
-  body { padding: var(--sat) var(--sar) var(--sab) var(--sal); }
+  body { padding: var(--sat) var(--sar) 0 var(--sal); }
 }
 
 @media (max-width: 480px) {
   :root { font-size: 14px; }
   /* Ensure padding is robust on very small screens */
-  body { padding: max(10px, var(--sat)) max(10px, var(--sar)) max(10px, var(--sab)) max(10px, var(--sal)); }
+  /* Ensure padding is robust on very small screens */
+  body { padding: max(10px, var(--sat)) max(10px, var(--sar)) 0 max(10px, var(--sal)); }
 }
 
 /* ══════════════════════════════════════════

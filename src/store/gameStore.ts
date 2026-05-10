@@ -6,6 +6,13 @@ import { createGameBoardSlice } from './slices/gameBoardSlice';
 import { createGameSkillSlice } from './slices/gameSkillSlice';
 import { createCampaignSlice } from './slices/campaignSlice';
 
+/** 
+ * [PERF] EMPTY_SLOTS constant to avoid re-allocating arrays during board resets.
+ * We use spread [...EMPTY_SLOTS] to create a shallow copy that is still mutable 
+ * but avoids the overhead of 'new Array(6).fill(null)' which triggers GC pressure.
+ */
+export const EMPTY_SLOTS = Object.freeze(new Array(6).fill(null)) as (null)[];
+
 /**
  * STORE TRẬN ĐẤU (Game Store)
  * Quản lý toàn bộ trạng thái của một trận đấu đang diễn ra.
@@ -30,9 +37,9 @@ export const useGameStore = create<GameState>((set, get) => ({
   /** Điểm số hiện tại của Người chơi 2 (hoặc AI) */
   player2Score: 0,
   /** Các ô (Slots) đặt thẻ bài của Người chơi 1 trên bàn cờ */
-  player1Slots: new Array(6).fill(null),
+  player1Slots: [...EMPTY_SLOTS],
   /** Các ô (Slots) đặt thẻ bài của Người chơi 2 trên bàn cờ */
-  player2Slots: new Array(6).fill(null),
+  player2Slots: [...EMPTY_SLOTS],
   /** Lịch sử các bước đi trong trận đấu */
   history: [],
   /** Kết quả của trận đấu cuối cùng */

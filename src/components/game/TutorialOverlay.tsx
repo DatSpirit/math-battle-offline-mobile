@@ -2,6 +2,7 @@ import React from 'react';
 import TutorialOverlayShared from '../shared/TutorialOverlay';
 import { useGameStore } from '../../store/gameStore';
 import { useAuthStore } from '../../store/authStore';
+import './TutorialOverlay.css';
 import { HOME_TUTORIAL_STEPS, BATTLE_TUTORIAL_STEPS } from '../../data/tutorialSteps';
 
 interface TutorialOverlayProps {

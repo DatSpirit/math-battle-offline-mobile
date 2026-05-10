@@ -40,6 +40,14 @@ const MobileGamePage: React.FC = () => {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isEmotePickerOpen, setIsEmotePickerOpen] = useState(false);
 
+  const handRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    if (!handRef.current) return;
+    const h = handRef.current.offsetHeight;
+    document.documentElement.style.setProperty('--hand-area-height', `${h + 10}px`);
+  }, [g.activeHand.length]);
+
   React.useEffect(() => {
     // LOCK VIEWPORT
     document.body.style.overflow = 'hidden';
@@ -113,7 +121,7 @@ const MobileGamePage: React.FC = () => {
   );
 
   const renderPortraitFooter = () => (
-    <footer className="w-full px-2 sm:px-4 pb-[calc(env(safe-area-inset-bottom,16px)+60px)] z-50 shrink-0">
+    <footer ref={handRef} className="player-section w-full px-2 sm:px-4 z-50 shrink-0">
       <div className="hud-glass rounded-[32px] sm:rounded-[40px] p-2 sm:p-4 space-y-2 border-2 border-white/50 shadow-2xl relative overflow-visible">
         <div className="absolute inset-0 bg-primary/5 opacity-30 pointer-events-none rounded-[32px] sm:rounded-[40px] overflow-hidden"></div>
       
@@ -375,7 +383,7 @@ const MobileGamePage: React.FC = () => {
         <div id="arena-interaction-zone" className={`flex-1 flex ${isWideLandscape ? 'flex-row' : 'flex-col'} overflow-hidden relative z-10`}>
           
           {isWideLandscape ? renderLandscapeSidebars() : (
-            <main className="flex-1 flex flex-col justify-start items-center pt-2 pb-2 relative min-w-0">
+            <main className="main-area flex-1 flex flex-col justify-start items-center pt-2 pb-2 relative min-w-0">
                <BattleArena
                  currentTurn={g.currentTurn}
                  playerSlots={g.activeSlots}

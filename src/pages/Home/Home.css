@@ -19,6 +19,9 @@
   /* Force hardware acceleration to prevent flickering */
   transform: translateZ(0);
   backface-visibility: hidden;
+}
+
+.perf-ultra .glass-panel {
   will-change: transform, box-shadow;
 }
 

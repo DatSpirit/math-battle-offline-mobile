@@ -11,6 +11,7 @@ import { useHistoryStore } from '../historyStore';
 import { useAuthStore } from '../authStore';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Capacitor } from '@capacitor/core';
+import { EMPTY_SLOTS } from '../gameStore';
 
 import type { StoreApi } from 'zustand';
 
@@ -60,8 +61,8 @@ export const createGameMatchSlice = (
       player2Reserve: p2Deck.slice(HAND_SIZE),
       player1Score: 0,
       player2Score: 0,
-      player1Slots: new Array(6).fill(null),
-      player2Slots: new Array(6).fill(null),
+      player1Slots: [...EMPTY_SLOTS],
+      player2Slots: [...EMPTY_SLOTS],
       history: [],
       lastResult: null,
       lastBattleEvents: [],
@@ -138,7 +139,7 @@ export const createGameMatchSlice = (
         }
       });
 
-      activeSlots = new Array(6).fill(null);
+      activeSlots = [...EMPTY_SLOTS];
       withdrawnCards.forEach((c, i) => { activeSlots[i] = c; });
 
       // Update local hand for immediate use in the rest of the function
@@ -242,13 +243,13 @@ export const createGameMatchSlice = (
           player2Reserve: newP2Res,
           player1Score: newP1Score,
           player2Score: newP2Score,
-          player1Slots: new Array(6).fill(null),
-          player2Slots: new Array(6).fill(null),
+          player1Slots: [...EMPTY_SLOTS],
+          player2Slots: [...EMPTY_SLOTS],
           player1PoolPoints: nextP1Pool,
           player2PoolPoints: nextP2Pool,
           player1ActiveBonuses: engineResult.player1NextBonus * 0.5, // Giảm dần theo thời gian
           player2ActiveBonuses: engineResult.player2NextBonus * 0.5,
-          lastBattleEvents: engineResult.events,
+          lastBattleEvents: engineResult.events.slice(-10), // [PERF] Limit to last 10 events to prevent memory bloating
           history: [...state.history, result],
           lastResult: result,
           activePlayer: 1,
@@ -320,7 +321,7 @@ export const createGameMatchSlice = (
         player2Slots: aiPlay,
         player1ActiveBonuses: engineResult.player1NextBonus * 0.5,
         player2ActiveBonuses: engineResult.player2NextBonus * 0.5,
-        lastBattleEvents: engineResult.events,
+        lastBattleEvents: engineResult.events.slice(-10), // [PERF] Limit to last 10 events
         lastResult: result,
         tutorialStep: state.isTutorial ? state.tutorialStep + 1 : 0
       });
@@ -413,8 +414,8 @@ export const createGameMatchSlice = (
         player2Reserve: newP2Res,
         player1Score: newPlayer1Score,
         player2Score: newPlayer2Score,
-        player1Slots: new Array(6).fill(null),
-        player2Slots: new Array(6).fill(null),
+        player1Slots: [...EMPTY_SLOTS],
+        player2Slots: [...EMPTY_SLOTS],
         player1PoolPoints: nextP1Pool,
         player2PoolPoints: nextP2Pool,
         history: [...state.history, result],

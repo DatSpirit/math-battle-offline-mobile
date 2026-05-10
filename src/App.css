@@ -333,18 +333,20 @@
     right: 0;
     z-index: 200;
     border-radius: 20px 20px 0 0;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 12px);
   }
 
   .main-area { 
-    padding-bottom: calc(220px + var(--sab)); /* Dynamic padding including safe area */
+    padding-bottom: var(--hand-area-height, 240px); /* Dynamic padding using CSS var */
   }
 
   .player-hand {
     gap: 8px;
     overflow-x: auto;
+    overflow-y: visible;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    padding: 0.5rem;
+    padding: 8px 0.5rem 4px;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
   }
 

@@ -10,6 +10,9 @@
   aspect-ratio: 100 / 142; /* Fixed aspect ratio for consistency */
   border-radius: var(--radius-md); 
   background: var(--color-surface); 
+  /* Force hardware acceleration to prevent flickering */
+  transform: translateZ(0);
+  backface-visibility: hidden;
   border: 2px solid #000000; 
   cursor: grab; 
   overflow: hidden; 
@@ -350,6 +353,9 @@
   animation: sun-flare 6s infinite ease-in-out; /* Chậm lại thành 6s */
   mix-blend-mode: screen;
   opacity: 0.8;
+}
+
+.perf-ultra .math-card--ultra .card-shimmer {
   will-change: background-position;
 }
 
@@ -370,7 +376,11 @@
   background-size: 200% 100%;
   animation: shimmer 5s ease-in-out infinite;
   opacity: 0.5;
-  will-change: background-position; /* Offload to GPU to prevent layout jitter */
+}
+
+.perf-ultra .math-card--rare .card-shimmer,
+.perf-ultra .math-card--super .card-shimmer {
+  will-change: background-position;
 }
 
 /* Hiệu ứng hạt bụi (Đã vô hiệu hóa để tránh lỗi vòng lặp layout) */

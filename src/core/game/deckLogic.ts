@@ -226,12 +226,17 @@ export function buildDeck(
 
   const shuffled = shuffle(cards);
   
+  // [STABILITY] Use stable sort by stars to prevent random index behavior in some JS engines.
   // Weighted sort based on stars (20% bias)
   if (prefix === 'p' && collection) {
-    shuffled.sort((a, b) => {
-       if ((a.stars || 0) > (b.stars || 0)) return Math.random() > 0.8 ? -1 : 1;
-       return 0;
-    });
+    // Phase 1: Sort by power (stars) descending
+    shuffled.sort((a, b) => (b.stars || 0) - (a.stars || 0));
+    
+    // Phase 2: Shuffle only the top 30% of cards.
+    // This maintains "Lucky Draw" feel for high-rarity cards while ensuring they don't sink to the bottom.
+    const topSliceCount = Math.ceil(shuffled.length * 0.3);
+    const topSlice = shuffled.slice(0, topSliceCount);
+    shuffled.splice(0, topSliceCount, ...shuffle(topSlice));
   }
 
   return shuffled;
@@ -267,6 +272,9 @@ export function smartDraw(
   const drawn = newReserve.splice(0, n);
   const newHand = [...hand, ...drawn];
 
+  // [PERF] Early exit if no reserve or no swap needed to save CPU cycles on every draw.
+  if (newReserve.length === 0) return [newHand, newReserve];
+
   let minOps = 0;
   const maxOps = nextTurn >= 5 ? 3 : 2; // Giới hạn chặt chẽ hơn để tránh thừa dấu
   let minNums = 1;
@@ -289,20 +297,27 @@ export function smartDraw(
   }
 
   const swapWithReserve = (targetType: CardType, discardType: CardType) => {
+    // Fix 4: Find discard index once
     const discardIdx = newHand.findIndex(c => c.type === discardType && c.rarity === 'normal');
-    const backupDiscardIdx = newHand.findIndex(c => c.type === discardType && c.rarity !== 'super' && c.rarity !== 'ultra');
-    const finalDiscardIdx = discardIdx !== -1 ? discardIdx : backupDiscardIdx;
-
-    const targetInReserveIdx = newReserve.findIndex(c => c.type === targetType && (c.rarity === 'super' || c.rarity === 'ultra'));
-    const backupTargetIdx = newReserve.findIndex(c => c.type === targetType);
-    const finalTargetIdx = targetInReserveIdx !== -1 ? targetInReserveIdx : backupTargetIdx;
-
-    if (finalDiscardIdx !== -1 && finalTargetIdx !== -1) {
-      const drawnCard = newReserve[finalTargetIdx];
-      const pushedCard = newHand[finalDiscardIdx];
-      newHand[finalDiscardIdx] = drawnCard;
-      newReserve[finalTargetIdx] = pushedCard;
-      return true;
+    if (discardIdx === -1) {
+      const backupDiscardIdx = newHand.findIndex(c => c.type === discardType && c.rarity !== 'super' && c.rarity !== 'ultra');
+      if (backupDiscardIdx === -1) return false;
+      
+      const targetInReserveIdx = newReserve.findIndex(c => c.type === targetType && (c.rarity === 'super' || c.rarity === 'ultra'));
+      const finalTargetIdx = targetInReserveIdx !== -1 ? targetInReserveIdx : newReserve.findIndex(c => c.type === targetType);
+      
+      if (finalTargetIdx !== -1) {
+        [newHand[backupDiscardIdx], newReserve[finalTargetIdx]] = [newReserve[finalTargetIdx], newHand[backupDiscardIdx]];
+        return true;
+      }
+    } else {
+      const targetInReserveIdx = newReserve.findIndex(c => c.type === targetType && (c.rarity === 'super' || c.rarity === 'ultra'));
+      const finalTargetIdx = targetInReserveIdx !== -1 ? targetInReserveIdx : newReserve.findIndex(c => c.type === targetType);
+      
+      if (finalTargetIdx !== -1) {
+        [newHand[discardIdx], newReserve[finalTargetIdx]] = [newReserve[finalTargetIdx], newHand[discardIdx]];
+        return true;
+      }
     }
     return false;
   };

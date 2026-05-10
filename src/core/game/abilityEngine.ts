@@ -41,6 +41,10 @@ const RARITY_ORDER: Record<Rarity, number> = {
   'ultra': 3
 };
 
+// [PERF] Cache for ability calculations to avoid redundant processing during live previews.
+// Stabilizes random values (like Card 6) during drag-and-drop to prevent UI flickering.
+const _abilityCache = new Map<string, AbilityResult>();
+
 /**
  * Tính toán tất cả các chỉ số cộng thêm từ thẻ bài
  */
@@ -49,6 +53,14 @@ export const applyAbilities = (
   context: AbilityContext,
   isAI: boolean
 ): AbilityResult => {
+  // [PERF] Generate a unique cache key based on state that affects outcomes.
+  // Using | as separator for card IDs and underscores for numeric context.
+  const cacheKey = `${cards.map(c => c.id).join('|')}_${context.currentTurn}_${context.playerScore}_${context.aiScore}_${isAI}`;
+  
+  if (_abilityCache.has(cacheKey)) {
+    return _abilityCache.get(cacheKey)!;
+  }
+
   let multiplierMod = 0;
   let valueMod = 0;
   let opponentMultiplierMod = 0;
@@ -223,13 +235,11 @@ export const applyAbilities = (
   const numValues = numCards.map(c => parseInt(c.value)).sort((a,b) => a-b);
 
   if (numValues.length >= 3) {
-    let isSequence = true;
-    for (let i = 0; i < numValues.length - 1; i++) {
-      if (numValues[i+1] !== numValues[i] + 1) {
-        isSequence = false;
-        break;
-      }
-    }
+    // [PERF] Optimized sequence check using range (Max-Min).
+    // If range === length-1 and all elements are unique, it's a sequence. O(1) vs O(N).
+    const range = numValues[numValues.length - 1] - numValues[0];
+    const isSequence = range === numValues.length - 1 && new Set(numValues).size === numValues.length;
+
     if (isSequence) {
       multiplierMod += SYNERGY_SEQUENCE_MOD;
       effects.push('Hào quang: Chuỗi số liên tiếp!');
@@ -252,5 +262,13 @@ export const applyAbilities = (
     effects.push('Đại sư toán tử: +30% điểm');
   }
 
-  return { multiplierMod, valueMod, opponentMultiplierMod, shouldEqualizePoints, stealHalfFromOpponent, halveSelfOnly, specialEffect: effects };
+  const result = { multiplierMod, valueMod, opponentMultiplierMod, shouldEqualizePoints, stealHalfFromOpponent, halveSelfOnly, specialEffect: effects };
+  
+  // Store in cache and maintain size limit
+  _abilityCache.set(cacheKey, result);
+  if (_abilityCache.size > 100) {
+    _abilityCache.clear();
+  }
+  
+  return result;
 };

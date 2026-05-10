@@ -17,7 +17,10 @@ const MobileNavbar: React.FC = () => {
   const isSummon = location.pathname === '/summon';
 
   return (
-    <nav className={`fixed bottom-0 left-0 right-0 z-50 px-2 pb-safe transition-all duration-300 ${isSummon ? 'bg-[#fcf9f2] border-t-4 border-white shadow-2xl' : 'hud-glass'}`}>
+    <nav 
+      style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}
+      className={`fixed bottom-0 left-0 right-0 z-50 px-2 transition-all duration-300 ${isSummon ? 'bg-[#fcf9f2] border-t-4 border-white shadow-2xl' : 'hud-glass'}`}
+    >
       <div className="flex items-center justify-around min-h-16 py-2">
         {NAV_ITEMS.map((item) => (
           <NavLink

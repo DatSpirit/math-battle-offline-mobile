@@ -105,51 +105,6 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
 
   if (!isActive || !currentStep) return null;
 
-  const getStepPositionStyle = () => {
-    if (!spotlightRect) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
-    const { x, y, width, height } = spotlightRect;
-    const margin = window.innerWidth < 640 ? 12 : 24;
-
-    // Viewport boundaries
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const isMobile = vw < 640;
-
-    // Force center on mobile to avoid overlapping with interactive elements
-    if (isMobile) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '90%' };
-
-    if (currentStep.position === 'center') return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
-
-    const position = currentStep.position;
-    switch (position) {
-      case 'bottom':
-        return { 
-          top: Math.min(vh - 180, y + height + margin), 
-          left: Math.max(margin, Math.min(vw - margin, x + width / 2)), 
-          transform: 'translateX(-50%)' 
-        };
-      case 'top':
-        return { 
-          bottom: Math.max(margin, vh - (y - margin)), 
-          left: Math.max(margin, Math.min(vw - margin, x + width / 2)), 
-          transform: 'translateX(-50%)' 
-        };
-      case 'left':
-        return { 
-          top: Math.max(margin, Math.min(vh - margin, y + height / 2)), 
-          right: Math.max(margin, vw - (x - margin)), 
-          transform: 'translateY(-50%)' 
-        };
-      case 'right':
-        return { 
-          top: Math.max(margin, Math.min(vh - margin, y + height / 2)), 
-          left: Math.max(margin, x + width + margin), 
-          transform: 'translateY(-50%)' 
-        };
-      default:
-        return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
-    }
-  };
 
   return (
     <div className="fixed inset-0 z-10000 pointer-events-none">
@@ -196,37 +151,40 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: -20 }}
-          className="absolute pointer-events-auto"
-          style={getStepPositionStyle()}
+          className="tutorial-overlay-wrap"
         >
-          <div className="bg-white rounded-4xl p-8 shadow-2xl border-4 border-primary/10 relative overflow-hidden">
+          <div className="tutorial-card">
             <div className="absolute -top-6 -right-6 text-primary/5">
               <Sparkles size={120} />
             </div>
 
             <div className="relative z-10">
-              <div className="flex items-center gap-2 text-primary font-black text-[9px] tracking-[0.3em] uppercase mb-3">
-                <span className="w-8 h-[2px] bg-primary/20" />
-                ACADEMY STEP {currentStepIndex + 1}/{steps.length}
+              <div className="tutorial-header">
+                <div className="bulb-icon">
+                  <Sparkles size={16} />
+                </div>
+                <div className="tutorial-label">
+                  ACADEMY STEP {currentStepIndex + 1}/{steps.length}
+                </div>
               </div>
               
-              <h3 className="text-2xl font-headline font-black text-on-surface mb-3 uppercase leading-none">
+              <h3 className="tutorial-title">
                 {currentStep.title}
               </h3>
               
-              <p className="text-on-surface-variant text-sm font-medium leading-relaxed mb-8">
-                {currentStep.content}
-              </p>
+              <div className="tutorial-body">
+                <p>{currentStep.content}</p>
+              </div>
 
               {currentStep.actionType !== 'click' ? (
                 <button
                   onClick={onNext}
-                  className="w-full py-4 bg-primary text-white rounded-2xl font-black text-xs flex items-center justify-center gap-2 hover:bg-primary-dim shadow-xl shadow-primary/20 transition-all active:scale-95"
+                  className="tutorial-btn"
                 >
                   {currentStepIndex === steps.length - 1 ? 'LET\'S GO!' : 'CONTINUE'} <ChevronRight size={18} />
                 </button>
               ) : (
-                <div className="flex items-center gap-3 text-primary font-black text-[10px] tracking-widest uppercase italic animate-bounce">
+                <div className="flex items-center gap-3 text-indigo-400 font-black text-[10px] tracking-widest uppercase italic animate-pulse">
                   <ChevronRight size={16} /> PLEASE FOLLOW THE INSTRUCTION!
                 </div>
               )}

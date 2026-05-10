@@ -99,8 +99,8 @@ const BattleEventTheater: React.FC<BattleEventTheaterProps> = ({ event, isVisibl
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={`absolute w-[320px] sm:w-[380px] md:w-[400px] min-h-[140px] h-auto flex flex-col justify-center rounded-[24px] border-2 ${theme.border} bg-linear-to-br ${theme.bg} p-6 md:p-7 shadow-2xl ${isEco ? 'bg-slate-950' : 'backdrop-blur-xl'} ${isUltra ? `shadow-[0_0_40px_rgba(255,255,255,0.1)]` : ''} ${theme.glow}`}
           >
-            {/* Animated Background Elements */}
-            {!isEco && (
+            {/* Animated Background Elements — Restricted to ULTRA to save GPU bandwidth on mid-range devices */}
+            {isUltra && (
               <motion.div 
                 animate={{ rotate: 360 }}
                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
@@ -146,8 +146,8 @@ const BattleEventTheater: React.FC<BattleEventTheaterProps> = ({ event, isVisibl
               )}
             </div>
   
-            {/* Scanning Line Effect */}
-            {!isEco && (
+            {/* Scanning Line Effect — Repaints continuously, so it's disabled in BALANCED/ECO */}
+            {isUltra && (
               <motion.div
                 animate={{ top: ['0%', '100%', '0%'] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
