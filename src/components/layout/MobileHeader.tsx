@@ -1,13 +1,13 @@
 import React from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { usePlayerStore } from '../../store/playerStore';
-import { CoinIcon, VolumeIcon, VolumeMuteIcon } from '../shared/Icons';
+import { CoinIcon, GemIcon, VolumeIcon, VolumeMuteIcon } from '../shared/Icons';
 import { useSound } from '../../hooks/useSound';
 import { useUIStore } from '../../store/uiStore';
 
 const MobileHeader: React.FC = () => {
   const { user } = useAuthStore();
-  const { level, coins, redAscensionBooks, isMuted, toggleMute } = usePlayerStore();
+  const { level, coins, gems, redAscensionBooks, isMuted, toggleMute } = usePlayerStore();
   const { playSound } = useSound();
   const { setIsProfileOpen } = useUIStore();
 
@@ -30,10 +30,15 @@ const MobileHeader: React.FC = () => {
       </button>
 
       {/* Stats & Settings */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-xl border border-primary/10 shadow-sm">
           <CoinIcon size={14} className="text-yellow-500" />
           <span className="text-xs font-black text-primary">{(coins || 0).toLocaleString()}</span>
+        </div>
+
+        <div className="flex items-center gap-2 bg-blue-500/5 px-3 py-1.5 rounded-xl border border-blue-500/10 shadow-sm">
+          <GemIcon size={14} className="text-blue-500" />
+          <span className="text-xs font-black text-blue-600">{(gems || 0).toLocaleString()}</span>
         </div>
 
         <div className="flex items-center gap-2 bg-red-500/5 px-3 py-1.5 rounded-xl border border-red-500/10 shadow-sm">

@@ -4,17 +4,19 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useQuestsLogic } from '../../hooks/useQuestsLogic';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import type { Quest } from '../../types/player.types';
 import { 
   CheckCircleIcon, TimerIcon, 
-  SparklesIcon, TrophyIcon, CoinsIcon, GemIcon
+  TrophyIcon, CoinsIcon, GemIcon, CheckIcon
 } from '../../components/shared/Icons';
 import RewardClaimModal from '../../components/modals/RewardClaimModal';
 import { AnimatePresence } from 'framer-motion';
-import './Quests.css';
+
 
 const MobileQuests: React.FC = () => {
   const q = useQuestsLogic();
+  const showContent = useInteractionDelay(100);
   const [activeTab, setActiveTab] = React.useState<'daily' | 'weekly'>('daily');
   
   const currentQuests = activeTab === 'daily' ? q.dailyQuests : q.weeklyQuests;
@@ -23,6 +25,10 @@ const MobileQuests: React.FC = () => {
   const completedCount = currentQuests.filter((qu: Quest) => qu.completed).length;
   const totalCount = currentQuests.length;
   const overallProgress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+  if (!showContent) {
+    return <div className="flex-1 bg-[#fcf9f2]" />;
+  }
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-[#fcf9f2] relative font-body overflow-hidden">
@@ -37,18 +43,18 @@ const MobileQuests: React.FC = () => {
               <h1 className="text-3xl sm:text-5xl font-black text-primary italic uppercase tracking-tighter m-0 leading-none">NHIỆM VỤ</h1>
            </motion.div>
            
-           <div className="flex bg-white/60 p-1 rounded-xl border border-white shadow-inner">
+           <div className="flex bg-white/80 p-1.5 rounded-2xl border-2 border-white shadow-lg backdrop-blur-xl">
               <button 
                 onClick={() => setActiveTab('daily')}
-                className={`px-4 py-2 rounded-lg text-[10px] font-black transition-all ${activeTab === 'daily' ? 'bg-primary text-white shadow-lg' : 'text-primary/40'}`}
+                className={`flex-1 px-8 py-3 rounded-xl text-xs font-black transition-all duration-300 ${activeTab === 'daily' ? 'bg-primary text-white shadow-[0_8px_20px_rgba(139,80,0,0.3)] scale-105 z-10' : 'text-primary/30 hover:text-primary/50'}`}
               >
-                 NGÀY
+                 NHIỆM VỤ NGÀY
               </button>
               <button 
                 onClick={() => setActiveTab('weekly')}
-                className={`px-4 py-2 rounded-lg text-[10px] font-black transition-all ${activeTab === 'weekly' ? 'bg-primary text-white shadow-lg' : 'text-primary/40'}`}
+                className={`flex-1 px-8 py-3 rounded-xl text-xs font-black transition-all duration-300 ${activeTab === 'weekly' ? 'bg-primary text-white shadow-[0_8px_20px_rgba(139,80,0,0.3)] scale-105 z-10' : 'text-primary/30 hover:text-primary/50'}`}
               >
-                 TUẦN
+                 NHIỆM VỤ TUẦN
               </button>
            </div>
         </div>
@@ -81,7 +87,8 @@ const MobileQuests: React.FC = () => {
       </header>
 
       {/* Quest List Container */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 sm:space-y-4 pb-48 custom-scrollbar items-center flex flex-col min-h-0">
+      <div className="flex-1 overflow-y-auto custom-scrollbar pt-4 px-4 pb-64">
+         <div className="max-w-2xl mx-auto space-y-3 sm:space-y-4">
          {currentQuests.map((quest: Quest, i: number) => {
             const isCompleted = quest.completed;
             const progress = Math.min(quest.current / quest.goal, 1);
@@ -94,9 +101,14 @@ const MobileQuests: React.FC = () => {
                 transition={{ delay: i * 0.03 }}
                 className={`relative w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-5 border-2 transition-all flex items-center gap-4 ${isCompleted ? 'border-green-400/50 bg-green-50/30' : 'border-white shadow-sm'}`}
               >
-                 {/* Icon Status */}
-                 <div className={`size-12 sm:size-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black italic shrink-0 border border-primary/5 ${isCompleted ? 'bg-green-500 text-white shadow-lg shadow-green-500/20' : 'bg-white text-primary/20 shadow-inner'}`}>
-                    {isCompleted ? <CheckCircleIcon size={20} /> : <span>{i + 1}</span>}
+                 {/* Icon Status - Number + Completion Badge */}
+                 <div className={`relative size-12 sm:size-14 rounded-2xl flex items-center justify-center text-sm sm:text-base font-black italic shrink-0 border transition-colors ${isCompleted ? 'bg-green-50/50 border-green-200 text-green-600' : 'bg-white border-primary/5 text-primary/20 shadow-inner'}`}>
+                    <span>{i + 1}</span>
+                    {isCompleted && (
+                      <div className="absolute -top-1.5 -right-1.5 size-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center text-white shadow-sm">
+                        <CheckIcon size={12} />
+                      </div>
+                    )}
                  </div>
 
                  {/* Quest Content */}
@@ -106,26 +118,26 @@ const MobileQuests: React.FC = () => {
                           <h4 className="text-xs sm:text-sm font-black text-primary italic uppercase tracking-tighter leading-none mb-1.5">{quest.title}</h4>
                           <p className="text-[9px] sm:text-[11px] text-primary/40 font-bold leading-tight">{quest.description}</p>
                        </div>
-                       <div className="flex flex-col gap-1.5 items-end shrink-0">
-                          <div className="flex items-center gap-1.5 bg-amber-400/10 px-2 py-1 rounded-lg border border-amber-400/10">
-                             <CoinsIcon size={12} className="text-amber-500" />
-                             <span className="text-xs font-black text-amber-600">+{quest.reward}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5 bg-blue-400/10 px-2 py-1 rounded-lg border border-blue-400/10">
-                             <GemIcon size={12} className="text-blue-500" />
-                             <span className="text-xs font-black text-blue-600">+{quest.rewardGems}</span>
-                          </div>
-                       </div>
-                    </div>
+                        <div className="flex flex-row gap-2 items-center shrink-0">
+                           <div className="flex items-center gap-1.5 bg-amber-400/10 px-2 py-1 rounded-lg border border-amber-400/10">
+                              <CoinsIcon size={10} className="text-amber-500" />
+                              <span className="text-[10px] font-black text-amber-600">+{quest.reward}</span>
+                           </div>
+                           <div className="flex items-center gap-1.5 bg-blue-400/10 px-2 py-1 rounded-lg border border-blue-400/10">
+                              <GemIcon size={10} className="text-blue-500" />
+                              <span className="text-[10px] font-black text-blue-600">+{quest.rewardGems}</span>
+                           </div>
+                        </div>
+                     </div>
 
-                    <div className="flex items-center gap-3">
-                       <div className="flex-1 bg-primary/5 h-2 rounded-full overflow-hidden border border-primary/5">
-                          <motion.div 
-                            initial={{ width: 0 }} 
-                            animate={{ width: `${progress * 100}%` }} 
-                            className={`h-full ${isCompleted ? 'bg-green-500' : 'bg-primary'}`} 
-                          />
-                       </div>
+                     <div className="flex items-center gap-3">
+                        <div className="flex-1 bg-primary/5 h-1 rounded-full overflow-hidden border border-primary/5">
+                           <motion.div 
+                             initial={{ width: 0 }} 
+                             animate={{ width: `${progress * 100}%` }} 
+                             className={`h-full ${isCompleted ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-primary'}`} 
+                           />
+                        </div>
                        <span className={`text-[10px] sm:text-xs font-black italic shrink-0 ${isCompleted ? 'text-green-600' : 'text-primary/40'}`}>
                           {quest.current}/{quest.goal}
                        </span>
@@ -140,34 +152,19 @@ const MobileQuests: React.FC = () => {
                              <CheckCircleIcon size={18} />
                           </div>
                        ) : (
-                          <motion.button 
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => q.handleClaim(quest.id)}
-                            className="px-4 py-2.5 bg-green-500 text-white rounded-xl font-black text-[10px] uppercase tracking-wider shadow-lg shadow-green-500/20"
-                          >
-                             LẤY
-                          </motion.button>
+                           <motion.button 
+                             whileTap={{ scale: 0.9 }}
+                             onClick={() => q.handleClaim(quest.id)}
+                             className="px-5 py-2.5 bg-green-500 text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-green-500/30 border-b-4 border-green-700 active:border-b-0 active:translate-y-1 transition-all"
+                           >
+                              NHẬN
+                           </motion.button>
                        )}
                     </div>
                  )}
               </motion.div>
             );
          })}
-
-         {/* Info Banner */}
-         <div className="w-full max-w-2xl p-6 rounded-[32px] mt-6 mb-8 relative overflow-hidden bg-primary shadow-2xl shadow-primary/20">
-            <SparklesIcon className="absolute -bottom-2 -right-2 text-white/5" size={60} />
-            <div className="relative z-10">
-               <h4 className="text-[9px] font-black uppercase tracking-widest text-white/90 mb-2 italic flex items-center gap-2">
-                  <SparklesIcon size={10} className="text-amber-400" />
-                  Mẹo Chiến Thuật
-               </h4>
-               <p className="text-[8px] text-white/70 font-bold leading-relaxed italic">
-                  {activeTab === 'daily' 
-                    ? "Hoàn thành tất cả nhiệm vụ ngày để nhận thêm rương báu từ thư viện."
-                    : "Nhiệm vụ tuần có phần thưởng cực lớn, hãy tập trung vào việc tiến hóa thẻ bài."}
-               </p>
-            </div>
          </div>
       </div>
 

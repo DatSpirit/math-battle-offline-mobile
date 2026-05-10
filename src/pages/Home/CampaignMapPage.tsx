@@ -9,13 +9,15 @@ import { usePlayerStore } from '../../store/playerStore';
 import { 
   StarIcon, TrophyIcon, LockIcon, 
   ChevronLeftIcon, ChevronRightIcon,
-  MapIcon, SparklesIcon, CheckIcon,
-  GemIcon, CoinIcon, ScrollIcon
+  CheckIcon, GemIcon, CoinIcon, ScrollIcon,
+  TargetIcon, SwordIcon, ZapIcon
 } from '../../components/shared/Icons';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import './Campaign.css';
 
 const MobileCampaign: React.FC = () => {
   const navigate = useNavigate();
+  const showContent = useInteractionDelay(150);
   // stages từ gameStore (static config)
   const { stages, setCurrentStage, startGame } = useGameStore();
   // progress từ playerStore (persisted)
@@ -78,6 +80,10 @@ const MobileCampaign: React.FC = () => {
       updateProgress(1, 0, 0);
     }
   }, [progress, updateProgress]);
+
+  if (!showContent) {
+    return <div className="h-screen w-full bg-[#fcf9f2]" />;
+  }
 
   return (
     <div className="flex flex-col h-screen bg-[#fcf9f2] relative font-body overflow-hidden">
@@ -204,110 +210,117 @@ const MobileCampaign: React.FC = () => {
                  onClick={() => setIsInspectorOpen(false)}
                  className="fixed inset-0 bg-black/60 backdrop-blur-md z-50"
                />
-               <motion.div
-                 initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
-                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                 className="fixed inset-x-0 bottom-0 z-100 bg-white/90 backdrop-blur-3xl rounded-t-[48px] p-8 pb-10 shadow-[0_-20px_60px_rgba(0,0,0,0.2)] border-t-4 border-white"
-               >
-                  <div className="w-16 h-1 bg-gray-200/50 rounded-full mx-auto mb-6 shadow-inner"></div>
+                <motion.div
+                  initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
+                  transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+                  className="fixed inset-x-0 bottom-0 z-100 inspector-modal rounded-t-[48px] p-6 pb-10 shadow-[0_-20px_80px_rgba(0,0,0,0.3)] border-t-4 border-white flex flex-col max-h-[90vh] overflow-y-auto custom-scrollbar"
+                >
+                  {/* Handlebar */}
+                  <div className="w-12 h-1.5 bg-primary/10 rounded-full mx-auto mb-6 shrink-0"></div>
                   
-                  <div className="mb-6 text-center relative">
-                     <div className="absolute -top-4 right-0 opacity-20">
-                        <SparklesIcon size={24} />
-                     </div>
-                     <div className="flex items-center justify-center gap-3 mb-6">
-                        <div className="bg-primary/10 text-primary px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.3em] border border-primary/10">
+                  {/* Header Section */}
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <div className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] border border-primary/5">
                            BÀI TẬP {currentStage.id}
                         </div>
-                        <div className="flex flex-col items-start gap-1">
-                           <div className="flex items-center gap-2">
-                              <span className="text-[8px] font-black text-primary/30 uppercase tracking-widest">Tiến độ</span>
-                              <span className="text-[8px] font-black text-primary/60 italic">{Math.round((Object.keys(progress).filter(id => parseInt(id) <= (currentPage + 1) * 5).length / 5) * 100)}%</span>
-                           </div>
-                           <div className="w-16 h-1 bg-primary/5 rounded-full overflow-hidden">
-                              <motion.div 
-                                 initial={{ width: 0 }}
-                                 animate={{ width: `${(Object.keys(progress).filter(id => parseInt(id) <= (currentPage + 1) * 5).length / 5) * 100}%` }}
-                                 className="h-full bg-primary/40"
-                              />
-                           </div>
+                        <div className="flex gap-0.5">
+                           {[1, 2, 3, 4, 5].map(i => (
+                             <StarIcon key={i} size={10} className={i <= Math.ceil(currentStage.id / 5) ? 'text-amber-500' : 'text-primary/10'} />
+                           ))}
                         </div>
-                     </div>
-                     <h3 className="text-3xl font-black text-primary italic uppercase tracking-tighter leading-none mb-3">{currentStage.theme}</h3>
-                     <p className="text-xs text-primary/40 font-bold italic px-8 leading-relaxed">"{currentStage.quote}"</p>
+                    </div>
+                    <h3 className="text-4xl font-black text-primary italic uppercase tracking-tighter leading-none mb-3 drop-shadow-sm">{currentStage.theme}</h3>
+                    <p className="text-[11px] text-primary/40 font-bold italic px-10 leading-relaxed">"{currentStage.quote}"</p>
                   </div>
 
-                  <div className="flex flex-col gap-3 mb-8">
-                    <div className="bg-white/50 p-6 rounded-[32px] flex items-center justify-between border-2 border-white shadow-sm">
-                       <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Thành tích tốt nhất</span>
-                       <div className="flex flex-col items-end gap-1">
-                          <div className="flex gap-0.5">
-                             {[1, 2, 3].map(s => (
-                               <StarIcon key={s} size={14} fill={(progress[currentStage.id]?.stars || 0) >= s ? "#f59e0b" : "transparent"} className={(progress[currentStage.id]?.stars || 0) >= s ? "text-amber-500" : "text-primary/10"} />
-                             ))}
+                  {/* Information Grid */}
+                  <div className="space-y-4 mb-8">
+                    {/* Main Objective Card */}
+                    <div className="objective-card flex items-center justify-between">
+                       <div className="flex items-center gap-4">
+                          <div className="size-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
+                             <TargetIcon size={24} />
                           </div>
-                          <span className="text-sm font-black text-primary">
-                             {progress[currentStage.id]?.bestScore?.toLocaleString() || 0} pts
-                          </span>
+                          <div className="flex flex-col">
+                             <span className="text-[9px] font-black text-primary/30 uppercase tracking-widest leading-none mb-1">Mục tiêu chính</span>
+                             <span className="text-sm font-black text-primary uppercase italic">Đạt mốc {currentStage.targetScore.toLocaleString()} điểm</span>
+                          </div>
+                       </div>
+                       <div className="best-record-badge flex flex-col items-center">
+                          <span className="text-[8px] font-black text-primary/30 uppercase tracking-widest leading-none mb-1">Kỷ lục</span>
+                          <span className="text-xs font-black text-primary italic">{progress[currentStage.id]?.bestScore?.toLocaleString() || 0}</span>
                        </div>
                     </div>
-                    {currentStage.type === 'boss' && (
-                       <div className="bg-primary/5 p-6 rounded-[32px] flex items-center justify-between border-2 border-primary/10 shadow-sm">
-                          <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Lượt chơi Boss trong ngày</span>
-                          <span className={`text-sm font-black ${(progress[currentStage.id]?.lastAttemptDate === new Date().toISOString().split('T')[0] ? progress[currentStage.id]?.dailyAttempts : 0) >= 3 ? 'text-red-500' : 'text-primary'}`}>
-                             {3 - (progress[currentStage.id]?.lastAttemptDate === new Date().toISOString().split('T')[0] ? (progress[currentStage.id]?.dailyAttempts || 0) : 0)} / 3
-                          </span>
+
+                    {/* Enemy Intel Section (Simulated) */}
+                    <div className="enemy-intel-card">
+                       <div className="size-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
+                          {currentStage.type === 'boss' ? <TrophyIcon size={24} className="text-amber-400" /> : <SwordIcon size={24} className="text-white/60" />}
                        </div>
-                    )}
+                       <div className="flex-1">
+                          <div className="flex justify-between items-center mb-1">
+                             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Lực lượng địch</span>
+                             <span className="text-[9px] font-black text-amber-400 uppercase italic">{currentStage.type === 'boss' ? 'CỰC KHÓ' : 'TRUNG BÌNH'}</span>
+                          </div>
+                          <p className="text-[10px] font-bold text-white/80 italic leading-tight">
+                             {currentStage.type === 'boss' 
+                                ? 'Cẩn thận! Boss có khả năng sử dụng các phép tính phức tạp để đảo ngược tình thế.'
+                                : 'Các quái vật toán học ở đây sử dụng chủ yếu phép cộng và trừ cơ bản.'}
+                          </p>
+                       </div>
+                    </div>
+
+                    {/* Rewards Bento */}
+                    <div className="space-y-3">
+                       <div className="flex justify-between items-center px-1">
+                          <span className="text-[10px] font-black text-primary/40 uppercase tracking-widest">Phần thưởng vượt ải</span>
+                          <span className="text-[9px] font-black text-green-600 uppercase italic">Lần đầu: x2</span>
+                       </div>
+                       <div className="reward-bento-grid">
+                          <div className="reward-bento-item">
+                             <CoinIcon size={20} className="text-amber-500" />
+                             <span className="text-xs font-black text-primary italic">+{currentStage.rewards.gold.toLocaleString()}</span>
+                          </div>
+                          <div className="reward-bento-item">
+                             <GemIcon size={20} className="text-blue-500" />
+                             <span className="text-xs font-black text-primary italic">+{currentStage.rewards.gems}</span>
+                          </div>
+                          <div className="reward-bento-item">
+                             <div className="relative">
+                                <ScrollIcon size={20} className={currentStage.rewards.packType ? 'text-red-500' : 'text-primary/10'} />
+                                {currentStage.rewards.packType && (
+                                   <div className="absolute -top-1 -right-1 size-3 bg-red-500 rounded-full border border-white text-[6px] font-black flex items-center justify-center text-white">{currentStage.rewards.packType}</div>
+                                )}
+                             </div>
+                             <span className="text-xs font-black text-primary italic">{currentStage.rewards.packType ? 'Mảnh hiếm' : 'Không có'}</span>
+                          </div>
+                       </div>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-4">
-                     {/* Red Star Material Info (Boss only) */}
-                     {currentStage.type === 'boss' && (
-                       <div className="bg-red-500/5 border border-red-500/10 rounded-[32px] p-5 flex items-center gap-5 mb-2">
-                         <div className="size-14 bg-red-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-red-500/30 shrink-0">
-                           <ScrollIcon size={28} />
-                         </div>
-                         <div className="flex flex-col flex-1">
-                           <div className="flex items-center gap-2 mb-1">
-                             <span className="text-sm font-black text-red-600 uppercase tracking-tighter">SÁCH TOÁN CỔ</span>
-                           </div>
-                           <span className="text-[10px] font-bold text-red-900/40 italic leading-tight">
-                             "Tri thức cổ xưa được phong ấn, tương truyền có thể phá vỡ giới hạn cuối cùng của thẻ bài..."
-                           </span>
-                         </div>
-                       </div>
-                     )}
-
-                     {/* Reward Banner */}
-                     <div className="bg-linear-to-r from-amber-500 to-orange-600 p-5 rounded-[28px] shadow-2xl shadow-orange-500/20 flex items-center justify-between text-white relative overflow-hidden border-2 border-white/30">
-                        <div className="absolute inset-0 bg-white/10 animate-pulse"></div>
-                        <span className="text-[10px] font-black text-white/60 uppercase tracking-[0.2em] relative z-10">
-                           {progress[currentStage.id]?.stars >= 3 ? 'Thưởng cày lại (REPLAY)' : 'Phần thưởng ải'}
-                        </span>
-                        <div className="flex items-center gap-3 relative z-10">
-                           {progress[currentStage.id]?.stars >= 3 ? <CoinIcon size={20} className="text-white" /> : <GemIcon size={20} className="text-white drop-shadow-sm" />}
-                           <span className="text-xl font-black italic">
-                             {progress[currentStage.id]?.stars >= 3 
-                                ? (currentStage.type === 'boss' ? '10,000' : '5,000') 
-                                : (currentStage.rewards.gems || 50)}
-                           </span>
-                        </div>
-                     </div>
-
+                  {/* Action Section */}
+                  <div className="mt-auto space-y-4">
                      <motion.button
                        whileTap={{ scale: 0.96 }}
                        onClick={handleStartGame}
-                       className="w-full py-6 bg-linear-to-r from-primary to-[#a66000] text-white rounded-[28px] font-black text-xl uppercase tracking-[0.2em] shadow-[0_20px_50px_rgba(139,80,0,0.4)] border-2 border-white/30"
+                       className="deploy-btn-premium group"
                      >
-                        XUẤT QUÂN NGAY
+                        <div className="absolute inset-0 bg-white/10 opacity-0 group-active:opacity-100 transition-opacity"></div>
+                        <div className="flex items-center justify-center gap-4">
+                           <span>XUẤT QUÂN NGAY</span>
+                           <div className="ap-cost-tag flex items-center gap-1.5">
+                              <ZapIcon size={10} />
+                              <span>10 AP</span>
+                           </div>
+                        </div>
                      </motion.button>
-                     <div className="flex justify-center items-center gap-3 opacity-20">
-                        <MapIcon size={12} />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em]">AP tiêu hao: 10</span>
+                     
+                     <div className="text-center opacity-30">
+                        <span className="text-[8px] font-black uppercase tracking-[0.4em]">Đấu trường Trí tuệ Offline</span>
                      </div>
                   </div>
-               </motion.div>
+                </motion.div>
             </>
          )}
       </AnimatePresence>

@@ -22,7 +22,11 @@ interface UIState {
   showConfirm: (message: string, onConfirm: () => void, onCancel?: () => void) => void;
   closeConfirm: () => void;
   isLoading: boolean;
+  loadingProgress: number;
+  appInitialized: boolean;
   setIsLoading: (loading: boolean) => void;
+  setLoadingProgress: (progress: number) => void;
+  setAppInitialized: (initialized: boolean) => void;
   isProfileOpen: boolean;
   setIsProfileOpen: (open: boolean) => void;
 }
@@ -51,7 +55,11 @@ export const useUIStore = create<UIState>((set) => ({
   },
   closeConfirm: () => set({ confirm: null }),
   isLoading: false,
+  loadingProgress: 0,
+  appInitialized: false,
   setIsLoading: (loading) => set({ isLoading: loading }),
+  setLoadingProgress: (progress) => set({ loadingProgress: progress }),
+  setAppInitialized: (initialized) => set({ appInitialized: initialized }),
   isProfileOpen: false,
   setIsProfileOpen: (open) => set({ isProfileOpen: open }),
 }));

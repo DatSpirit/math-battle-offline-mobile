@@ -18,6 +18,8 @@ import { useUIStore } from './store/uiStore';
 import { useSound } from './hooks/useSound';
 import { detectHardwarePerformance } from './utils/performance';
 import LoadingScreen from './components/feedback/LoadingScreen';
+import AppSetupScreen from './components/feedback/AppSetupScreen';
+import { AnimatePresence } from 'framer-motion';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuthStore();
@@ -29,27 +31,42 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
  */
 function PageLoader() {
   const { pathname } = useLocation();
-  const { isLoading, setIsLoading } = useUIStore();
+  const { isLoading, setIsLoading, setLoadingProgress } = useUIStore();
   const [isFirstLoad, setIsFirstLoad] = React.useState(true);
 
   useEffect(() => {
-    // Chỉ hiển thị loading khi chuyển trang, hoặc lần đầu vào app
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      if (isFirstLoad) setIsFirstLoad(false);
-    }, 1200);
+    if (!isLoading) return;
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [pathname, setIsLoading, isFirstLoad]);
+    let progress = 0;
+    const interval = setInterval(() => {
+      // Simulate progress: Fast at first, slows down at the end
+      const remaining = 100 - progress;
+      const step = Math.max(1, remaining * 0.2);
+      progress += step;
+      
+      if (progress >= 99) {
+        progress = 100;
+        setLoadingProgress(100);
+        clearInterval(interval);
+        
+        // Give time for the progress bar to show 100% and exit
+        setTimeout(() => {
+          setIsLoading(false);
+          if (isFirstLoad) setIsFirstLoad(false);
+        }, 300);
+      } else {
+        setLoadingProgress(progress);
+      }
+    }, 60);
+
+    return () => clearInterval(interval);
+  }, [isLoading, setIsLoading, setLoadingProgress, isFirstLoad]);
 
   // Kích hoạt loading khi pathname thay đổi
   useEffect(() => {
-    if (!isFirstLoad) {
-      setIsLoading(true);
-    }
-  }, [pathname, setIsLoading, isFirstLoad]);
+    setLoadingProgress(0);
+    setIsLoading(true);
+  }, [pathname, setIsLoading, setLoadingProgress]);
 
   return <LoadingScreen isLoading={isLoading} />;
 }
@@ -58,6 +75,7 @@ function App() {
   const { checkAndResetQuests, hasHydrated, performanceMode, setPerformanceMode, isPerformanceSet, setIsPerformanceSet } = usePlayerStore();
   const { isAuthenticated } = useAuthStore();
   const { playBGM } = useSound();
+  const { appInitialized } = useUIStore();
 
   useEffect(() => {
     // Tự động nhận diện cấu hình máy nếu chưa có thiết lập (lần đầu chạy)
@@ -107,6 +125,10 @@ function App() {
 
   return (
     <ErrorBoundary>
+      <AnimatePresence mode="wait">
+        {!appInitialized && <AppSetupScreen key="setup" />}
+      </AnimatePresence>
+      
       <Router>
         <PageLoader />
         <Routes>

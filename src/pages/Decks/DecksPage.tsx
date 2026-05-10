@@ -1,10 +1,11 @@
 /**
  * PAGE: Card Decks & Evolution (Mobile Premium Bento)
  */
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { useDecksLogic } from '../../hooks/useDecksLogic';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import EvolutionModal from '../../components/modals/EvolutionModal';
 import { TrophyIcon, StarIcon } from '../../components/shared/Icons';
 import { usePlayerStore } from '../../store/playerStore';
@@ -21,12 +22,14 @@ import './Decks.css';
 
 const MobileDecks: React.FC = () => {
   const d = useDecksLogic();
+  const showContent = useInteractionDelay(150);
   
-  const [filterRarity, setFilterRarity] = React.useState<string | 'all'>('all');
-  const [sortBy, setSortBy] = React.useState<'level' | 'stars' | 'rarity'>('level');
+  const [filterRarity, setFilterRarity] = useState<string | 'all'>('all');
+  const [sortBy, setSortBy] = useState<'level' | 'stars' | 'rarity'>('level');
+
 
   // Filter & Sort Logic
-  const filteredCards = React.useMemo(() => {
+  const filteredCards = useMemo(() => {
     let list = [...d.collectionList];
     
     if (filterRarity !== 'all') {
@@ -43,6 +46,10 @@ const MobileDecks: React.FC = () => {
     
     return list;
   }, [d.collectionList, filterRarity, sortBy]);
+
+  if (!showContent) {
+    return <div className="h-full w-full bg-[#fcf9f2]" />;
+  }
 
 
   return (
@@ -193,7 +200,7 @@ const MobileDecks: React.FC = () => {
                  <div className={`w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] animate-pulse ${d.isEvolutionSuccess ? 'bg-amber-500/30' : ''}`}></div>
               </div>
 
-              <motion.div 
+               <motion.div 
                 animate={d.isEvolutionSuccess ? {
                   rotateY: [0, 360],
                   scale: [1, 1.05, 1],
@@ -208,7 +215,7 @@ const MobileDecks: React.FC = () => {
                   scale: { duration: 2, repeat: Infinity },
                   filter: { duration: 2, repeat: Infinity }
                 } : { duration: 3, repeat: Infinity }}
-                className="scale-[2] mb-32"
+                className="w-48 mb-32" /* Dùng width thay cho scale-[2] */
               >
                  <Card id="evolving-preview-mobile" {...d.selectedCard} value={d.selectedCard.value} isDraggable={false} stars={d.isEvolutionSuccess ? d.selectedCard.stars : d.selectedCard.stars - 1} />
               </motion.div>

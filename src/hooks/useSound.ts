@@ -28,7 +28,7 @@ const SOUNDS = {
   bgm: 'sounds/bgm.ogg',             // Nhạc nền (Background Music)
 };
 
-type SoundName = keyof typeof SOUNDS;
+export type SoundName = keyof typeof SOUNDS;
 
 /**
  * Hook quản lý âm thanh và rung (Haptics) cho toàn bộ trò chơi

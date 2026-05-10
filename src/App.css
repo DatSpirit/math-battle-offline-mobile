@@ -10,11 +10,11 @@
    Sidebar
    ────────────────────────────────────────── */
 .sidebar {
-  width: 260px;
+  width: min(280px, 25vw); /* Flexible width based on viewport */
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   border-right: 1px solid var(--border-glass);
   z-index: 100;
   flex-shrink: 0;
@@ -197,10 +197,11 @@
 }
 
 .hidden-card {
-  width: 36px;
-  height: 52px;
+  width: 9vw; /* Relative width */
+  max-width: 40px;
+  aspect-ratio: 3 / 4.2;
   border-radius: 6px;
-  background: #cbd0d6; /* slight faint shade */
+  background: #cbd0d6;
   border: none;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
@@ -334,7 +335,9 @@
     border-radius: 20px 20px 0 0;
   }
 
-  .main-area { padding-bottom: 260px; }
+  .main-area { 
+    padding-bottom: calc(220px + var(--sab)); /* Dynamic padding including safe area */
+  }
 
   .player-hand {
     gap: 8px;
@@ -342,13 +345,21 @@
     flex-wrap: nowrap;
     justify-content: flex-start;
     padding: 0.5rem;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
   }
 
   .player-hand::-webkit-scrollbar { display: none; }
 
-  .controls { flex-direction: column; align-items: flex-start; }
+  .controls { 
+    flex-direction: column; 
+    align-items: stretch; /* Stretch buttons to full width */
+    gap: 0.75rem;
+  }
 
-  .btn.big { width: 100%; }
+  .btn.big { 
+    width: 100%; 
+    padding: 14px; /* Slightly larger for better tap target */
+  }
 }
 
 @media (max-width: 480px) {

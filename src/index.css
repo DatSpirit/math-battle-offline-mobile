@@ -137,6 +137,9 @@ input, textarea, [contenteditable="true"] {
 html {
   height: 100%;
   height: -webkit-fill-available;
+  /* Prevent system font scaling from breaking fixed game layouts */
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
 }
 
 body {
@@ -181,6 +184,21 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(139, 80, 0, 0.15); border-radius: 4px; }
+
+/* Custom Scrollbar Utility */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 80, 0, 0.05);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 80, 0, 0.1);
+}
 
 /* ══════════════════════════════════════════
    ANIMATIONS
@@ -263,10 +281,13 @@ body.lite-mode * {
    ══════════════════════════════════════════ */
 @media (max-width: 768px) {
   :root { font-size: 15px; }
+  body { padding: var(--sat) var(--sar) var(--sab) var(--sal); }
 }
 
 @media (max-width: 480px) {
   :root { font-size: 14px; }
+  /* Ensure padding is robust on very small screens */
+  body { padding: max(10px, var(--sat)) max(10px, var(--sar)) max(10px, var(--sab)) max(10px, var(--sal)); }
 }
 
 /* ══════════════════════════════════════════
@@ -284,18 +305,20 @@ body.lite-mode * {
 
 /* --- ECO: Siêu tiết kiệm (Extreme Efficiency & Solid UI) --- */
 body.perf-eco {
-  --hud-glass-bg: #ffffff; /* Hoàn toàn đặc để dễ nhìn */
+  --hud-glass-bg: #ffffff; /* Hoàn toàn đặc để chống Overdraw và lỗi GPU */
   --hud-glass-blur: 0px;
-  --hud-glass-border: #e8e5d0;
+  --hud-glass-border: #d1cfbc;
   --hud-shadow: none;
   --anim-speed: 0.001s;
   
   --blur-on: none;
   --shadow-on: none;
   --glow-intensity: 0;
+  --color-bg: #f5f4ef; /* Solid light color */
 }
 
-body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge) {
+/* Force solid backgrounds on performance mode to prevent transparency bugs */
+body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge):not(.aura-container) {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   filter: none !important;
@@ -303,6 +326,21 @@ body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge) {
   animation: none !important;
   transition: none !important;
   text-shadow: none !important;
+}
+
+body.perf-eco .glass, 
+body.perf-eco .hud-glass,
+body.perf-eco .bg-white\/80,
+body.perf-eco .bg-white\/70,
+body.perf-eco .bg-black\/60 {
+  background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body.perf-eco .bg-black\/80,
+body.perf-eco .bg-black\/90 {
+  background-color: #000000 !important;
+  opacity: 1 !important;
 }
 
 body.perf-eco .onboarding-background,

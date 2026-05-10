@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { useGameStore } from '../../store/gameStore';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import MobileHomePage from './MobileHomePage';
 import RulesModal from '../../components/modals/RulesModal';
 import TutorialOverlay from '../../components/shared/TutorialOverlay';
@@ -10,6 +11,7 @@ import './Home.css';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const showContent = useInteractionDelay(150);
   const { user, completeTutorial: completeAuthTutorial } = useAuthStore();
   const hasCompletedTutorial = user?.hasCompletedTutorial || false;
   const { phase, surrenderGame, tutorialId, tutorialStep, setTutorialId, setTutorialStep } = useGameStore();
@@ -54,6 +56,10 @@ const HomePage: React.FC = () => {
     onOpenRules: () => setIsRulesOpen(true),
     hasCompletedTutorial
   };
+
+  if (!showContent) {
+    return <div className="flex-1 bg-[#fcf9f2]" />;
+  }
 
   return (
     <>

@@ -117,8 +117,21 @@
   header, section { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
 }
 
-/* Màn hình cực ngắn - Thu nhỏ tỉ lệ thẻ bài để không bị tràn */
+/* Màn hình cực ngắn - Thay vì scale, dùng width nhỏ hơn */
 @media (max-height: 600px) {
-  .math-card--in-game { transform: scale(0.7) !important; }
-  .arena-slot { width: 60px !important; height: 90px !important; }
+  .math-card--in-game { width: 65px; height: auto; }
+  .arena-slot { 
+    width: 65px !important; 
+    aspect-ratio: 3 / 4.2; 
+    height: auto !important; 
+  }
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(180deg);
 }

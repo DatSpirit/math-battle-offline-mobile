@@ -53,64 +53,55 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
     };
   }, [currentStep, isActive]);
 
-  // Handle click on target to advance
-  useEffect(() => {
-    if (isActive && currentStep?.targetId) {
-      const element = document.getElementById(currentStep.targetId);
-      if (element) {
-        const handler = () => {
-          onNext();
-        };
-        element.addEventListener('click', handler);
-        return () => element.removeEventListener('click', handler);
-      }
-    }
-  }, [currentStep, isActive, onNext]);
-
-  // Global click blocker to only allow clicks inside the spotlight
+  // Global click blocker to strictly enforce tutorial interaction
   useEffect(() => {
     if (!isActive) return;
     
     const blocker = (e: MouseEvent) => {
-      // Allow clicks on the tutorial box itself
+      // 1. Always allow clicks on the tutorial box and its buttons
       const box = document.getElementById('tutorial-box');
       if (box?.contains(e.target as Node)) return;
       
-      // Allow clicks on the skip button
+      // 2. Always allow clicks on the skip button
       const skipBtn = document.getElementById('tutorial-skip-btn');
       if (skipBtn?.contains(e.target as Node)) return;
 
-      if (!spotlightRect) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
+      // 3. Allow clicks on the specific target element or required element
+      const targetElement = currentStep.targetId ? document.getElementById(currentStep.targetId) : null;
+      const requiredElement = currentStep.requiredId ? document.getElementById(currentStep.requiredId) : null;
+      
+      const isTarget = targetElement?.contains(e.target as Node) || requiredElement?.contains(e.target as Node);
+      const isStartButton = currentStep.requiredId === 'home-start-ai-btn';
+
+      if (isTarget) {
+        if (isStartButton) {
+          // Advance tutorial AND allow original action
+          if (e.type === 'click') onNext();
+          return; 
+        } else {
+          // Advance tutorial BUT block original action
+          if (e.type === 'click') onNext();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
       }
 
-      const isInside = (
-        e.clientX >= spotlightRect.x &&
-        e.clientX <= spotlightRect.x + spotlightRect.width &&
-        e.clientY >= spotlightRect.y &&
-        e.clientY <= spotlightRect.y + spotlightRect.height
-      );
-
-      if (!isInside) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
+      // 4. Block everything else
+      e.preventDefault();
+      e.stopPropagation();
     };
 
+    // Use capture: true to intercept events before they reach other elements
     window.addEventListener('click', blocker, true);
-    window.addEventListener('mousedown', blocker, true);
-    window.addEventListener('mouseup', blocker, true);
-    window.addEventListener('pointerdown', blocker, true);
+    // For scroll-related events, we DON'T block them globally to allow scrolling
+    // but we still want to block them for specific elements if they trigger actions.
+    // However, for mobile, it's safer to only block 'click' to allow scrolling.
     
     return () => {
       window.removeEventListener('click', blocker, true);
-      window.removeEventListener('mousedown', blocker, true);
-      window.removeEventListener('mouseup', blocker, true);
-      window.removeEventListener('pointerdown', blocker, true);
     };
-  }, [isActive, spotlightRect]);
+  }, [isActive, currentStep, onNext]);
 
   if (!isActive || !currentStep) return null;
 
@@ -124,14 +115,12 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
     const vh = window.innerHeight;
     const isMobile = vw < 640;
 
+    // Force center on mobile to avoid overlapping with interactive elements
+    if (isMobile) return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '90%' };
+
     if (currentStep.position === 'center') return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
 
-    // Default mobile positioning: prefer top or bottom to avoid horizontal clipping
-    let position = currentStep.position;
-    if (isMobile && (position === 'left' || position === 'right')) {
-      position = y > vh / 2 ? 'top' : 'bottom';
-    }
-
+    const position = currentStep.position;
     switch (position) {
       case 'bottom':
         return { 
@@ -207,7 +196,7 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: -20 }}
-          className="absolute pointer-events-auto w-[300px] sm:w-[360px]"
+          className="absolute pointer-events-auto"
           style={getStepPositionStyle()}
         >
           <div className="bg-white rounded-4xl p-8 shadow-2xl border-4 border-primary/10 relative overflow-hidden">

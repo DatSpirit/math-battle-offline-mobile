@@ -156,7 +156,7 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                    {/* Glow behind target card */}
                    <div className={`absolute inset-[-20px] blur-3xl opacity-20 transition-all duration-1000 ${isRedStarMode ? 'bg-red-600' : 'bg-amber-500'}`} />
                    
-                   <div className="relative scale-[1.15] py-10 transition-transform duration-500 group-hover:scale-[1.2]">
+                   <div className="w-[120px] py-10 transition-transform duration-500 group-hover:scale-[1.05] flex justify-center">
                       <Card id="target-evolution-preview" {...targetCard} isDraggable={false} />
                    </div>
                 </div>
@@ -292,7 +292,7 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                       return (
                         <div key={f.key} className={`flex flex-col items-center bg-white/2 border-[3px] rounded-[32px] p-4 shadow-2xl transition-all duration-300 w-[140px] relative mb-4 ${selected > 0 ? (isRedStarMode ? 'border-red-600/5 bg-red-600/5' : 'border-amber-500/5 bg-amber-500/5') : 'border-white/5 hover:border-white/20'}`}>
                           
-                          <div className="scale-[0.7] mb-0 -mt-6 origin-top drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)]">
+                          <div className="w-[70px] mb-2 origin-top drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)] flex justify-center">
                             <Card id={`fodder-${f.key}`} {...f} isDraggable={false} />
                           </div>
                           

@@ -13,6 +13,7 @@ import MomoPaymentModal from '../../components/features/MomoPaymentModal';
 import TransactionHistory from '../../components/features/TransactionHistory';
 import GachaRevealOverlay from '../../components/modals/GachaRevealOverlay';
 import RewardClaimModal from '../../components/modals/RewardClaimModal';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import type { ShopItem } from '../../types/shop.types';
 import './Shop.css';
 
@@ -22,7 +23,11 @@ import goldBanner from '../../assets/images/shop/gold_treasury.webp';
 
 const MobileShop: React.FC = () => {
   const s = useShopLogic();
+  const showContent = useInteractionDelay(100);
   const { shopDailyLimits } = usePlayerStore();
+  if (!showContent) {
+    return <div className="flex-1 bg-[#fcf9f2]" />;
+  }
 
   return (
     <div className="flex-1 flex flex-col min-h-0 bg-[#fcf9f2] pb-40 relative font-body overflow-y-auto custom-scrollbar overflow-x-hidden">

@@ -37,8 +37,8 @@ const CardGridTab: React.FC<CardGridTabProps> = ({
               if (activeTab === 'library' && onViewCard) onViewCard(key);
             }}
             className={`
-              relative cursor-pointer rounded-xl overflow-visible transition-transform active:scale-95 border-2 border-black
-              ${isSelected ? 'ring-2 ring-primary ring-inset z-20 bg-primary/5 shadow-2xl scale-[1.05]' : 'bg-white/80 shadow-sm'}
+              relative cursor-pointer transition-transform active:scale-95
+              ${isSelected ? 'z-20 scale-[1.05]' : ''}
               ${card.isOwned ? 'opacity-100' : 'opacity-40 grayscale'}
             `}
           >
@@ -55,15 +55,13 @@ const CardGridTab: React.FC<CardGridTabProps> = ({
               </div>
             )}
             
-            <div className="aspect-[3/4.2] flex flex-col items-center justify-center p-0.5 overflow-hidden rounded-lg">
-              <div className="scale-[0.82] origin-center">
-                <Card 
-                  id={key + "_m_grid"} 
-                  {...card} 
-                  isDraggable={false} 
-                  isSelected={isSelected} 
-                />
-              </div>
+            <div className="w-full h-full flex items-center justify-center">
+              <Card 
+                id={key + "_m_grid"} 
+                {...card} 
+                isDraggable={false} 
+                isSelected={isSelected} 
+              />
             </div>
             
             {!card.isOwned && activeTab !== 'library' && (

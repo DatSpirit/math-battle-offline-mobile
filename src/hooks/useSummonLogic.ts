@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { usePlayerStore } from '../store/playerStore';
-import { useSound } from '../hooks/useSound';
+import { useSound, type SoundName } from '../hooks/useSound';
 import { generatePackCards } from '../core/shop/gachaService';
 import type { CollectionCard } from '../types/player.types';
 import { useUIStore } from '../store/uiStore';
@@ -21,9 +21,29 @@ import { useUIStore } from '../store/uiStore';
 export type SummonTier = 'summon_normal' | 'summon_rare' | 'summon_ultimate';
 export type SummonMethod = 'x1' | 'x10';
 
-interface MathProblem {
+export interface MathProblem {
   question: string;
   options: { text: string; isCorrect: boolean }[];
+}
+
+export interface SummonLogic {
+    coins: number;
+    gems: number;
+    isOpening: boolean;
+    setIsOpening: (val: boolean) => void;
+    openedCards: CollectionCard[];
+    showConfetti: boolean;
+    rewardModal: { isOpen: boolean; rewards: { coins: number; gems: number } } | null;
+    setRewardModal: (val: { isOpen: boolean; rewards: { coins: number; gems: number } } | null) => void;
+    isSolving: boolean;
+    currentProblem: MathProblem | null;
+    timeLeft: number;
+    isWormholeActive: boolean;
+    initiateSummon: (tier: SummonTier, method: SummonMethod) => void;
+    handleAnswer: (isCorrect: boolean) => void;
+    skipWormhole: () => void;
+    freeSummonsUsed: Record<string, boolean>;
+    stopSound: (name: SoundName) => void;
 }
 
 export const useSummonLogic = () => {
@@ -98,7 +118,7 @@ export const useSummonLogic = () => {
       }
       buyPack(cards);
     }, 1500);
-  }, [buyPack, playSound]);
+  }, [buyPack, playSound, stopSound]);
 
   // Xử lý khi người dùng chọn đáp án hoặc hết giờ
   const handleAnswer = useCallback((isCorrect: boolean) => {

@@ -11,12 +11,14 @@ import {
   ChevronRightIcon, ActivityIcon
 } from '../../components/shared/Icons';
 import DetailedHistory from '../../components/game/DetailedHistory';
-import LoadingScreen from '../../components/shared/LoadingScreen.tsx';
+import LoadingScreen from '../../components/feedback/LoadingScreen';
+import { useInteractionDelay } from '../../hooks/useInteractionDelay';
 import './History.css';
 
 const MobileHistory: React.FC = () => {
   const { matches, stats } = useHistoryStore();
   const hasHydrated = usePlayerStore(s => s.hasHydrated);
+  const showContent = useInteractionDelay(100);
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'high_score' | 'low_score'>('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(() => {
@@ -31,7 +33,11 @@ const MobileHistory: React.FC = () => {
     itemsPerPageRef.current = itemsPerPage;
   }, [itemsPerPage]);
 
-  if (!hasHydrated) return <LoadingScreen message="Đang nạp lịch sử đấu..." />;
+  if (!hasHydrated) return <LoadingScreen isLoading={true} message="Đang nạp lịch sử đấu..." />;
+  
+  if (!showContent) {
+    return <div className="flex-1 bg-[#fcf9f2]" />;
+  }
 
   // Sort logic
   const sortedMatches = [...matches].sort((a, b) => {

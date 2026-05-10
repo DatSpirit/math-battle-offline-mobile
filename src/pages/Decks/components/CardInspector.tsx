@@ -83,13 +83,13 @@ const CardInspector: React.FC<CardInspectorProps> = ({
   if (!card) return null;
 
   return (
-    <div className="fixed left-0 right-0 bottom-[84px] z-100 pointer-events-none flex items-end justify-center px-4">
+    <div className="fixed left-0 right-0 bottom-[calc(5rem+var(--sab))] z-100 pointer-events-none flex items-end justify-center px-4">
       <motion.div 
         initial={{ y: '100%', opacity: 0 }} 
         animate={{ y: 0, opacity: 1 }} 
         exit={{ y: '100%', opacity: 0 }} 
         transition={{ type: 'spring', damping: 25, stiffness: 200 }} 
-        className="w-full h-auto max-h-[60vh] flex flex-col bg-[#2a2a24] rounded-t-2xl shadow-[0_-20px_100px_rgba(0,0,0,0.9)] border-t-4 border-primary pointer-events-auto overflow-hidden"
+        className="w-full h-auto max-h-[75vh] flex flex-col bg-[#2a2a24] rounded-t-2xl shadow-[0_-20px_100px_rgba(0,0,0,0.9)] border-t-4 border-primary pointer-events-auto overflow-hidden"
       >
         {/* Header HUD - Ultra Sleek */}
         <div className="bg-primary/5 backdrop-blur-xl px-4 py-3 border-b border-primary/10 flex items-center justify-between shrink-0">
@@ -98,8 +98,8 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                 <ChevronLeftIcon size={20} />
               </button>
               <div className="flex flex-col">
-                 <h2 className="text-[15px] font-black text-white uppercase italic tracking-tighter leading-none">{card.name}</h2>
-                 <span className="text-[7px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
+                 <h2 className="text-base font-black text-white uppercase italic tracking-tighter leading-none">{card.name}</h2>
+                 <span className="text-[0.5rem] font-black text-white/40 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
               </div>
            </div>
            <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ const CardInspector: React.FC<CardInspectorProps> = ({
              {/* Left Column (1/3): Card Visual ONLY */}
              <div className="w-1/3 flex flex-col shrink-0">
                 <div className="aspect-3/4 w-full flex justify-center items-center relative bg-white/5 rounded-xl border-2 border-white/10 shadow-inner overflow-hidden h-full">
-                   <div className="scale-[1.3] relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                   <div className="w-[85%] relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.5)] flex justify-center">
                      <Card id="m-inspect" {...card} isDraggable={false} />
                    </div>
                    {/* Card count badge (xN) - Mirrored from Desktop */}
