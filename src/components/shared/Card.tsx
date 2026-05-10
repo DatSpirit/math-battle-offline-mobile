@@ -20,7 +20,6 @@ export interface CardProps {
   redStars?: number;
   level?: number;
   name?: string;
-  flavorText?: string;
   abilityName?: string;
   abilityDesc?: string;
   isSelected?: boolean;
@@ -51,7 +50,6 @@ const Card: React.FC<CardProps> = ({
   redStars = 0,
   level = 0,
   name: propName,
-  flavorText: propFlavor,
   abilityName: propAbilityName,
   abilityDesc: propAbilityDesc,
   isSelected = false,
@@ -84,7 +82,6 @@ const Card: React.FC<CardProps> = ({
 
   const meta = CARD_METADATA[value];
   const name = propName ?? meta?.name;
-  const flavorText = propFlavor ?? meta?.flavorText;
   
   const finalAbilityName = propAbilityName ?? meta?.abilityName;
   const finalAbilityDesc = propAbilityDesc ?? resolveAbilityDesc(value, rarity);
@@ -145,7 +142,6 @@ const Card: React.FC<CardProps> = ({
           <span className="card-value">{value === '*' ? '×' : value === '/' ? '÷' : value}</span>
           <div className="card-main-info">
             {name && <span className="card-name-label">{name}</span>}
-            {flavorText && <p className="card-flavor-text">{flavorText}</p>}
           </div>
         </div>
 

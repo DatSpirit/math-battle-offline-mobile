@@ -1,8 +1,8 @@
 .rc-m-overlay {
     position: fixed;
     inset: 0;
-    background: radial-gradient(circle at center, rgba(20, 15, 0, 0.98) 0%, #000 100%);
-    backdrop-filter: blur(60px);
+    background: #0c0c0a;
+    backdrop-filter: blur(20px);
     z-index: 5000;
     display: flex;
     align-items: center;
@@ -65,9 +65,9 @@
     justify-content: center;
     color: #fff;
     position: relative;
-    border: 2px solid rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.05);
     box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-    background: #111;
+    background: rgba(255,255,255,0.02);
     flex-shrink: 0;
 }
 

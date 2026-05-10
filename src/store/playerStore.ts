@@ -11,6 +11,7 @@ import { createShopSlice } from './slices/shopSlice';
 import { QUEST_POOL } from '../data/questData';
 import { SHOP_PRODUCTS } from '../data/shopData';
 import { ECONOMY_CONSTANTS } from '../data/mechanicsData';
+import { ACHIEVEMENTS_DATA } from '../data/achievementData';
 
 /**
  * GIÁ TRỊ KHỞI TẠO CỦA CỬA HÀNG (INITIAL STORE VALUES)
@@ -115,9 +116,10 @@ export const usePlayerStore = create<PlayerState>()(
         // Tự động làm sạch dữ liệu thành tựu nếu bị trùng lặp (do lỗi cũ trong Storage)
         const currentAchievements = get().achievements || [];
         const unique = Array.from(new Map(currentAchievements.map(a => [a.id, a])).values());
-        if (unique.length !== currentAchievements.length) {
-          console.log('[System] Deduplicating achievements in storage...');
-          set({ achievements: unique } as Partial<PlayerState>);
+        if (unique.length !== currentAchievements.length || unique.length === 0) {
+          console.log('[System] Deduplicating or initializing achievements...');
+          const final = unique.length === 0 ? ACHIEVEMENTS_DATA : unique;
+          set({ achievements: final } as Partial<PlayerState>);
         }
       },
 

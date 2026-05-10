@@ -34,9 +34,9 @@ const AchievementsTab: React.FC<AchievementsTabProps> = ({ handleClaimMasteryRew
         
         return (
           <div key={key} className="bg-white/60 backdrop-blur-md p-5 rounded-[40px] border-2 border-black shadow-sm flex flex-col gap-4">
-            <div className="flex gap-4 items-center">
-              <div className="scale-[0.5] shrink-0 -m-10">
-                 <div className="p-1 rounded-[24px] bg-white border-2 border-black shadow-xl">
+            <div className="flex gap-6 items-center">
+              <div className="scale-[0.75] shrink-0 -m-6">
+                 <div className="p-1 rounded-[28px] bg-white border-2 border-black shadow-xl">
                     <Card id={key + "_m_mst"} {...typedCard} isDraggable={false} />
                  </div>
               </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { XIcon, HelpCircleIcon } from '../shared/Icons';
 
 interface HelpModalProps {
   isOpen: boolean;
@@ -21,77 +21,76 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, turn }) =
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-white/10 backdrop-blur-sm">
+        <div className="fixed inset-0 z-2000 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <motion.div
-            initial={{ opacity: 0, rotate: -3, scale: 0.9 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: 3, scale: 0.9 }}
-            className="relative bg-[#fffef0] w-full max-w-lg shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-8 overflow-hidden"
-            style={{ 
-              backgroundImage: 'linear-gradient(#e1eef4 1px, transparent 1px)',
-              backgroundSize: '100% 1.8rem',
-              border: '1px solid #e5e5e5',
-              fontFamily: '"Comic Sans MS", "Chalkboard SE", cursive'
-            }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="relative w-full max-w-lg bg-[#fcfae4] rounded-[40px] border-2 border-white shadow-[0_40px_100px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col"
           >
-            {/* Notebook Margin Line */}
-            <div className="absolute left-10 top-0 bottom-0 w-px bg-red-100"></div>
+            {/* Header */}
+            <div className="px-8 pt-10 pb-6 flex items-center justify-between bg-primary/5 border-b border-white/5">
+               <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-3">
+                     <HelpCircleIcon size={14} className="text-primary" />
+                     <div className="text-[8px] font-black text-on-surface/40 uppercase tracking-[0.4em]">Tactical Guide</div>
+                  </div>
+                  <h3 className="text-2xl font-black text-on-surface italic uppercase tracking-tighter m-0">BÍ KÍP THẮNG TRẬN</h3>
+               </div>
+               <button 
+                 onClick={onClose}
+                 className="size-11 bg-black/5 rounded-2xl flex items-center justify-center text-on-surface/30 hover:text-on-surface border border-black/10 transition-all active:scale-90"
+               >
+                 <XIcon size={20} />
+               </button>
+            </div>
 
-            {/* Close Button */}
-            <button 
-              onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-red-400 text-white shadow-md active:scale-90 transition-transform z-10"
-            >
-              <X size={16} strokeWidth={3} />
-            </button>
-
-            <div className="relative pl-8">
-              <h2 className="text-xl font-bold text-blue-500 mb-6 underline decoration-pink-300 decoration-wavy">
-                Bí kíp thắng trận nè!
-              </h2>
-
-              <div className="space-y-3">
-                {instructions.map((item) => (
-                  <div 
-                    key={item.t} 
-                    className={`p-2 rounded-lg border border-transparent transition-all ${item.t === turn ? 'bg-amber-100/40 border-amber-200 rotate-1' : ''}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="text-lg shrink-0 mt-0.5">
-                        {item.t === turn ? '👉' : '✏️'}
-                      </span>
-                      <div>
-                        <p className="text-xs font-bold text-slate-700 m-0 leading-tight">
-                          Lượt {item.t}: {item.text}
-                        </p>
-                        <div className="mt-1.5 flex items-center gap-2">
-                          <span className="text-[9px] uppercase font-black tracking-widest text-blue-400">Mẫu:</span>
-                          <span className="text-[10px] font-bold text-slate-500 tracking-wider">
-                            {item.layout.split(' ').map((part, i) => (
-                              <span key={i} className={part === '[Số]' || part === 'Số' || part === '[ ]' ? 'text-blue-500' : 'text-amber-500'}>
-                                {part}{' '}
-                              </span>
-                            ))}
-                          </span>
-                        </div>
+            {/* Content */}
+            <div className="p-8 space-y-4 max-h-[60vh] overflow-y-auto stealth-scroll-v2">
+              {instructions.map((item) => (
+                <div 
+                  key={item.t} 
+                  className={`p-5 rounded-3xl border-2 transition-all ${
+                    item.t === turn 
+                      ? 'bg-primary/10 border-primary shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.1)]' 
+                      : 'bg-black/3 border-black/5 opacity-80'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`size-10 rounded-xl flex items-center justify-center font-black text-sm border-2 ${
+                       item.t === turn ? 'bg-primary text-white border-white/20' : 'bg-black text-white/30 border-white/10'
+                    }`}>
+                      {item.t}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-on-surface mb-2 leading-relaxed">
+                        Lượt {item.t}: {item.text}
+                      </p>
+                      <div className="flex items-center gap-3 bg-black/5 p-3 rounded-2xl border border-black/5">
+                        <span className="text-[8px] font-black uppercase tracking-widest text-primary/60">Layout:</span>
+                        <span className="text-[10px] font-black text-on-surface/80 tracking-wider font-mono italic">
+                          {item.layout}
+                        </span>
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
 
-              <div className="mt-6 pt-4 border-t border-dashed border-slate-200 text-center">
-                <p className="text-[10px] italic text-slate-400">
-                  "Chúc bạn chơi vui, đừng để thua máy nha! Hi hi"
-                </p>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={onClose}
-                  className="mt-3 px-8 py-2 bg-blue-400 text-white rounded-full font-bold text-xs shadow-md shadow-blue-100"
-                >
-                  Đóng tập lại
-                </motion.button>
-              </div>
+            {/* Footer */}
+            <div className="p-8 pt-4 bg-primary/5 border-t border-black/5 text-center">
+               <p className="text-[10px] font-black italic text-on-surface/20 uppercase tracking-widest mb-6">
+                 "MATH-OPS CORE INTERFACE V3.1"
+               </p>
+               <motion.button
+                 whileHover={{ scale: 1.02 }}
+                 whileTap={{ scale: 0.98 }}
+                 onClick={onClose}
+                 className="w-full py-5 bg-primary text-white rounded-[28px] font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/20 border-2 border-primary/30"
+               >
+                 ĐÃ HIỂU CHIẾN THUẬT
+               </motion.button>
             </div>
           </motion.div>
         </div>
@@ -99,4 +98,3 @@ export const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose, turn }) =
     </AnimatePresence>
   );
 };
-

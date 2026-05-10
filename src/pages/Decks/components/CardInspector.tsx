@@ -5,7 +5,7 @@ import {
 } from '../../../components/shared/Icons';
 import Card from '../../../components/shared/Card';
 import type { LibraryCard } from '../../../hooks/useDecksLogic';
-import { resolveAbilityDesc } from '../../../data/cardMetadata';
+import { CARD_METADATA, resolveAbilityDesc } from '../../../data/cardMetadata';
 
 interface CardInspectorProps {
   card: LibraryCard | null;
@@ -89,33 +89,32 @@ const CardInspector: React.FC<CardInspectorProps> = ({
         animate={{ y: 0, opacity: 1 }} 
         exit={{ y: '100%', opacity: 0 }} 
         transition={{ type: 'spring', damping: 25, stiffness: 200 }} 
-        className="w-full h-auto max-h-[75vh] flex flex-col bg-[#2a2a24] rounded-t-2xl shadow-[0_-20px_100px_rgba(0,0,0,0.9)] border-t-4 border-primary pointer-events-auto overflow-hidden"
+        className="w-full h-auto max-h-[85vh] flex flex-col bg-[#2a2a24] rounded-t-[48px] shadow-[0_-20px_100px_rgba(0,0,0,0.9)] border-t-4 border-primary pointer-events-auto overflow-hidden"
       >
         {/* Header HUD - Ultra Sleek */}
-        <div className="bg-primary/5 backdrop-blur-xl px-4 py-3 border-b border-primary/10 flex items-center justify-between shrink-0">
-           <div className="flex items-center gap-3">
-              <button onClick={onClose} className="size-11 flex items-center justify-center bg-black text-white rounded-xl active:scale-90 transition-all shadow-lg border border-white/20">
-                <ChevronLeftIcon size={20} />
+        <div className="bg-primary/5 backdrop-blur-xl px-6 py-5 border-b border-primary/10 flex items-center justify-between shrink-0">
+           <div className="flex items-center gap-4">
+              <button onClick={onClose} className="size-14 flex items-center justify-center bg-black text-white rounded-2xl active:scale-90 transition-all shadow-xl border border-white/20">
+                <ChevronLeftIcon size={24} />
               </button>
-              <div className="flex flex-col">
-                 <h2 className="text-base font-black text-white uppercase italic tracking-tighter leading-none">{card.name}</h2>
-                 <span className="text-[0.5rem] font-black text-white/40 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
-              </div>
+               <div className="flex flex-col min-w-0">
+                  <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight wrap-break-word">{card.name}</h2>
+                  <span className="text-[0.7rem] font-black text-white/40 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
+               </div>
            </div>
-           <div className="flex items-center gap-2">
-              <div className="px-2.5 py-1 bg-primary text-white rounded-lg shadow-sm border border-white/20">
-                 <span className="text-[7px] font-black uppercase tracking-widest">{card.rarity}</span>
+           <div className="flex items-center gap-3">
+              <div className="px-3.5 py-1.5 bg-primary text-white rounded-xl shadow-sm border border-white/20">
+                 <span className="text-[9px] font-black uppercase tracking-widest">{card.rarity}</span>
               </div>
-              <span className="text-[7px] font-mono font-bold text-white/30 uppercase">UID-{(card.name || '0').substring(0, 4)}</span>
            </div>
         </div>
 
         <div className="overflow-y-auto no-scrollbar p-4 space-y-4">
           <div className="flex gap-4 items-stretch">
-             {/* Left Column (1/3): Card Visual ONLY */}
-             <div className="w-1/3 flex flex-col shrink-0">
-                <div className="aspect-3/4 w-full flex justify-center items-center relative bg-white/5 rounded-xl border-2 border-white/10 shadow-inner overflow-hidden h-full">
-                   <div className="w-[85%] relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.5)] flex justify-center">
+             {/* Left Column (40%): Card Visual ONLY */}
+             <div className="w-[40%] flex flex-col shrink-0">
+                <div className="aspect-3/4 w-full flex justify-center items-center relative bg-white/5 rounded-3xl shadow-inner overflow-hidden h-full">
+                   <div className="w-[90%] relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.5)] flex justify-center">
                      <Card id="m-inspect" {...card} isDraggable={false} />
                    </div>
                    {/* Card count badge (xN) - Mirrored from Desktop */}
@@ -137,7 +136,7 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                          <span className="text-[9px] font-black text-white/20">/{50 + (card.redStars || 0) * 10}</span>
                       </div>
                    </div>
-                   <div className="bg-black/60 p-3 rounded-lg border-2 border-white/5 flex flex-col items-center justify-center shadow-lg">
+                   <div className="bg-[#1a1a1a] p-3 rounded-lg border-2 border-white/10 flex flex-col items-center justify-center shadow-lg">
                       <span className="text-[7px] font-black text-white/90 uppercase tracking-widest mb-1">STARS</span>
                       <div className="flex gap-1">
                         {Array.from({ length: 5 }).map((_, i) => (
@@ -146,6 +145,14 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                       </div>
                    </div>
                 </div>
+
+                 {/* Flavor Text Block - Highlighted */}
+                 <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/20 flex flex-col justify-center relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-8 h-8 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <p className="text-[11px] font-bold text-white/80 leading-relaxed italic text-center relative z-10">
+                       "{CARD_METADATA[card.value]?.flavorText || "Dữ liệu giới thiệu đang cập nhật..."}"
+                    </p>
+                 </div>
 
                 {/* Ability Block - Removed Black Background */}
                 <div className="bg-black/60 p-4 rounded-xl border-2 border-white/5 shadow-xl relative overflow-hidden flex-1 flex flex-col justify-center">
@@ -160,7 +167,7 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                 </div>
 
                 {/* Activation Block */}
-                <div className="bg-white/5 p-4 rounded-xl border-2 border-white/5 shadow-inner relative overflow-hidden flex flex-col justify-center">
+                <div className="bg-[#1a1a1a] p-4 rounded-xl border-2 border-white/5 shadow-inner relative overflow-hidden flex flex-col justify-center">
                    <div className="flex items-center gap-2 mb-2">
                       <div className="size-5 bg-white/10 rounded-lg flex items-center justify-center shadow-sm border border-white/10">
                          <InfoIcon size={10} className="text-white/60"/>

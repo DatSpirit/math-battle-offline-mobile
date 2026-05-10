@@ -12,7 +12,7 @@ const MobileHeader: React.FC = () => {
   const { setIsProfileOpen } = useUIStore();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-md border-b border-gray-100 h-14 px-4 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#fcf9f2]/80 backdrop-blur-md border-b border-black/5 pt-safe h-[calc(3.5rem+var(--sat))] px-4 flex items-center justify-between">
       {/* Profile Info */}
       <button 
         onClick={() => { playSound('click'); setIsProfileOpen(true); }}

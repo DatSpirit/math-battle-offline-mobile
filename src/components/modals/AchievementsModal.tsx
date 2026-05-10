@@ -28,13 +28,6 @@ const RARITY_COLORS: Record<string, string> = {
   diamond: '#60a5fa',
 };
 
-const RARITY_BG: Record<string, string> = {
-  bronze:  'rgba(205,127,50,0.08)',
-  silver:  'rgba(160,160,176,0.08)',
-  gold:    'rgba(245,158,11,0.08)',
-  diamond: 'rgba(96,165,250,0.08)',
-};
-
 const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose }) => {
   const { achievements } = usePlayerStore();
   const [activeCategory, setActiveCategory] = useState<AchievementCategory | 'all'>('all');
@@ -53,54 +46,70 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose }
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-6"
-          style={{ background: 'rgba(28,28,15,0.6)', backdropFilter: 'blur(8px)' }}
+          className="fixed inset-0 z-10000 flex items-center justify-center p-4 md:p-6"
+          style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)' }}
           onClick={onClose}
         >
           <motion.div
-            initial={{ scale: 0.94, y: 20 }}
+            initial={{ scale: 0.95, y: 30 }}
             animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.94, y: 20 }}
+            exit={{ scale: 0.95, y: 30 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="bg-white rounded-3xl w-full max-w-3xl max-h-[86vh] flex flex-col overflow-hidden shadow-2xl"
+            className="bg-surface rounded-[48px] w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.2)] border-2 border-white relative"
             onClick={e => e.stopPropagation()}
           >
-            {/* Header */}
-            <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between shrink-0">
+            {/* Header HUD */}
+            <div className="px-8 pt-10 pb-6 border-b border-on-surface/5 flex items-center justify-between shrink-0 bg-primary/5">
               <div>
-                <h2 className="text-2xl font-black text-primary italic uppercase tracking-tighter m-0">
-                  🏅 Bảng Huy Chương
+                <h2 className="text-2xl font-black text-on-surface italic uppercase tracking-tighter m-0 flex items-center gap-3">
+                  <span className="text-amber-500">🏅</span> Bảng Huy Chương
                 </h2>
-                <p className="text-[10px] font-black text-primary/30 uppercase tracking-widest mt-1">
-                  {unlockedCount} / {achievements.length} đã mở khóa
+                <p className="text-[10px] font-black text-on-surface/30 uppercase tracking-[0.4em] mt-1.5">
+                   Merit Recognition Protocol — {unlockedCount}/{achievements.length} DEPLOYED
                 </p>
               </div>
-              {/* Progress bar */}
-              <div className="flex items-center gap-4">
-                <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ background: 'var(--color-primary)' }}
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(unlockedCount / achievements.length) * 100}%` }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  />
+              <div className="flex items-center gap-5">
+                <div className="hidden sm:flex flex-col items-end gap-1.5">
+                   <span className="text-[8px] font-black text-on-surface/20 uppercase tracking-widest">Ritual Progress</span>
+                   <div className="w-32 h-2 bg-black/5 rounded-full overflow-hidden border border-black/5">
+                    <motion.div
+                      className="h-full rounded-full shadow-[0_0_10px_rgba(var(--color-primary-rgb),0.5)]"
+                      style={{ background: 'var(--color-primary)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(unlockedCount / achievements.length) * 100}%` }}
+                      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </div>
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-9 h-9 rounded-xl bg-gray-50 flex items-center justify-center text-primary/30 hover:text-primary hover:bg-gray-100 transition-all font-bold text-lg"
+                  className="size-11 rounded-2xl bg-black/5 flex items-center justify-center text-on-surface/30 hover:text-on-surface hover:bg-black/10 border border-black/10 transition-all active:scale-90"
                 >
-                  ×
+                  <span className="text-2xl leading-none">×</span>
                 </button>
               </div>
             </div>
 
-            {/* Category filters */}
-            <div className="flex gap-1.5 px-6 pt-4 pb-3 shrink-0 overflow-x-auto no-scrollbar">
+            {/* Sub-Header: Stats Summary */}
+            <div className="px-8 py-4 bg-black/3 flex gap-4 overflow-x-auto no-scrollbar border-b border-on-surface/5">
+               <div className="shrink-0 flex items-center gap-3 bg-white/40 px-4 py-2 rounded-xl border border-black/5">
+                  <div className="size-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-[9px] font-black text-on-surface/60 uppercase tracking-widest">Active Data</span>
+               </div>
+               {categories.map(cat => (
+                 <div key={cat} className="shrink-0 flex items-center gap-2 bg-white/40 px-4 py-2 rounded-xl border border-black/5">
+                    <span className="text-xs">{CATEGORY_CONFIG[cat].emoji}</span>
+                    <span className="text-[9px] font-black text-on-surface/40 uppercase tracking-widest">{CATEGORY_CONFIG[cat].label}</span>
+                 </div>
+               ))}
+            </div>
+
+            {/* Category tabs */}
+            <div className="flex gap-2.5 px-8 pt-6 pb-4 shrink-0 overflow-x-auto no-scrollbar bg-surface">
               <button
                 onClick={() => setActiveCategory('all')}
-                className={`shrink-0 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                  activeCategory === 'all' ? 'bg-primary text-white shadow-sm' : 'bg-gray-50 text-primary/40 hover:text-primary'
+                className={`shrink-0 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2 ${
+                  activeCategory === 'all' ? 'bg-primary text-white border-primary shadow-lg' : 'bg-black/3 text-on-surface/30 border-black/5 hover:border-black/10'
                 }`}
               >
                 Tất Cả ({achievements.length})
@@ -113,12 +122,13 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose }
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                      activeCategory === cat ? 'bg-primary text-white shadow-sm' : 'bg-gray-50 text-primary/40 hover:text-primary'
+                    className={`shrink-0 flex items-center gap-2.5 px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2 ${
+                      activeCategory === cat ? 'bg-primary text-white border-primary shadow-lg' : 'bg-black/3 text-on-surface/30 border-black/5 hover:border-black/10'
                     }`}
                   >
-                    {cfg.emoji} {cfg.label}
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded-full ${activeCategory === cat ? 'bg-white/20' : 'bg-primary/10'}`}>
+                    <span>{cfg.emoji}</span>
+                    {cfg.label}
+                    <span className={`text-[8px] font-black px-2 py-0.5 rounded-lg border ${activeCategory === cat ? 'bg-white/20 border-white/20' : 'bg-black/10 border-black/5'}`}>
                       {unlocked}/{count}
                     </span>
                   </button>
@@ -126,13 +136,12 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose }
               })}
             </div>
 
-            {/* Achievement grid */}
-            <div className="flex-1 overflow-y-auto px-6 pb-6 no-scrollbar">
-              <div className="grid grid-cols-2 gap-3">
+            {/* Achievement list */}
+            <div className="flex-1 overflow-y-auto px-8 pb-10 space-y-4 no-scrollbar bg-surface">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <AnimatePresence mode="popLayout">
                   {filtered.map((ach, i) => {
                     const rarityColor = RARITY_COLORS[ach.rarity];
-                    const rarityBg    = RARITY_BG[ach.rarity];
                     const progress    = Math.min(ach.progress, ach.goal);
                     const pct         = ach.goal === 1 ? (ach.isUnlocked ? 100 : 0) : Math.round((progress / ach.goal) * 100);
 
@@ -140,66 +149,65 @@ const AchievementsModal: React.FC<AchievementsModalProps> = ({ isOpen, onClose }
                       <motion.div
                         key={ach.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: i * 0.04 }}
-                        className="rounded-2xl p-4 flex gap-4 border transition-all"
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        transition={{ delay: i * 0.03 }}
+                        className="rounded-[32px] p-5 flex gap-5 border-2 transition-all relative overflow-hidden group"
                         style={{
-                          background: ach.isUnlocked ? rarityBg : 'rgba(0,0,0,0.02)',
-                          borderColor: ach.isUnlocked ? rarityColor : 'transparent',
+                          background: ach.isUnlocked ? 'rgba(var(--color-primary-rgb), 0.05)' : 'rgba(0,0,0,0.02)',
+                          borderColor: ach.isUnlocked ? `${rarityColor}44` : 'rgba(0,0,0,0.03)',
                           opacity: ach.isUnlocked ? 1 : 0.6,
                         }}
                       >
-                        {/* Emoji */}
+                        {/* Status Light */}
+                        <div className={`absolute top-4 right-4 size-1.5 rounded-full ${ach.isUnlocked ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-black/10'}`} />
+
+                        {/* Icon Block */}
                         <div
-                          className="w-14 h-14 rounded-xl flex items-center justify-center text-3xl shrink-0"
+                          className="size-16 rounded-[22px] flex items-center justify-center text-4xl shrink-0 border-2 shadow-inner"
                           style={{
-                            background: ach.isUnlocked ? rarityBg : '#f5f5f5',
-                            filter: ach.isUnlocked ? 'none' : 'grayscale(1)',
+                            background: ach.isUnlocked ? 'white' : 'rgba(0,0,0,0.03)',
+                            borderColor: ach.isUnlocked ? `${rarityColor}66` : 'rgba(0,0,0,0.05)',
+                            filter: ach.isUnlocked ? 'none' : 'grayscale(1) brightness(0.9)',
                           }}
                         >
-                          {ach.emoji}
+                          <span className="drop-shadow-lg">{ach.emoji}</span>
                         </div>
 
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-1">
-                            <p className="font-black text-sm text-primary italic leading-tight">{ach.title}</p>
-                            {ach.isUnlocked && (
-                              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full shrink-0"
-                                style={{ background: rarityBg, color: rarityColor }}>
-                                ✓
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-[10px] text-primary/40 mt-0.5 leading-tight line-clamp-2">{ach.description}</p>
+                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                          <p className="font-black text-[13px] text-on-surface uppercase italic leading-tight tracking-tight">{ach.title}</p>
+                          <p className="text-[10px] font-bold text-on-surface/40 mt-1.5 leading-snug line-clamp-2 italic">{ach.description}</p>
 
-                          {/* Progress bar */}
+                          {/* Progress HUD */}
                           {ach.goal > 1 && (
-                            <div className="mt-2">
-                              <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full rounded-full transition-all duration-700"
+                            <div className="mt-3.5 bg-black/3 p-2 rounded-xl border border-black/5">
+                              <div className="h-1.5 bg-black/5 rounded-full overflow-hidden border border-black/5">
+                                <motion.div
+                                  className="h-full rounded-full transition-all duration-1000"
                                   style={{ width: `${pct}%`, background: ach.isUnlocked ? rarityColor : 'var(--color-primary)' }}
                                 />
                               </div>
-                              <p className="text-[9px] text-primary/30 font-bold mt-0.5">
-                                {(progress || 0).toLocaleString()} / {(ach.goal || 0).toLocaleString()}
-                              </p>
+                              <div className="flex justify-between items-center mt-1.5 px-0.5">
+                                 <span className="text-[8px] font-black text-on-surface/20 uppercase tracking-widest">{pct}% SYNCED</span>
+                                 <p className="text-[9px] text-on-surface/40 font-black">
+                                   {(progress || 0).toLocaleString()} / {(ach.goal || 0).toLocaleString()}
+                                 </p>
+                              </div>
                             </div>
                           )}
 
-                          {/* Reward */}
-                          <p className="text-[10px] font-black mt-1.5 flex items-center gap-1" style={{ color: '#d97706', opacity: ach.isUnlocked ? 1 : 0.5 }}>
-                            <CoinIcon size={12} className="text-amber-600" />
-                            {(ach.reward || 0).toLocaleString()} Vàng
-                          </p>
-
-                          {/* Unlocked date */}
-                          {ach.isUnlocked && ach.unlockedAt && (
-                            <p className="text-[9px] text-primary/20 mt-0.5">
-                              {new Date(ach.unlockedAt).toLocaleDateString('vi-VN')}
-                            </p>
-                          )}
+                          {/* Footer Info */}
+                          <div className="flex items-center justify-between mt-3">
+                             <div className="flex items-center gap-1.5 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-500/20">
+                                <CoinIcon size={11} className="text-amber-500" />
+                                <span className="text-[10px] font-black text-amber-500">{(ach.reward || 0).toLocaleString()}</span>
+                             </div>
+                             {ach.isUnlocked && ach.unlockedAt && (
+                               <span className="text-[8px] font-black text-on-surface/20 uppercase tracking-tighter">
+                                 {new Date(ach.unlockedAt).toLocaleDateString('vi-VN')}
+                               </span>
+                             )}
+                          </div>
                         </div>
                       </motion.div>
                     );

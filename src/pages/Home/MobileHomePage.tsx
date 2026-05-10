@@ -24,8 +24,8 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
   const [selectedDifficulty, setSelectedDifficulty] = React.useState<'easy' | 'medium' | 'hard'>('easy');
 
   return (
-    <div className="home-premium-container flex-1 flex flex-col pb-24 overflow-y-auto custom-scrollbar items-center">
-      <main className="flex-1 flex flex-col px-4 home-mobile-main pt-4 w-full max-w-2xl justify-between min-h-0">
+    <div className="home-premium-container flex-1 flex flex-col pb-safe overflow-y-auto custom-scrollbar items-center">
+      <main className="flex flex-col px-4 home-mobile-main pt-4 w-full max-w-2xl min-h-0">
         {/* Header Section */}
         <section className="text-center space-y-2 home-header py-8 sm:py-12 shrink-0">
           {!hasCompletedTutorial && (
@@ -42,7 +42,7 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
         </section>
 
         {/* Stacked Layout */}
-        <div className="flex flex-col home-mode-stack gap-4 sm:gap-8 flex-1 py-6 justify-evenly">
+        <div className="flex flex-col home-mode-stack gap-4 sm:gap-8 py-6 mb-12">
           
           {/* Main Mode: Đấu với AI */}
           <motion.div 
@@ -160,7 +160,7 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
 
       {/* Rules Button */}
       <motion.button
-        className="fixed bottom-32 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-all z-40 border-2 border-white"
+        className="fixed bottom-[calc(7rem+var(--sab)+var(--bottom-compensation))] right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-all z-40 border-2 border-white"
         whileTap={{ scale: 0.9 }}
         onClick={onOpenRules}
       >

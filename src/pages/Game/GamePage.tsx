@@ -113,7 +113,7 @@ const MobileGamePage: React.FC = () => {
   );
 
   const renderPortraitFooter = () => (
-    <footer className="w-full px-2 sm:px-4 pb-[calc(env(safe-area-inset-bottom,16px)+8px)] z-50 shrink-0">
+    <footer className="w-full px-2 sm:px-4 pb-[calc(env(safe-area-inset-bottom,16px)+60px)] z-50 shrink-0">
       <div className="hud-glass rounded-[32px] sm:rounded-[40px] p-2 sm:p-4 space-y-2 border-2 border-white/50 shadow-2xl relative overflow-visible">
         <div className="absolute inset-0 bg-primary/5 opacity-30 pointer-events-none rounded-[32px] sm:rounded-[40px] overflow-hidden"></div>
       
@@ -209,7 +209,7 @@ const MobileGamePage: React.FC = () => {
           </div>
         </div>
 
-        <div id="arena-hand-area" className="relative h-[clamp(110px,18vh,220px)] sm:h-[clamp(150px,22vh,300px)] flex justify-center items-end mb-1 px-2 overflow-visible">
+        <div id="arena-hand-area" className="relative h-[clamp(110px,18vh,220px)] sm:h-[clamp(150px,22vh,300px)] flex justify-center items-end mb-12 px-2 overflow-visible">
            {g.activeHand.map((card, i) => {
               const total = g.activeHand.length;
               const mid = (total - 1) / 2;

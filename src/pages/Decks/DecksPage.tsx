@@ -65,22 +65,22 @@ const MobileDecks: React.FC = () => {
       <header className="z-40 bg-[#fcf9f2]/80 backdrop-blur-xl px-5 pt-10 pb-4 border-b border-primary/5 shadow-sm shrink-0">
         <div className="flex justify-between items-center mb-4">
            <div>
-              <h1 className="text-2xl font-black text-primary italic uppercase tracking-tighter m-0 leading-none">BỘ SƯU TẬP</h1>
-              <p className="text-[8px] font-black text-primary/30 uppercase tracking-[0.3em] mt-1.5">Kho lưu trữ thực thể</p>
+              <h1 className="text-3xl font-black text-primary italic uppercase tracking-tighter m-0 leading-none">BỘ SƯU TẬP</h1>
+              <p className="text-[10px] font-black text-primary/30 uppercase tracking-[0.3em] mt-2">Kho lưu trữ thực thể</p>
            </div>
-           <div className="bg-white p-2.5 rounded-xl shadow-sm text-primary/40 border border-primary/5 flex items-center gap-2">
-              <span className="text-[9px] font-black">{Object.values(usePlayerStore.getState().collection).filter(c => c.count > 0).length} / 56</span>
-              <TrophyIcon size={16}/>
+           <div className="bg-white p-3.5 rounded-2xl shadow-md text-primary/40 border-2 border-black/5 flex items-center gap-3">
+              <span className="text-[11px] font-black">{Object.values(usePlayerStore.getState().collection).filter(c => c.count > 0).length} / 56</span>
+              <TrophyIcon size={20}/>
            </div>
         </div>
 
         {/* Category Tabs (Segmented Scrollable) */}
         <nav className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
            {(['library', 'owned', 'resonance', 'achievements'] as const).map(tab => (
-              <button 
+               <button 
                 key={tab}
                 onClick={() => d.setActiveTab(tab)}
-                className={`shrink-0 px-8 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all relative active:scale-95 shadow-md ${d.activeTab === tab ? 'bg-primary text-white border-2 border-black' : 'bg-white text-primary/40 border-2 border-black/10'}`}
+                className={`shrink-0 px-10 py-5 rounded-2xl text-sm font-black uppercase tracking-widest transition-all relative active:scale-95 shadow-lg ${d.activeTab === tab ? 'bg-primary text-white border-2 border-black' : 'bg-white text-primary/40 border-2 border-black/10'}`}
               >
                 {tab === 'library' ? 'Thư viện' : tab === 'owned' ? 'Sở hữu' : tab === 'resonance' ? 'Cộng hưởng' : 'Thành tựu'}
                 {tab !== 'owned' && d.notifications[tab] && (
@@ -106,7 +106,7 @@ const MobileDecks: React.FC = () => {
                       <button 
                         key={r}
                         onClick={() => setFilterRarity(r)}
-                        className={`shrink-0 px-6 py-3 rounded-lg text-[10px] font-black uppercase tracking-widest border-2 transition-all active:scale-90 shadow-sm ${filterRarity === r ? 'bg-amber-500 border-black text-white' : 'bg-[#f0ede4] text-on-surface border-black/20'}`}
+                        className={`shrink-0 px-8 py-3.5 rounded-xl text-[11px] font-black uppercase tracking-widest border-2 transition-all active:scale-90 shadow-md ${filterRarity === r ? 'bg-amber-500 border-black text-white' : 'bg-[#f0ede4] text-on-surface border-black/20'}`}
                       >
                         {r}
                       </button>

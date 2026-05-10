@@ -22,7 +22,7 @@ const CardGridTab: React.FC<CardGridTabProps> = ({
   const libraryRewardsClaimed = usePlayerStore(state => state.libraryRewardsClaimed);
 
   return (
-    <div className="grid grid-cols-4 gap-1.5 p-1.5 pb-10">
+    <div className="grid grid-cols-3 gap-3 p-3 pb-10">
       {cards.map(([key, card]) => {
         const isNew = newlyUnlockedCards.includes(key);
         const isClaimable = activeTab === 'library' && card.isOwned && !libraryRewardsClaimed.includes(key);
@@ -42,33 +42,35 @@ const CardGridTab: React.FC<CardGridTabProps> = ({
               ${card.isOwned ? 'opacity-100' : 'opacity-40 grayscale'}
             `}
           >
-            {isNew && (
-              <div className="absolute -top-1 -left-1 z-50">
-                <div className="bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded-sm shadow-md animate-pulse uppercase tracking-tighter border border-white/20">
-                  NEW
-                </div>
-              </div>
-            )}
-            {isClaimable && (
-              <div className="absolute top-1.5 right-1.5 z-30">
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600 border border-white shadow-sm"></span>
-              </div>
-            )}
-            
             <div className="w-full h-full flex items-center justify-center">
-              <Card 
-                id={key + "_m_grid"} 
-                {...card} 
-                isDraggable={false} 
-                isSelected={isSelected} 
-              />
-            </div>
-            
-            {!card.isOwned && activeTab !== 'library' && (
-              <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                <div className="bg-black/60 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-lg text-[6px] font-black uppercase">KHÓA</div>
+              <div className="relative w-full max-w-[95px]">
+                {isNew && (
+                  <div className="absolute -top-1 -left-1 z-50">
+                    <div className="bg-red-600 text-white text-[7px] font-black px-1.5 py-0.5 rounded-sm shadow-md animate-pulse uppercase tracking-tighter border border-white/20">
+                      NEW
+                    </div>
+                  </div>
+                )}
+                {isClaimable && (
+                  <div className="absolute -top-1 -right-1 z-30">
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600 border-2 border-white shadow-sm animate-pulse"></span>
+                  </div>
+                )}
+                
+                <Card 
+                  id={key + "_m_grid"} 
+                  {...card} 
+                  isDraggable={false} 
+                  isSelected={isSelected} 
+                />
+
+                {!card.isOwned && activeTab !== 'library' && (
+                  <div className="absolute inset-0 bg-black/10 flex items-center justify-center rounded-[12px] overflow-hidden">
+                    <div className="bg-black/60 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-lg text-[6px] font-black uppercase">KHÓA</div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         );
       })}

@@ -188,10 +188,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start; /* Đẩy lên trên để tận dụng không gian bên dưới */
+  justify-content: center; /* Center everything vertically */
   flex: 1;
   min-height: 0;
-  padding-top: 0px; /* Đưa số lên sát hàng sao */
+  padding: 2px 0;
+  position: relative;
 }
 
 .card-value {
@@ -202,10 +203,17 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  line-height: 1; /* Standard line height to prevent overlap */
+  
+  /* Fixed height to ensure uniform horizontal axis */
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  line-height: 1;
   letter-spacing: -0.04em;
   font-style: italic;
-  margin: 2px 0; /* Consistent vertical spacing */
+  margin: 0;
   padding-right: 4px; 
   filter: drop-shadow(0 2px 2px rgba(0,0,0,0.15));
 }
@@ -245,17 +253,22 @@
 }
 
 .card-name-label {
-  font-size: 8px;
-  font-weight: 900;
+  font-size: clamp(8px, 2vw, 10px); /* Increased from 6.5px-8px */
+  font-weight: 950; /* Extra bold */
   color: var(--color-primary);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  opacity: 0.8;
-  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+  opacity: 1;
+  margin-top: 2px;
   width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  height: 28px; /* Slightly taller for full name */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  text-align: center;
+  line-height: 1;
+  overflow: visible; /* Allow text to be seen clearly */
 }
 
 .card-flavor-text {
@@ -425,8 +438,8 @@
 
 @media (max-width: 480px) {
   .math-card {
-    width: 100%; /* Đảm bảo thẻ chiếm hết không gian grid cell */
-    max-width: 80px; /* Nhưng không quá to */
+    width: 100%;
+    max-width: 95px; /* Tăng kích thước để đồng bộ và to hơn */
     border-radius: 10px;
   }
   .card-inner { 
@@ -446,12 +459,21 @@
 
   .card-value { 
     font-size: clamp(18px, 6vw, 24px); 
+    height: 32px; /* Fixed height for mobile */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0;
   }
   
   .card-name-label { 
-    font-size: clamp(5px, 1.8vw, 7px);
-    margin-bottom: 2%;
+    font-size: clamp(6px, 2vw, 8.5px);
+    height: 22px;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
   }
   
   .card-flavor-text { 
@@ -518,7 +540,7 @@
 .perf-eco .math-card--rare,
 .perf-eco .math-card--super,
 .perf-eco .math-card--ultra {
-  background: #ffffff !important; 
+  background: var(--color-bg) !important; 
   box-shadow: none !important;
 }
 

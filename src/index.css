@@ -98,18 +98,23 @@
   --sab: env(safe-area-inset-bottom, 0px);
   --sal: env(safe-area-inset-left, 0px);
 
-  /* Legacy aliases (don't remove — used in existing components) */
-  --bg-dark:        var(--color-bg);
-  --bg-card:        var(--color-surface);
-  --border-glass:   var(--color-border);
-  --text-primary:   var(--color-text);
-  --text-secondary: var(--color-text-muted);
-  --accent-primary:   var(--color-primary);
-  --accent-secondary: var(--color-secondary);
-  --rarity-normal: var(--color-rarity-normal);
-  --rarity-rare:   var(--color-rarity-rare);
-  --rarity-super:  var(--color-rarity-super);
-  --glow-button:   var(--shadow-md);
+  /* Device Offset Compensation (Trừ hao cho nút home trên màn hình để tránh bị đè) */
+  --bottom-compensation: 20px;
+}
+
+/* ─── Safe Area Utilities ─── */
+@utility pt-safe {
+  padding-top: var(--sat);
+}
+@utility pb-safe {
+  /* Tăng thêm khoảng cách để tránh nút home ảo trên Android/iOS */
+  padding-bottom: calc(var(--sab) + var(--bottom-compensation));
+}
+@utility mt-safe {
+  margin-top: var(--sat);
+}
+@utility mb-safe {
+  margin-bottom: var(--sab);
 }
 
 /* ══════════════════════════════════════════
@@ -317,6 +322,12 @@ body.perf-eco {
   --color-bg: #f5f4ef; /* Solid light color */
 }
 
+/* Enforce solid backgrounds to avoid overdraw */
+body.perf-eco {
+  background-image: none !important;
+  background-color: #f5f4ef !important;
+}
+
 /* Force solid backgrounds on performance mode to prevent transparency bugs */
 body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge):not(.aura-container) {
   backdrop-filter: none !important;
@@ -331,10 +342,21 @@ body.perf-eco *:not(.math-card--glowing):not(.card-rarity-badge):not(.aura-conta
 body.perf-eco .glass, 
 body.perf-eco .hud-glass,
 body.perf-eco .bg-white\/80,
-body.perf-eco .bg-white\/70,
-body.perf-eco .bg-black\/60 {
+body.perf-eco .bg-white\/70 {
   background-color: #ffffff !important;
   opacity: 1 !important;
+}
+
+body.perf-eco .bg-black\/60,
+body.perf-eco .bg-black\/40 {
+  background-color: #0c0c0a !important;
+  opacity: 1 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.perf-eco .bg-primary\/5,
+body.perf-eco .bg-primary\/10 {
+  background-color: rgba(139, 80, 0, 0.1) !important;
 }
 
 body.perf-eco .bg-black\/80,

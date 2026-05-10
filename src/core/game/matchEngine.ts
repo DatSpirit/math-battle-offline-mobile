@@ -1,4 +1,3 @@
-import { evaluate } from 'mathjs';
 import type { GameCard, TurnResult, AIDifficulty } from '../../types/game';
 import { applyAbilities, type AbilityContext } from './abilityEngine';
 
@@ -29,6 +28,22 @@ export function operatorPlacementError(cards: GameCard[]): string | null {
 // ──────────────────────────────────────────
 // Expression Evaluation Engine
 // ──────────────────────────────────────────
+
+// Tối ưu hóa việc tính toán cho AI — Sử dụng eval native thay vì mathjs cho các biểu thức đơn giản
+function fastEval(expr: string): number | null {
+  try {
+    // Chỉ cho phép số và toán tử cơ bản
+    if (/[^0-9+\-*/.\s]/.test(expr)) return null;
+    // Ngăn chia cho 0
+    if (/\/0(?!\.)/.test(expr)) return null;
+    
+    const result = new Function(`"use strict"; return (${expr})`)();
+    if (typeof result !== 'number' || !isFinite(result)) return null;
+    return result;
+  } catch {
+    return null;
+  }
+}
 
 export function evaluatePlay(
   cards: GameCard[],
@@ -62,19 +77,11 @@ export function evaluatePlay(
   }
 
   const expression = cards.map(c => c.value).join('');
-  let raw: number;
-  try {
-    raw = evaluate(expression);
-    if (typeof raw !== 'number' || !isFinite(raw)) {
-      return { expression, value: null };
-    }
-  } catch {
-    return { expression, value: null };
-  }
+  
+  // Tận dụng fastEval cho các lượt đấu thông thường
+  const value = fastEval(expression);
 
-  const finalValue = raw;
-
-  return { expression, value: finalValue };
+  return { expression, value };
 }
 
 export function validatePlay(
@@ -222,11 +229,10 @@ export function computeTurnResult(
 // AI Logic Engine (RESTORED & OPTIMIZED)
 // ──────────────────────────────────────────
 
-function combinations(array: GameCard[], k: number): GameCard[][] {
-  const result: GameCard[][] = [];
+function combinations(array: GameCard[], k: number, callback: (combo: GameCard[]) => void): void {
   function helper(start: number, combo: GameCard[]) {
     if (combo.length === k) {
-      result.push([...combo]);
+      callback([...combo]);
       return;
     }
     for (let i = start; i < array.length; i++) {
@@ -236,28 +242,36 @@ function combinations(array: GameCard[], k: number): GameCard[][] {
     }
   }
   helper(0, []);
-  return result;
 }
 
-function permutations(array: GameCard[]): GameCard[][] {
-  const result: GameCard[][] = [];
-  function helper(arr: GameCard[], m: GameCard[] = []) {
-    if (arr.length === 0) {
-      result.push(m);
-    } else {
-      // PERFORMANCE GUARD: Limit permutations to avoid crash on mobile
-      const limit = 1000;
-      if (result.length > limit) return;
+function permutations(array: GameCard[], callback: (perm: GameCard[]) => boolean): void {
+  const n = array.length;
+  const used = new Array(n).fill(false);
+  const current: GameCard[] = [];
+  let count = 0;
+  const limit = 2000; // Tăng giới hạn nhưng vẫn kiểm soát
 
-      for (let i = 0; i < arr.length; i++) {
-        const curr = arr.slice();
-        const next = curr.splice(i, 1);
-        helper(curr, m.concat(next));
-      }
+  function helper(): boolean {
+    if (current.length === n) {
+      count++;
+      return callback([...current]);
     }
+
+    for (let i = 0; i < n; i++) {
+      if (used[i]) continue;
+      
+      // PERFORMANCE GUARD: Dừng nếu quá giới hạn
+      if (count > limit) return true;
+
+      used[i] = true;
+      current.push(array[i]);
+      if (helper()) return true; // Early exit
+      current.pop();
+      used[i] = false;
+    }
+    return false;
   }
-  helper(array);
-  return result;
+  helper();
 }
 
 export function getAIPlay(
@@ -266,21 +280,37 @@ export function getAIPlay(
   difficulty: AIDifficulty | 'boss',
   targetScore?: number
 ): GameCard[] {
-  const nums = hand.filter(c => c.type === 'number');
-  const ops = hand.filter(c => c.type === 'operator');
+  // Tối ưu hóa: Ưu tiên chọn các thẻ hiếm và nhiều sao trước để AI đánh "khôn" hơn
+  const sortedHand = [...hand].sort((a, b) => {
+    const rarityVal = (r: string) => ({ 'normal': 0, 'rare': 1, 'super': 2, 'ultra': 3 }[r] || 0);
+    const scoreA = rarityVal(a.rarity) * 10 + (a.stars || 0);
+    const scoreB = rarityVal(b.rarity) * 10 + (b.stars || 0);
+    return scoreB - scoreA;
+  });
 
   // Xác định số lượng dấu cần thiết cho lượt
   let reqOps = 0;
   if (turn === 3 || turn === 4) reqOps = 1;
   else if (turn >= 5) reqOps = 2;
+  const reqNums = turn - reqOps;
+
+  const nums = sortedHand.filter(c => c.type === 'number');
+  const ops = sortedHand.filter(c => c.type === 'operator');
+
+  // SAFETY: Nếu không đủ thẻ, lấy thẻ rác bù vào để không bị crash
+  while (nums.length < reqNums) nums.push({ id: `dummy-n-${Date.now()}`, value: '1', type: 'number', rarity: 'normal' });
+  while (ops.length < reqOps) ops.push({ id: `dummy-o-${Date.now()}`, value: '+', type: 'operator', rarity: 'normal' });
 
   let bestPlay: GameCard[] = [];
   let bestScore = -1;
 
-  // Cache expression → value để tránh gọi mathjs.evaluate trùng lặp
+  // Cache expression → value để tránh gọi evaluatePlay trùng lặp
   const evalCache = new Map<string, number | null>();
   function cachedEval(cards: GameCard[]): number | null {
-    const key = cards.map(c => c.value).join('');
+    // PERFORMANCE: Dùng string key cực ngắn để cache
+    let key = "";
+    for(let i=0; i<cards.length; i++) key += cards[i].value;
+
     if (evalCache.has(key)) return evalCache.get(key)!;
     const { value } = evaluatePlay(cards, turn);
     evalCache.set(key, value);
@@ -288,15 +318,11 @@ export function getAIPlay(
   }
 
   // Lấy các tổ hợp Số và Dấu phù hợp
-  const numCombos = combinations(nums, turn - reqOps);
-  const opCombos = combinations(ops, reqOps);
-
-  for (const nc of numCombos) {
-    for (const oc of opCombos) {
+  combinations(nums, turn - reqOps, (nc) => {
+    combinations(ops, reqOps, (oc) => {
       const combined = [...nc, ...oc];
-      const perms = permutations(combined);
       
-      for (const p of perms) {
+      permutations(combined, (p) => {
         const value = cachedEval(p);
         if (value !== null) {
           let strategicScore = value;
@@ -318,30 +344,45 @@ export function getAIPlay(
             bestScore = strategicScore;
             bestPlay = p;
             
-            // In scripted mode, if we are very close, stop searching
-            if (targetScore && Math.abs(value - (targetScore/6)) < 2) return bestPlay;
+            // EARLY EXIT: 
+            // 1. Nếu sát mục tiêu Campaign, dừng ngay
+            if (targetScore && Math.abs(value - (targetScore/6)) < 1) return true;
 
-            // Easy AI logic
-            if (difficulty === 'easy' && Math.random() > 0.3) return bestPlay;
+            // 2. Chế độ Dễ & Bình thường: Chỉ cần tìm thấy phép tính hợp lệ là dừng ngay (không cần tối ưu điểm)
+            if (difficulty === 'easy' || difficulty === 'medium') return true;
+
+            // 3. Chế độ Khó & Boss: Chỉ dừng khi đạt ngưỡng điểm rất cao để tiết kiệm CPU
+            if (difficulty !== 'boss' && strategicScore > 500) return true;
           }
         }
-      }
-    }
-  }
+        return false;
+      });
+    });
+  });
 
-  // Fallback: Nếu không tìm thấy gì hợp lệ, vẫn phải đánh ĐỦ số lượng lá bài
+  // Fallback: Nếu không tìm thấy nước đi hợp lệ, xây dựng một chuỗi cơ bản đúng luật (Số - Dấu - Số...)
   if (bestPlay.length === 0) {
-    // Trộn ngẫu nhiên tay bài và lấy 'turn' lá
-    const fallback = [...hand].sort(() => Math.random() - 0.5).slice(0, turn);
-    // Đảm bảo lá đầu tiên là số để tránh lỗi hiển thị quá nặng
-    const firstNum = hand.find(c => c.type === 'number');
-    if (firstNum && fallback[0].type === 'operator') {
-      const numIdx = fallback.findIndex(c => c.type === 'number');
-      if (numIdx !== -1) {
-        [fallback[0], fallback[numIdx]] = [fallback[numIdx], fallback[0]];
+    const fallback: GameCard[] = [];
+    const nList = [...nums.slice(0, reqNums)];
+    const oList = [...ops.slice(0, reqOps)];
+    
+    if (reqOps === 0) {
+      bestPlay = nList;
+    } else {
+      // Xen kẽ: N O N O N N... (Đảm bảo không bắt đầu/kết thúc bằng dấu và không 2 dấu liền nhau)
+      const firstNum = nList.shift();
+      if (firstNum) fallback.push(firstNum);
+      
+      while (oList.length > 0 && nList.length > 0) {
+        fallback.push(oList.shift()!);
+        fallback.push(nList.shift()!);
       }
+      // Thêm phần còn lại
+      while (oList.length > 0) fallback.push(oList.shift()!);
+      while (nList.length > 0) fallback.push(nList.shift()!);
+      
+      bestPlay = fallback;
     }
-    return fallback;
   }
 
   return bestPlay;

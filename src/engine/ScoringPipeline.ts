@@ -4,7 +4,7 @@ import { Card0Effect } from './effects/card0';
 import { Card1Effect } from './effects/card1';
 import { Card4Effect } from './effects/card4';
 import { Card7Effect } from './effects/card7';
-import { evaluate } from 'mathjs';
+import { evaluatePlay } from '../core/game/matchEngine';
 
 export class ScoringPipeline {
   private effects: CardEffect[] = [
@@ -221,12 +221,20 @@ export class ScoringPipeline {
         expressionParts.push(currentNumberBuffer);
       }
 
-      const expression = expressionParts.join(' ');
-      
+
       try {
-        // Sử dụng thư viện mathjs để tính toán biểu thức (ví dụ "10 + 5 * 2")
-        const result = evaluate(expression);
-        state[p].baseValue = typeof result === 'number' ? Math.max(0, Math.round(result)) : 0;
+        // Sử dụng logic evaluatePlay đã được tối ưu hóa (fastEval)
+        // Lưu ý: Pipeline này chạy trên cards ảo đã qua xử lý, nên ta giả lập cấu trúc cards
+        const mockCards = expressionParts.map(val => ({ 
+          value: val, 
+          type: isNaN(parseInt(val)) ? 'operator' as const : 'number' as const,
+          id: 'temp',
+          rarity: 'normal' as const
+        }));
+        
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { value } = evaluatePlay(mockCards as any, state.turn);
+        state[p].baseValue = value !== null ? Math.max(0, Math.round(value)) : 0;
         
         state.events.push({
           type: 'VALUE_MODIFIED',

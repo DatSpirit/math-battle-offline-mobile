@@ -60,12 +60,12 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
     
     return (
       <div key={val} className={`relative transition-all duration-500 shrink-0 ${hasCard ? 'scale-100' : 'opacity-40 grayscale scale-90'}`}>
-         <div className={`p-0.5 rounded-[12px] bg-white border-2 transition-all ${hasCard ? 'border-amber-500 shadow-md' : 'border-black/5'}`}>
-            <div className="w-[50px] h-[70px] overflow-hidden rounded-[10px]">
+         <div className={`p-1 rounded-[16px] bg-white border-2 transition-all ${hasCard ? 'border-black/10 shadow-lg' : 'border-black/5'}`}>
+            <div className="w-[65px] h-[92px] overflow-hidden rounded-[12px]">
               <Card id={val + "_m_res"} {...cardToRender} isDraggable={false} />
             </div>
          </div>
-         {!hasCard && <span className="absolute inset-0 flex items-center justify-center text-xs font-black text-black/10 pointer-events-none">?</span>}
+         {!hasCard && <span className="absolute inset-0 flex items-center justify-center text-sm font-black text-black/10 pointer-events-none">?</span>}
       </div>
     );
   };
@@ -76,11 +76,11 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
                         rarity === 'ultra' ? 'from-amber-400 to-orange-600' : 'from-gray-400 to-gray-600';
 
     return (
-      <div className={`size-10 rounded-full border flex items-center justify-center transition-all duration-500 ${isOwned ? `bg-linear-to-br ${rarityColor} border-white shadow-sm scale-110` : 'bg-black/5 border-black/5'}`}>
+      <div className={`size-12 rounded-full border-2 flex items-center justify-center transition-all duration-500 ${isOwned ? `bg-linear-to-br ${rarityColor} border-white shadow-md scale-110` : 'bg-black/5 border-black/5'}`}>
         {isOwned ? (
-          <span className="text-white font-black text-[10px] italic">{val}</span>
+          <span className="text-white font-black text-[12px] italic">{val}</span>
         ) : (
-          <span className="text-black/10 font-black text-xs">?</span>
+          <span className="text-black/10 font-black text-sm">?</span>
         )}
       </div>
     );
@@ -110,7 +110,7 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
             const totalRequired = combo.requiredCards.length;
 
             return (
-              <div key={combo.id} className={`bg-white p-5 rounded-[40px] border-2 transition-all flex flex-col gap-4 ${isOwned ? 'border-primary/20 shadow-md' : 'border-black/5 opacity-80'}`}>
+              <div key={combo.id} className={`bg-white p-6 rounded-[48px] border-2 transition-all flex flex-col gap-5 ${isOwned ? 'border-black/5 shadow-lg' : 'border-black/5 opacity-80'}`}>
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -124,7 +124,7 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
                   {isClaimed && <div className="bg-green-100 p-1.5 rounded-full"><AwardIcon size={14} className="text-green-600" /></div>}
                 </div>
 
-                <div className="bg-primary/5 p-4 rounded-3xl flex gap-3 overflow-x-auto no-scrollbar items-center justify-center border border-primary/5">
+                <div className="bg-primary/5 p-6 rounded-[32px] flex gap-4 overflow-x-auto no-scrollbar items-center justify-center border border-primary/5">
                   {combo.requiredCards.map((val: string) => renderComboCard(val, combo))}
                 </div>
 
@@ -182,7 +182,7 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
             const totalRequired = set.requiredCards.length || 3;
 
             return (
-              <div key={set.id} className={`bg-white p-6 rounded-[40px] border-2 transition-all flex flex-col gap-5 ${isOwned ? 'border-black shadow-lg' : 'border-black/5 opacity-80'}`}>
+              <div key={set.id} className={`bg-white p-8 rounded-[48px] border-2 transition-all flex flex-col gap-6 ${isOwned ? 'border-black/5 shadow-xl' : 'border-black/5 opacity-80'}`}>
                 <div className="flex justify-between items-start">
                    <div>
                      <div className="flex items-center gap-2 mb-1">
@@ -196,7 +196,7 @@ const ResonanceTab: React.FC<ResonanceTabProps> = ({ handleClaimResonanceReward 
                    {isClaimed && <div className="bg-green-100 p-1.5 rounded-full"><AwardIcon size={14} className="text-green-600" /></div>}
                 </div>
 
-                <div className="bg-primary/5 p-5 rounded-2xl flex gap-4 items-center justify-center">
+                <div className="bg-primary/5 p-6 rounded-3xl flex gap-6 items-center justify-center">
                   {Array.from({ length: totalRequired }).map((_, idx) => {
                     const rarity = set.requiredRarity || set.minRarity || 'rare';
                     const val = set.requiredCards[idx] || null;

@@ -270,6 +270,36 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                     </div>
                   )}
                 </div>
+
+                {/* SKILL & FLAVOR TEXT SECTION */}
+                <div className="w-full flex flex-col gap-4 bg-primary/5 p-6 rounded-[32px] border border-primary/20 relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
+                      <ZapIcon size={80} />
+                   </div>
+                   
+                   <div className="flex flex-col gap-2 relative z-10">
+                      <div className="flex items-center gap-3">
+                         <div className="px-3 py-1 bg-primary text-white text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg shadow-primary/20">
+                            Kỹ Năng & Giới Thiệu
+                         </div>
+                         <h4 className="text-sm font-black text-white uppercase italic tracking-tight m-0">
+                           {targetCard.abilityName || "CHƯA KHAI MỞ"}
+                         </h4>
+                      </div>
+                      
+                      <p className="text-[11px] font-bold text-white/70 leading-relaxed m-0 mt-2">
+                        {targetCard.abilityDesc || "Thẻ này chưa đạt phẩm chất để kích hoạt nội tại đặc biệt."}
+                      </p>
+
+                      {targetCard.flavorText && (
+                        <div className="mt-4 pt-4 border-t border-white/5">
+                           <p className="text-[10px] font-bold text-primary/60 italic leading-relaxed m-0">
+                             "{targetCard.flavorText}"
+                           </p>
+                        </div>
+                      )}
+                   </div>
+                </div>
               </div>
 
               {/* FODDER SELECTION SECTION */}
