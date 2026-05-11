@@ -44,6 +44,11 @@ map.md
 *.md
 github_token.txt
 
+# Ngoại lệ: docs dự án được phép commit
+!BAO_CAO_TIEN_DO.md
+!KE_HOACH_TICH_HOP_THANH_TOAN.md
+!HUONG_DAN_SETUP_PAYMENT.md
+
 # Backend server secrets — KHÔNG BAO GIỜ commit .env thật
 server/.env
 server/node_modules/
