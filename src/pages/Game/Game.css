@@ -97,41 +97,117 @@
   text-shadow: 0 4px 12px rgba(139, 80, 0, 0.15);
 }
 /* 📱 RESPONSIVE HEIGHT FIXES FOR MOBILE */
-/* 📱 TỐI ƯU HÓA CHIỀU CAO CHO DI ĐỘNG (HEIGHT RESPONSIVE) */
+/* ─── Flexible Slots Container ─── */
+.slots-container {
+  display: flex;
+  flex-wrap: wrap;          /* Cho phép xuống hàng */
+  justify-content: center;
+  gap: 0.25rem;
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;        /* Phải visible để scale animation không bị cắt */
+  box-sizing: border-box;
+  padding: 0 4px;
+}
 
-/* Màn hình trung bình (iPhone Pro, v.v.) - Giảm bớt các khoảng trống thừa */
+.arena-slot {
+  flex-shrink: 1;
+  min-width: 0;
+  width: clamp(54px, 18vw, 100px);
+  aspect-ratio: 5 / 7;
+  height: auto !important;
+}
+
+/* ─── Dynamic Sizing based on Slot Count ─── */
+/* Khi có 6 slot (lượt 6) — thu nhỏ hơn */
+.slots-container:has(> :nth-child(6)) .arena-slot {
+  width: clamp(48px, 14vw, 80px);
+}
+
+/* Khi có 5 slot */
+.slots-container:has(> :nth-child(5)) .arena-slot {
+  width: clamp(50px, 16vw, 90px);
+}
+
+/* ─── Player Hand Synchronization ─── */
+.player-hand-wrapper {
+  overflow-x: auto;
+  overflow-y: visible !important;
+  padding: 12px 8px 0 8px;          /* Tăng padding top để không bị cắt thẻ khi nổi lên */
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Thẻ trong tay co giãn theo màn hình */
+.player-hand-wrapper .math-card {
+  width: clamp(54px, 16vw, 100px) !important;
+  height: auto !important;
+  aspect-ratio: 5 / 7;
+  flex-shrink: 0;
+}
+
+/* ─── Root Layout Sections ─── */
+.game-page-root {
+  height: 100dvh;           /* dvh tốt hơn vh trên mobile */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #f7f6f0; /* Match app theme background */
+}
+
+.game-arena-section {
+  flex: 1;
+  min-height: 0;            /* Quan trọng: cho phép flex child shrink */
+  overflow-x: clip;         /* Chỉ chặn tràn ngang, cho phép scale theo chiều dọc */
+  overflow-y: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.game-footer-section {
+  flex-shrink: 0;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
+}
+
+/* 📱 RESPONSIVE HEIGHT FIXES */
 @media (max-height: 750px) {
-  .battle-arena { gap: 0.5rem !important; }
-  .slots-container { gap: 0.25rem !important; }
-  .arena-score-box { padding: 0.25rem 0.75rem !important; margin: 0 !important; }
-  footer .hud-glass { padding: 0.75rem !important; }
-  /* Điều chỉnh lại spacing Tailwind khi bị thu hẹp */
-  footer .space-y-6 { --tw-space-y-reverse: 0; margin-top: calc(0.5rem * calc(1 - 0)); margin-bottom: calc(0.5rem * 0); }
+  .battle-arena { 
+    gap: 0.25rem !important;
+    padding: 0.25rem !important;
+  }
+  
+  .arena-score-box {
+    padding: 0.2rem 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
 
-  /* Thu nhỏ tay bài để vừa màn hình */
-  .player-hand-area {
-    max-height: 110px;
-    overflow-x: auto;
-    overflow-y: visible;
+  .arena-turn-hint {
+    padding: 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .arena-slot {
+    width: clamp(48px, 14vw, 72px) !important;
   }
 }
 
-/* Màn hình ngắn (iPhone SE, các dòng máy cũ) - Ép chặt giao diện */
 @media (max-height: 680px) {
-  .battle-arena { padding-top: 0 !important; }
-  .hud-glass { padding: 0.25rem 0.5rem !important; }
-  .arena-divider { margin: 0.1rem 0 !important; }
-  header, section { padding-top: 0.25rem !important; padding-bottom: 0.25rem !important; }
+  .arena-slot {
+    width: clamp(44px, 13vw, 64px) !important;
+  }
+  
+  /* Ẩn bớt text phụ để tiết kiệm chỗ */
+  .arena-turn-desc { display: none !important; }
+  .arena-hint-text { display: none !important; }
 }
 
-/* Màn hình cực ngắn - Thay vì scale, dùng width nhỏ hơn */
 @media (max-height: 600px) {
-  .math-card--in-game { width: 65px; height: auto; }
-  .arena-slot { 
-    width: 65px !important; 
-    aspect-ratio: 3 / 4.2; 
-    height: auto !important; 
-  }
+  .math-card--in-game { width: clamp(40px, 12vw, 54px); }
 }
 
 .vertical-text {
@@ -143,21 +219,11 @@
   transform: rotate(180deg);
 }
 
-/* Safe area cho game footer */
 footer {
   padding-bottom: calc(env(safe-area-inset-bottom) + 8px) !important;
 }
 
-/* Nếu dùng fixed bottom bar trong game */
 .game-bottom-bar {
   padding-bottom: env(safe-area-inset-bottom);
   margin-bottom: 0;
-}
-
-/* Đảm bảo tay bài không bị clip */
-.player-hand-wrapper {
-  overflow-x: auto;
-  overflow-y: visible !important; /* ← key fix */
-  padding: 8px 4px 0 4px;        /* ← top padding để thẻ nổi lên được */
-  -webkit-overflow-scrolling: touch;
 }

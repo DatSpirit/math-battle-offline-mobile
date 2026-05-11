@@ -69,6 +69,7 @@ const RoundResult: React.FC<RoundResultProps> = ({ result, onNext }) => {
     >
       <motion.div
         className="rr-card glass"
+        style={{ display: 'flex', flexDirection: 'column' }}
         initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 40, opacity: 0 }}

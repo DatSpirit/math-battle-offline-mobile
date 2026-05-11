@@ -66,7 +66,7 @@ const Card: React.FC<CardProps> = ({
   if (isFaceDown) {
     return (
       <div 
-        className={`math-card math-card--back relative w-[76px] h-[106px] sm:w-20 sm:h-28 rounded-xl bg-[#2A1A12] border-2 border-[#5A3A22] shadow-[0_4px_12px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center overflow-hidden ${className}`}
+        className={`math-card math-card--back relative rounded-xl bg-[#2A1A12] border-2 border-[#5A3A22] shadow-[0_4px_12px_rgba(0,0,0,0.5)] flex flex-col items-center justify-center overflow-hidden ${className}`}
         style={customStyle}
       >
         <div className="absolute inset-0 opacity-15" style={{

@@ -121,7 +121,7 @@ const MobileGamePage: React.FC = () => {
   );
 
   const renderPortraitFooter = () => (
-    <footer ref={handRef} className="player-section w-full px-2 sm:px-4 z-50 shrink-0" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
+    <footer ref={handRef} className="player-section game-footer-section flex-shrink-0 w-full px-2 sm:px-4 z-50" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
       <div className="hud-glass rounded-[32px] sm:rounded-[40px] p-2 sm:p-4 space-y-2 border-2 border-white/50 shadow-2xl relative overflow-visible">
         <div className="absolute inset-0 bg-primary/5 opacity-30 pointer-events-none rounded-[32px] sm:rounded-[40px] overflow-hidden"></div>
       
@@ -368,7 +368,7 @@ const MobileGamePage: React.FC = () => {
       collisionDetection={closestCorners}
     >
       <div 
-        className={`h-screen w-full bg-[#fcf9f2] text-primary flex flex-col pt-[env(safe-area-inset-top,1rem)] font-body overflow-hidden select-none relative ${g.shakeIntensity > 0 ? `shake-${g.shakeIntensity}` : ''}`}
+        className={`game-page-root h-[100dvh] w-full bg-[#fcf9f2] text-primary flex flex-col pt-[env(safe-area-inset-top,1rem)] font-body overflow-hidden select-none relative ${g.shakeIntensity > 0 ? `shake-${g.shakeIntensity}` : ''}`}
         style={{ touchAction: g.activeId ? 'none' : 'pan-y' }}
       >
         {/* Background Elements */}
@@ -380,7 +380,7 @@ const MobileGamePage: React.FC = () => {
         {!isWideLandscape && renderTopHUD()}
 
         {/* Arena Layout & Controls Interaction Zone */}
-        <div id="arena-interaction-zone" className={`flex-1 flex ${isWideLandscape ? 'flex-row' : 'flex-col'} overflow-hidden relative z-10`}>
+        <div id="arena-interaction-zone" className={`game-arena-section flex-1 min-h-0 flex ${isWideLandscape ? 'flex-row' : 'flex-col'} overflow-hidden relative z-10`}>
           
           {isWideLandscape ? renderLandscapeSidebars() : (
             <main className="main-area flex-1 flex flex-col justify-start items-center pt-2 pb-2 relative min-w-0">

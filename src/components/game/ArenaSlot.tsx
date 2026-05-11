@@ -6,10 +6,11 @@ import './BattleArena.css';
 interface ArenaSlotProps {
   id: string;
   isOccupied?: boolean;
+  isGlowing?: boolean;
   children?: React.ReactNode;
 }
 
-const ArenaSlot: React.FC<ArenaSlotProps> = ({ id, isOccupied, children }) => {
+const ArenaSlot: React.FC<ArenaSlotProps> = ({ id, isOccupied, isGlowing, children }) => {
   const { isOver, setNodeRef } = useDroppable({
     id: id,
   });
@@ -24,6 +25,7 @@ const ArenaSlot: React.FC<ArenaSlotProps> = ({ id, isOccupied, children }) => {
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       className={`arena-slot ${isOccupied ? 'occupied' : 'empty'} ${isOver ? 'over' : ''}`}
+      style={isGlowing ? { overflow: 'visible', zIndex: 1000, position: 'relative' } : undefined}
     >
       {children || <div className="slot-placeholder">+</div>}
     </motion.div>

@@ -42,19 +42,16 @@ const ArenaDraggableCard: React.FC<{
 }> = ({ card, slotIndex, onRemove, onCardClick, isGlowing }) => {
   return (
     <div className={`arena-card-wrap-fix ${isGlowing ? 'z-1000' : 'z-10'}`}>
-      <div className={`transition-transform duration-300 ease-out math-card--in-game ${
-        isGlowing ? 'scale-[1.4] sm:scale-[1.6]' : ''
-      }`}>
-        <DraggableCard 
-          {...card} 
-          id={card.id} 
-          sourceSlot={slotIndex}
-          layoutId={card.id}
-          isGlowing={isGlowing}
-          onClick={() => onCardClick ? onCardClick(card.id) : onRemove()}
-          onDoubleClick={onRemove}
-        />
-      </div>
+      <DraggableCard 
+        {...card} 
+        id={card.id} 
+        sourceSlot={slotIndex}
+        layoutId={card.id}
+        isGlowing={isGlowing}
+        className={`math-card--in-game ${isGlowing ? 'scale-[1.4] sm:scale-[1.5] transition-transform duration-300 ease-out' : ''}`}
+        onClick={() => onCardClick ? onCardClick(card.id) : onRemove()}
+        onDoubleClick={onRemove}
+      />
     </div>
   );
 };
@@ -150,14 +147,18 @@ const BattleArena: React.FC<BattleArenaProps> = ({
                 const card = opponentSlots[i];
                 const isGlowing = card?.id === glowingCardId;
                 return (
-                  <ArenaSlot key={`opp-slot-${i}`} id={`opp-slot-${i}`} isOccupied={!!card}>
+                  <ArenaSlot key={`opp-slot-${i}`} id={`opp-slot-${i}`} isOccupied={!!card} isGlowing={isGlowing}>
                     {card ? (
-                      <div 
-                        className={`pointer-events-none transition-transform duration-300 ease-out math-card--in-game ${
-                          isGlowing ? 'scale-[1.4] sm:scale-[1.6] z-1000' : ''
-                        }`}
-                      >
-                        <Card {...card} id={`arena-visual-opp-${card.id}-${i}`} isFaceDown={!showOpponentCards} isGlowing={isGlowing} />
+                      <div className={`pointer-events-none arena-card-wrap-fix ${
+                        isGlowing ? 'z-1000' : ''
+                      }`}>
+                        <Card
+                          {...card}
+                          id={`arena-visual-opp-${card.id}-${i}`}
+                          isFaceDown={!showOpponentCards}
+                          isGlowing={isGlowing}
+                          className={`math-card--in-game ${isGlowing ? 'scale-[1.4] sm:scale-[1.5] transition-transform duration-300 ease-out' : ''}`}
+                        />
                       </div>
                     ) : null}
                   </ArenaSlot>
@@ -265,19 +266,22 @@ const BattleArena: React.FC<BattleArenaProps> = ({
                   maxWidth: Math.min(900, slotsCount * 150)
               }}
             >
-              {Array.from({ length: slotsCount }, (_, i) => (
-                <ArenaSlot key={`slot-${i}`} id={`slot-${i}`} isOccupied={!!playerSlots[i]}>
-                  {playerSlots[i] ? (
-                    <ArenaDraggableCard
-                      card={playerSlots[i]!}
-                      slotIndex={i}
-                      onRemove={() => onRemoveCard(i)}
-                      onCardClick={onCardClick}
-                      isGlowing={playerSlots[i]?.id === glowingCardId}
-                    />
-                  ) : null}
-                </ArenaSlot>
-              ))}
+              {Array.from({ length: slotsCount }, (_, i) => {
+                const isGlowing = playerSlots[i]?.id === glowingCardId;
+                return (
+                  <ArenaSlot key={`slot-${i}`} id={`slot-${i}`} isOccupied={!!playerSlots[i]} isGlowing={isGlowing}>
+                    {playerSlots[i] ? (
+                      <ArenaDraggableCard
+                        card={playerSlots[i]!}
+                        slotIndex={i}
+                        onRemove={() => onRemoveCard(i)}
+                        onCardClick={onCardClick}
+                        isGlowing={isGlowing}
+                      />
+                    ) : null}
+                  </ArenaSlot>
+                );
+              })}
             </div>
         </div>
         </div>
