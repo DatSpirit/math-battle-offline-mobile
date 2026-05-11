@@ -47,10 +47,10 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                card.rarity === targetCard.rarity && 
                card.rarity !== 'normal';
       })
-      .map(([key, card]) => ({
-        key, ...card, isOwned: true,
+      .map(([fodderKey, card]) => ({
+        fodderKey, ...card, isOwned: true,
         // Nếu là chính thẻ đang chọn thì phải trừ đi 1 (để lại bản gốc), nếu thẻ khác thì dùng hết count
-        available: key === targetKey ? card.count - 1 : card.count,
+        available: fodderKey === targetKey ? card.count - 1 : card.count,
         weight: 1 // LUẬT MỚI: LUÔN LÀ 1 ĐIỂM
       }))
       .filter(f => f.available > 0);
@@ -58,7 +58,7 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
 
   const pointsToAdd = useMemo(() => {
     return Object.entries(selectedMaterials).reduce((acc, [key, count]) => {
-      const fodder = fodderOptions.find(f => f.key === key);
+      const fodder = fodderOptions.find(f => f.fodderKey === key);
       return acc + (fodder ? fodder.weight * count : 0);
     }, 0);
   }, [selectedMaterials, fodderOptions]);
@@ -102,7 +102,7 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
     : (simulatedYellowStarsGained > 0 && !isLevelCapped);
 
   const handleAdjustMaterial = (key: string, delta: number) => {
-    const fodder = fodderOptions.find(f => f.key === key);
+    const fodder = fodderOptions.find(f => f.fodderKey === key);
     if (!fodder) return;
     setSelectedMaterials(prev => {
       const current = prev[key] || 0;
@@ -317,13 +317,14 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                 {fodderOptions.length > 0 ? (
                   <div className="flex flex-wrap justify-center gap-6">
                     {fodderOptions.map(f => {
-                      const selected = selectedMaterials[f.key] || 0;
+                      const { fodderKey, ...cardProps } = f;
+                      const selected = selectedMaterials[fodderKey] || 0;
                       const isAtLimit = selected >= f.available || isBreakthrough;
                       return (
-                        <div key={f.key} className={`flex flex-col items-center bg-white/2 border-[3px] rounded-[32px] p-4 shadow-2xl transition-all duration-300 w-[140px] relative mb-4 ${selected > 0 ? (isRedStarMode ? 'border-red-600/5 bg-red-600/5' : 'border-amber-500/5 bg-amber-500/5') : 'border-white/5 hover:border-white/20'}`}>
+                        <div key={fodderKey} className={`flex flex-col items-center bg-white/2 border-[3px] rounded-[32px] p-4 shadow-2xl transition-all duration-300 w-[140px] relative mb-4 ${selected > 0 ? (isRedStarMode ? 'border-red-600/5 bg-red-600/5' : 'border-amber-500/5 bg-amber-500/5') : 'border-white/5 hover:border-white/20'}`}>
                           
                           <div className="w-[70px] mb-2 origin-top drop-shadow-[0_15px_25px_rgba(0,0,0,0.4)] flex justify-center">
-                            <Card id={`fodder-${f.key}`} {...f} isDraggable={false} />
+                            <Card id={`fodder-${fodderKey}`} {...cardProps} isDraggable={false} />
                           </div>
                           
                           <div className={`px-3 py-1 rounded-full mb-4 border-2 font-black text-[9px] italic ${isRedStarMode ? 'bg-red-500/20 border-red-500/40 text-red-500' : 'bg-amber-500/20 border-amber-500/40 text-amber-500'}`}>
@@ -331,9 +332,9 @@ const EvolutionModal: React.FC<EvolutionModalProps> = ({
                           </div>
 
                           <div className="flex items-center justify-between w-full bg-black/80 rounded-2xl p-1.5 border border-white/10 shadow-inner">
-                            <button onClick={() => handleAdjustMaterial(f.key, -1)} disabled={!selected} className="size-8 flex items-center justify-center rounded-lg bg-white/5 text-white hover:bg-white/10 disabled:opacity-10 transition-all active:scale-90"><MinusIcon size={12} /></button>
+                            <button onClick={() => handleAdjustMaterial(fodderKey, -1)} disabled={!selected} className="size-8 flex items-center justify-center rounded-lg bg-white/5 text-white hover:bg-white/10 disabled:opacity-10 transition-all active:scale-90"><MinusIcon size={12} /></button>
                             <div className="flex flex-col items-center"><span className="text-sm font-black text-white">{selected}</span><span className="text-[9px] text-white/20 font-black">/{f.available}</span></div>
-                            <button onClick={() => handleAdjustMaterial(f.key, 1)} disabled={isAtLimit} className={`size-8 flex items-center justify-center rounded-lg transition-all active:scale-90 ${!isAtLimit ? (isRedStarMode ? 'bg-red-600 text-white' : 'bg-primary text-white') : 'bg-white/5 text-white/5'}`}><PlusIcon size={12} /></button>
+                            <button onClick={() => handleAdjustMaterial(fodderKey, 1)} disabled={isAtLimit} className={`size-8 flex items-center justify-center rounded-lg transition-all active:scale-90 ${!isAtLimit ? (isRedStarMode ? 'bg-red-600 text-white' : 'bg-primary text-white') : 'bg-white/5 text-white/5'}`}><PlusIcon size={12} /></button>
                           </div>
                         </div>
                       );
