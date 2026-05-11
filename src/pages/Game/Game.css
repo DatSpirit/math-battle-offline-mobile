@@ -107,6 +107,13 @@
   footer .hud-glass { padding: 0.75rem !important; }
   /* Điều chỉnh lại spacing Tailwind khi bị thu hẹp */
   footer .space-y-6 { --tw-space-y-reverse: 0; margin-top: calc(0.5rem * calc(1 - 0)); margin-bottom: calc(0.5rem * 0); }
+
+  /* Thu nhỏ tay bài để vừa màn hình */
+  .player-hand-area {
+    max-height: 110px;
+    overflow-x: auto;
+    overflow-y: visible;
+  }
 }
 
 /* Màn hình ngắn (iPhone SE, các dòng máy cũ) - Ép chặt giao diện */
@@ -134,4 +141,23 @@
   align-items: center;
   justify-content: center;
   transform: rotate(180deg);
+}
+
+/* Safe area cho game footer */
+footer {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 8px) !important;
+}
+
+/* Nếu dùng fixed bottom bar trong game */
+.game-bottom-bar {
+  padding-bottom: env(safe-area-inset-bottom);
+  margin-bottom: 0;
+}
+
+/* Đảm bảo tay bài không bị clip */
+.player-hand-wrapper {
+  overflow-x: auto;
+  overflow-y: visible !important; /* ← key fix */
+  padding: 8px 4px 0 4px;        /* ← top padding để thẻ nổi lên được */
+  -webkit-overflow-scrolling: touch;
 }

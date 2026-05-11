@@ -126,9 +126,15 @@ const MobileCampaign: React.FC = () => {
       </header>
 
       {/* Main Strategic Table (Scrollable) */}
-      <div className="flex-1 relative overflow-y-auto p-4 custom-scrollbar">
+      <div 
+        className="flex-1 relative overflow-y-auto p-4 custom-scrollbar" 
+        style={{ 
+          overscrollBehavior: 'contain',
+          paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)'
+        }}
+      >
          <div className="hologram-table min-h-[900px] rounded-[48px] border-4 border-white shadow-2xl flex flex-col p-6 overflow-hidden bg-white/20 backdrop-blur-sm relative">
-            <div className="scanline-map"></div>
+            {/* <div className="scanline-map"></div> */}
             
             {/* HUD Decorations */}
             <div className="hud-corner hud-corner-tl top-6! left-6! scale-75 opacity-40"></div>
