@@ -16,6 +16,8 @@ export interface ShopItem {
   tag?: string;
   originalPrice?: number;
   dailyLimit?: number;
+  /** Giá USD dùng cho backend Stripe/MoMo (1 USD ≈ 25,000 VND) */
+  priceUsd?: number;
 }
 
 export interface Transaction {

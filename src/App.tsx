@@ -7,6 +7,7 @@ import GamePage from './pages/Game/GamePage';
 import QuestsPage from './pages/Quests/QuestsPage';
 import DecksPage from './pages/Decks/DecksPage';
 import ShopPage from './pages/Shop/ShopPage';
+import ShopSuccessPage from './pages/Shop/ShopSuccessPage';
 import HistoryPage from './pages/History/HistoryPage';
 import ErrorBoundary from './components/shared/ErrorBoundary';
 import OnboardingPage from './pages/Onboarding/OnboardingPage';
@@ -145,6 +146,7 @@ function App() {
             <Route path="history" element={<HistoryPage />} />
             <Route path="decks" element={<DecksPage />} />
             <Route path="shop" element={<ShopPage />} />
+            <Route path="shop/success" element={<ShopSuccessPage />} />
             <Route path="campaign" element={<CampaignMapPage />} />
           </Route>
         </Routes>
