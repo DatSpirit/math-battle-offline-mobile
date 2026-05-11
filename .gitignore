@@ -43,3 +43,8 @@ coverage/
 map.md
 *.md
 github_token.txt
+
+# Backend server secrets — KHÔNG BAO GIỜ commit .env thật
+server/.env
+server/node_modules/
+server/dist/
