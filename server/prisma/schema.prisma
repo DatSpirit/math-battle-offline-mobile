@@ -1,0 +1,27 @@
+// Prisma Schema — Math Battle Payment Backend
+// Order model lưu trữ mọi giao dịch thanh toán
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Order {
+  id              String   @id @default(cuid())
+  orderId         String   @unique          // MB_userId_timestamp — unique identifier
+  userId          String
+  itemId          String
+  amountUsd       Float
+  amountLocal     Int                       // VND hoặc cents tùy paymentMethod
+  currency        String                    // "usd" | "vnd"
+  paymentMethod   String                    // "stripe" | "momo"
+  status          String   @default("PENDING") // PENDING | SUCCESS | FAILED
+  intentId        String?                   // Stripe paymentIntentId
+  transId         String?                   // MoMo transId
+  rewardDelivered Boolean  @default(false)  // idempotency guard — chỉ phát thưởng 1 lần
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

@@ -1,5 +1,6 @@
 // webhooks/stripe.webhook.ts
 // Nhận và xác thực webhook từ Stripe
+// v2: Truyền orderId từ metadata vào deliverReward
 // Quan trọng: route này cần express.raw() (không phải express.json())
 
 import { Request, Response } from 'express';
@@ -34,21 +35,23 @@ export const handleStripeWebhook = async (req: Request, res: Response): Promise<
   switch (event.type) {
     case 'payment_intent.succeeded': {
       const intent = event.data.object as Stripe.PaymentIntent;
-      const { userId, itemId } = intent.metadata;
+      const { userId, itemId, orderId } = intent.metadata;
 
-      if (!userId || !itemId) {
+      if (!userId || !itemId || !orderId) {
         console.error('[Stripe Webhook] Missing metadata:', intent.metadata);
         break;
       }
 
-      await deliverReward(userId, itemId, intent.id);
-      console.log(`[Stripe Webhook] ✅ Reward delivered: ${itemId} → ${userId}`);
+      // v2: truyền orderId + intentId cho idempotency qua DB
+      await deliverReward(userId, itemId, orderId, intent.id);
+      console.log(`[Stripe Webhook] ✅ Reward delivered: ${itemId} → ${userId} (order=${orderId})`);
       break;
     }
 
     case 'payment_intent.payment_failed': {
       const intent = event.data.object as Stripe.PaymentIntent;
       console.warn(`[Stripe Webhook] Payment failed: ${intent.id}`);
+      // TODO: markOrderFailed(orderId) nếu cần
       break;
     }
 

@@ -1,5 +1,6 @@
 // src/services/paymentClient.ts
 // Frontend client gọi backend thanh toán
+// v2: thêm orderStatus polling + orderId trong response
 // Không bao giờ gọi Stripe/MoMo trực tiếp từ đây
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
@@ -7,6 +8,7 @@ const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 export interface StripeIntentResponse {
   clientSecret: string;
   intentId: string;
+  orderId: string;
   amountCents: number;
 }
 
@@ -16,6 +18,11 @@ export interface MomoCreateResponse {
   orderId: string;
 }
 
+export interface OrderStatusResponse {
+  status: 'PENDING' | 'SUCCESS' | 'FAILED';
+  rewardDelivered: boolean;
+}
+
 async function post<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(`${BASE_URL}${path}`, {
     method:  'POST',
@@ -23,6 +30,17 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     body:    JSON.stringify(body),
   });
 
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data?.error ?? `HTTP ${res.status}`);
+  }
+
+  return data as T;
+}
+
+async function get<T>(path: string): Promise<T> {
+  const res = await fetch(`${BASE_URL}${path}`);
   const data = await res.json();
 
   if (!res.ok) {
@@ -57,5 +75,13 @@ export const paymentClient = {
       userId,
       itemId,
     });
+  },
+
+  /**
+   * Poll order status — frontend dùng sau khi redirect về từ MoMo/Stripe
+   * Gọi mỗi 2s, tối đa 15 lần (30s)
+   */
+  orderStatus(orderId: string) {
+    return get<OrderStatusResponse>(`/api/payment/order/${orderId}`);
   },
 };

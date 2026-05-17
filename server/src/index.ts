@@ -57,6 +57,7 @@ app.get('/health', (_req, res) => {
 });
 
 // Global error handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('[Server Error]', err);
   res.status(500).json({ error: 'Internal server error' });
@@ -72,6 +73,7 @@ app.listen(PORT, () => {
   console.log('Endpoints:');
   console.log(`  POST /api/payment/stripe/intent`);
   console.log(`  POST /api/payment/momo/create`);
+  console.log(`  GET  /api/payment/order/:orderId`);
   console.log(`  POST /api/webhooks/stripe`);
   console.log(`  POST /api/webhooks/momo`);
   console.log(`  GET  /health`);

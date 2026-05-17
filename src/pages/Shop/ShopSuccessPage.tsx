@@ -1,37 +1,72 @@
 /**
  * PAGE: Shop Payment Success
- * MoMo redirect về URL này sau khi thanh toán hoàn tất.
- * URL: /shop/success?orderId=MB_xxx&resultCode=0
+ * v2: Poll backend /api/payment/order/:orderId thay vì chỉ dùng URL params
+ * MoMo redirect về URL này: /shop/success?orderId=MB_xxx
+ * Stripe redirect về URL này: /shop/success?orderId=MB_xxx
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePlayerStore } from '../../store/playerStore';
+import { paymentClient } from '../../services/paymentClient';
 import { CheckIcon, XIcon } from '../../components/shared/Icons';
 
 const ShopSuccessPage: React.FC = () => {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const { completePayment } = usePlayerStore();
-  const [status, setStatus] = useState<'loading' | 'success' | 'failed'>('loading');
-  const [orderId, setOrderId] = useState('');
+  const [status, setStatus] = useState<'pending' | 'success' | 'failed'>('pending');
+  const orderId = params.get('orderId') ?? '';
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const resultCode = parseInt(params.get('resultCode') ?? '1', 10);
-    const order = params.get('orderId') ?? '';
-
-    setOrderId(order);
-
-    if (resultCode === 0) {
-      // MoMo thành công (resultCode 0)
-      // Phần thưởng thực sự được phát qua webhook backend
-      // Đây chỉ là UI redirect — completePayment cập nhật UI lạc quan
-      if (order) completePayment(order);
-      setStatus('success');
-    } else {
-      setStatus('failed');
+    if (!orderId) {
+      navigate('/shop');
+      return;
     }
-  }, [completePayment]);
+
+    // Poll backend mỗi 2s, tối đa 15 lần (30s)
+    let attempts = 0;
+    pollingRef.current = setInterval(async () => {
+      attempts++;
+
+      try {
+        const data = await paymentClient.orderStatus(orderId);
+
+        if (data.status === 'SUCCESS') {
+          setStatus('success');
+          if (pollingRef.current) clearInterval(pollingRef.current);
+
+          // Cập nhật UI lạc quan
+          completePayment(orderId);
+
+          // Tự động quay về shop sau 3s
+          setTimeout(() => navigate('/shop'), 3000);
+        } else if (data.status === 'FAILED' || attempts >= 15) {
+          setStatus(data.status === 'FAILED' ? 'failed' : 'failed');
+          if (pollingRef.current) clearInterval(pollingRef.current);
+        }
+      } catch {
+        // Backend chưa sẵn sàng — fallback sang URL params
+        if (attempts >= 15) {
+          // Fallback: dùng resultCode từ MoMo URL params
+          const resultCode = parseInt(params.get('resultCode') ?? '1', 10);
+          if (resultCode === 0) {
+            completePayment(orderId);
+            setStatus('success');
+            setTimeout(() => navigate('/shop'), 3000);
+          } else {
+            setStatus('failed');
+          }
+          if (pollingRef.current) clearInterval(pollingRef.current);
+        }
+      }
+    }, 2000);
+
+    return () => {
+      if (pollingRef.current) clearInterval(pollingRef.current);
+    };
+  }, [orderId, navigate, completePayment, params]);
 
   return (
     <div style={{
@@ -59,14 +94,28 @@ const ShopSuccessPage: React.FC = () => {
           border: '2px solid rgba(139, 80, 0, 0.08)',
         }}
       >
-        {status === 'loading' && (
+        {status === 'pending' && (
           <>
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
               style={{ fontSize: 48, marginBottom: 16 }}
             >⏳</motion.div>
-            <p style={{ color: '#888' }}>Đang xác nhận giao dịch...</p>
+            <h2 style={{ fontWeight: 800, color: '#333', margin: '0 0 8px' }}>
+              Đang xử lý thanh toán...
+            </h2>
+            <p style={{ color: '#888', fontSize: 13 }}>
+              Vui lòng chờ trong giây lát. Hệ thống đang xác nhận giao dịch.
+            </p>
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 30, ease: 'linear' }}
+              style={{
+                height: 4, borderRadius: 2, marginTop: 20,
+                background: 'linear-gradient(90deg, #ae1471, #f59e0b)',
+              }}
+            />
           </>
         )}
 
@@ -90,7 +139,7 @@ const ShopSuccessPage: React.FC = () => {
               Thanh toán thành công!
             </h1>
             <p style={{ color: '#6b7280', marginBottom: 8, fontSize: 14 }}>
-              Phần thưởng đang được xử lý và sẽ vào tài khoản trong vài giây.
+              Phần thưởng đã được ghi nhận vào tài khoản của bạn.
             </p>
             {orderId && (
               <p style={{ fontSize: 11, color: '#9ca3af', fontFamily: 'monospace' }}>
@@ -142,7 +191,7 @@ const ShopSuccessPage: React.FC = () => {
             letterSpacing: '0.05em',
           }}
         >
-          {status === 'success' ? 'Quay lại Cửa hàng' : 'Thử lại'}
+          {status === 'success' ? 'Quay lại Cửa hàng' : status === 'pending' ? 'Đang xử lý...' : 'Thử lại'}
         </motion.button>
       </motion.div>
     </div>

@@ -1,10 +1,12 @@
 // services/momo.service.ts
 // Tạo lệnh thanh toán MoMo qua API v2
+// v2: Tạo order trong DB trước + gửi orderId trong extraData
 // Yêu cầu: MOMO_SECRET_KEY trong .env
 
 import crypto from 'crypto';
 import axios from 'axios';
 import { usdToVnd } from '../utils/currency';
+import { createOrder } from './order.service';
 
 export interface MomoPaymentResult {
   payUrl: string;       // redirect URL sang app/web MoMo
@@ -17,20 +19,28 @@ export interface MomoPaymentResult {
 
 /**
  * Tạo lệnh thanh toán MoMo.
- * Backend ký HMAC-SHA256 bằng MOMO_SECRET_KEY.
+ * 1. Tạo order trong DB (status=PENDING)
+ * 2. Ký HMAC-SHA256 bằng MOMO_SECRET_KEY
+ * 3. Gọi MoMo API → lấy payUrl
  * Frontend chỉ cần redirect tới payUrl.
  */
 export const createMomoPayment = async (
   amountUsd: number,
-  orderId: string,
   userId: string,
   itemId: string,
-): Promise<MomoPaymentResult> => {
+): Promise<MomoPaymentResult & { orderId: string }> => {
+  // 1. Tạo order trong DB
+  const order = await createOrder(userId, itemId, amountUsd, 'momo');
   const amount    = usdToVnd(amountUsd);
-  const requestId = `${orderId}_${Date.now()}`;
-  const extraData = Buffer.from(JSON.stringify({ userId, itemId })).toString('base64');
+  const requestId = `${order.orderId}_${Date.now()}`;
+
+  // extraData phải là base64 JSON — gửi kèm orderId để webhook đối soát
+  const extraData = Buffer.from(
+    JSON.stringify({ userId, itemId, orderId: order.orderId }),
+  ).toString('base64');
+
   const ipnUrl    = `${process.env.FRONTEND_URL}/api/webhooks/momo`;
-  const redirectUrl = `${process.env.FRONTEND_URL}/shop/success`;
+  const redirectUrl = `${process.env.FRONTEND_URL}/shop/success?orderId=${order.orderId}`;
   const orderInfo = `Math Battle - ${itemId}`;
   const partnerCode = process.env.MOMO_PARTNER_CODE!;
   const accessKey   = process.env.MOMO_ACCESS_KEY!;
@@ -43,7 +53,7 @@ export const createMomoPayment = async (
     `amount=${amount}`,
     `extraData=${extraData}`,
     `ipnUrl=${ipnUrl}`,
-    `orderId=${orderId}`,
+    `orderId=${order.orderId}`,
     `orderInfo=${orderInfo}`,
     `partnerCode=${partnerCode}`,
     `redirectUrl=${redirectUrl}`,
@@ -62,7 +72,7 @@ export const createMomoPayment = async (
     {
       partnerCode,
       requestId,
-      orderId,
+      orderId: order.orderId,
       amount,
       orderInfo,
       redirectUrl,
@@ -79,5 +89,9 @@ export const createMomoPayment = async (
     throw new Error(`MoMo error ${data.resultCode}: ${data.message}`);
   }
 
-  return { ...data, orderId, requestId };
+  return {
+    ...data,
+    orderId: order.orderId,
+    requestId,
+  };
 };

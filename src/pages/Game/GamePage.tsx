@@ -121,7 +121,7 @@ const MobileGamePage: React.FC = () => {
   );
 
   const renderPortraitFooter = () => (
-    <footer ref={handRef} className="player-section game-footer-section flex-shrink-0 w-full px-2 sm:px-4 z-50" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
+    <footer ref={handRef} className="player-section game-footer-section shrink-0 w-full px-2 sm:px-4 z-50" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 8px)' }}>
       <div className="hud-glass rounded-[32px] sm:rounded-[40px] p-2 sm:p-4 space-y-2 border-2 border-white/50 shadow-2xl relative overflow-visible">
         <div className="absolute inset-0 bg-primary/5 opacity-30 pointer-events-none rounded-[32px] sm:rounded-[40px] overflow-hidden"></div>
       
@@ -368,7 +368,7 @@ const MobileGamePage: React.FC = () => {
       collisionDetection={closestCorners}
     >
       <div 
-        className={`game-page-root h-[100dvh] w-full bg-[#fcf9f2] text-primary flex flex-col pt-[env(safe-area-inset-top,1rem)] font-body overflow-hidden select-none relative ${g.shakeIntensity > 0 ? `shake-${g.shakeIntensity}` : ''}`}
+        className={`game-page-root h-dvh w-full bg-[#fcf9f2] text-primary flex flex-col pt-[env(safe-area-inset-top,1rem)] font-body overflow-hidden select-none relative ${g.shakeIntensity > 0 ? `shake-${g.shakeIntensity}` : ''}`}
         style={{ touchAction: g.activeId ? 'none' : 'pan-y' }}
       >
         {/* Background Elements */}
