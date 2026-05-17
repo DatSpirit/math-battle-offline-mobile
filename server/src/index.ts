@@ -34,9 +34,22 @@ const PORT = parseInt(process.env.PORT || '3001', 10);
 const ALLOWED_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 // ─── Socket.IO (PvP Realtime) ─────────────────────
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 const io = new SocketServer(httpServer, {
   cors: { origin: ALLOWED_ORIGIN, methods: ['GET', 'POST'] },
 });
+
+// Rate limiting: 10 events/second per IP
+const socketRateLimiter = new RateLimiterMemory({ points: 10, duration: 1 });
+io.use(async (socket, next) => {
+  try {
+    await socketRateLimiter.consume(socket.handshake.address);
+    next();
+  } catch {
+    next(new Error('Rate limit exceeded — too many requests'));
+  }
+});
+
 import { initGameHandler } from './pvp/gameHandler';
 initGameHandler(io);
 

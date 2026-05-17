@@ -14,6 +14,7 @@ import OnboardingPage from './pages/Onboarding/OnboardingPage';
 import CampaignMapPage from './pages/Home/CampaignMapPage';
 import SummonPage from './pages/Summon/SummonPage';
 import PvPPage from './pages/PvP/PvPPage';
+import LeaderboardPage from './pages/Leaderboard/LeaderboardPage';
 import { useAuthStore } from './store/authStore';
 import { usePlayerStore } from './store/playerStore';
 import { useUIStore } from './store/uiStore';
@@ -156,6 +157,7 @@ function App() {
             <Route path="shop/success" element={<ShopSuccessPage />} />
             <Route path="campaign" element={<CampaignMapPage />} />
             <Route path="pvp" element={<PvPPage />} />
+            <Route path="leaderboard" element={<LeaderboardPage />} />
           </Route>
         </Routes>
       </Router>

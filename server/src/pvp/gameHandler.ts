@@ -9,6 +9,7 @@ import { calculateEloChange, calculateEloChangeDraw } from './eloCalculator';
 // ─── Constants ──────────────────────────────
 const TURN_TIMEOUT = 65_000; // 65s (5s buffer so với client 60s)
 const RECONNECT_WINDOW = 30_000; // 30s để reconnect
+const QUEUE_TIMEOUT = 30_000; // 30s tìm trận → emit no_match
 const TOTAL_TURNS = 6;
 
 // ─── In-Memory Room State ───────────────────
@@ -43,6 +44,7 @@ interface RoomState {
 
 const rooms = new Map<string, RoomState>();
 const playerRooms = new Map<string, string>(); // supabaseId → roomCode
+const queueTimers = new Map<string, ReturnType<typeof setTimeout>>(); // roomCode → queue timeout
 
 // ─── Utility ────────────────────────────────
 function generateRoomCode(): string {
@@ -127,6 +129,13 @@ export function initGameHandler(io: Server) {
         room.status = 'playing';
         room.currentTurn = 1;
 
+        // Cancel queue timeout since match was found
+        const existingTimer = queueTimers.get(room.roomCode);
+        if (existingTimer) {
+          clearTimeout(existingTimer);
+          queueTimers.delete(room.roomCode);
+        }
+
         // Update DB
         await prisma.pvpRoom.update({
           where: { roomCode: room.roomCode },
@@ -177,6 +186,20 @@ export function initGameHandler(io: Server) {
         socket.join(roomCode);
 
         socket.emit('waiting_for_opponent', { roomCode });
+
+        // Queue timeout 30s → emit no_match + cleanup
+        const queueTimer = setTimeout(() => {
+          const existingRoom = rooms.get(roomCode);
+          if (existingRoom && existingRoom.status === 'waiting') {
+            socket.emit('no_match', { message: 'Không tìm được đối thủ, thử lại sau' });
+            rooms.delete(roomCode);
+            playerRooms.delete(supabaseId);
+            queueTimers.delete(roomCode);
+            prisma.pvpRoom.delete({ where: { roomCode } }).catch(() => {});
+            console.log(`[PvP] Queue timeout for ${username} — room ${roomCode} cleaned`);
+          }
+        }, QUEUE_TIMEOUT);
+        queueTimers.set(roomCode, queueTimer);
       }
     });
 

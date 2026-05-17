@@ -1,0 +1,206 @@
+/* Leaderboard.css — Bảng xếp hạng ELO */
+
+.lb-container {
+  min-height: 100dvh;
+  background: linear-gradient(180deg, #1a0a2e 0%, #0d0618 100%);
+  color: #f5f0e8;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom) 0;
+}
+
+/* Header */
+.lb-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.lb-back-arrow {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #f5f0e8;
+  font-size: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.lb-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  flex: 1;
+}
+.lb-my-rank {
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  color: #1a0a2e;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+/* Tabs */
+.lb-tabs {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+}
+.lb-tab {
+  flex: 1;
+  padding: 0.6rem;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  border-radius: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lb-tab.active {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  border-color: #7c3aed;
+  color: white;
+}
+.lb-tab:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.lb-loading, .lb-empty, .lb-offline {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+.lb-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid rgba(255,255,255,0.1);
+  border-top: 3px solid #7c3aed;
+  border-radius: 50%;
+  animation: lb-spin 0.8s linear infinite;
+}
+@keyframes lb-spin { to { transform: rotate(360deg); } }
+
+.lb-offline h2 {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffd700;
+}
+
+/* List */
+.lb-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 1rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Row */
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255,255,255,0.04);
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: all 0.2s;
+}
+.lb-row.is-me {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.1);
+}
+.lb-row.top-1 {
+  background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,170,0,0.08));
+  border-color: rgba(255,215,0,0.3);
+}
+.lb-row.top-2 {
+  background: rgba(192,192,192,0.08);
+  border-color: rgba(192,192,192,0.2);
+}
+.lb-row.top-3 {
+  background: rgba(205,127,50,0.08);
+  border-color: rgba(205,127,50,0.2);
+}
+
+/* Cells */
+.lb-rank {
+  width: 2.5rem;
+  text-align: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+}
+.lb-row.top-1 .lb-rank,
+.lb-row.top-2 .lb-rank,
+.lb-row.top-3 .lb-rank {
+  font-size: 1.3rem;
+}
+.lb-avatar {
+  font-size: 1.5rem;
+}
+.lb-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.lb-name {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+.lb-level {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.4);
+  font-weight: 600;
+}
+.lb-elo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+}
+.lb-elo-value {
+  font-weight: 900;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #ffd700, #ffaa00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.lb-elo-label {
+  font-size: 0.6rem;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Back button */
+.lb-back-btn {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, #7c3aed, #5b21b6);
+  border: none;
+  border-radius: 2rem;
+  color: white;
+  font-weight: 900;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}

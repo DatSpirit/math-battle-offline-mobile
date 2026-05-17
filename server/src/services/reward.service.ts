@@ -98,6 +98,32 @@ export const deliverReward = async (
           },
         });
         console.log(`[REWARD] ✅ User ${user.username} (${userId}) received: ${reward.label}`);
+
+        // 2.5 Log Transaction for audit trail
+        if (reward.gems) {
+          await tx.transaction.create({
+            data: {
+              userId: user.id,
+              type: 'purchase',
+              amount: reward.gems,
+              currency: 'gems',
+              description: `Payment: ${reward.label}`,
+              orderId,
+            },
+          });
+        }
+        if (reward.coins) {
+          await tx.transaction.create({
+            data: {
+              userId: user.id,
+              type: 'purchase',
+              amount: reward.coins,
+              currency: 'coins',
+              description: `Payment: ${reward.label}`,
+              orderId,
+            },
+          });
+        }
       } else {
         console.warn(`[REWARD] ⚠️ User not found: ${userId} — reward logged but not applied to DB`);
       }

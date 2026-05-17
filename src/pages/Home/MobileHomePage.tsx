@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Map, Users, Zap, Info, Swords } from 'lucide-react';
+import { Bot, Map, Users, Zap, Info, Swords, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 
@@ -115,6 +115,30 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
               </div>
               <button className="w-full py-3 bg-red-600 text-white rounded-full text-xs font-black active:scale-95 transition-transform uppercase tracking-widest">
                 ⚔️ TÌM TRẬN
+              </button>
+            </div>
+          </motion.div>
+
+          {/* Leaderboard */}
+          <motion.div 
+            id="home-mode-leaderboard"
+            className="glass-panel rounded-4xl p-4 shadow-lg flex gap-4 items-center border-4 border-black compact-mode-card"
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/leaderboard')}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <div className="bg-yellow-500/10 p-3 rounded-xl flex items-center justify-center shrink-0">
+              <Trophy size={24} className="text-yellow-500" />
+            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                <h3 className="text-lg font-black font-headline text-on-surface">Bảng Xếp Hạng</h3>
+                <p className="text-xs text-on-surface-variant font-medium">Top 100 người chơi mạnh nhất</p>
+              </div>
+              <button className="w-full py-3 bg-yellow-600 text-white rounded-full text-xs font-black active:scale-95 transition-transform uppercase tracking-widest">
+                🏆 XEM RANK
               </button>
             </div>
           </motion.div>

@@ -62,3 +62,17 @@ model PvpRoom {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+// ─── TRANSACTION LOG (Sprint 7) ─────────────────────
+// Audit trail cho mọi thay đổi tài sản (gems/coins)
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // "purchase" | "reward" | "spend" | "pvp_reward"
+  amount      Int
+  currency    String   // "coins" | "gems"
+  description String?
+  orderId     String?  // Link tới Order nếu là purchase
+  createdAt   DateTime @default(now())
+}
+

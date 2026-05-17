@@ -165,6 +165,11 @@ export const usePvPStore = create<PvPState>((set, get) => ({
       });
     });
 
+    socket.on('no_match', ({ message }: { message: string }) => {
+      set({ phase: 'idle', error: message || 'Không tìm được đối thủ, thử lại sau' });
+      socket.disconnect();
+    });
+
     socket.on('error', ({ message }) => {
       set({ error: message });
     });
