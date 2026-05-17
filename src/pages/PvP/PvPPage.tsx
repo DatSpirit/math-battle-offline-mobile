@@ -112,6 +112,12 @@ const PvPPage: React.FC = () => {
             </motion.button>
 
             <motion.button className="pvp-search-btn cancel"
+              style={{ background: '#ca8a04' }}
+              onClick={() => navigate('/leaderboard')} whileTap={{ scale: 0.95 }}>
+              🏆 BẢNG XẾP HẠNG
+            </motion.button>
+
+            <motion.button className="pvp-search-btn cancel"
               onClick={handleGoHome} whileTap={{ scale: 0.95 }}>
               ← QUAY LẠI
             </motion.button>

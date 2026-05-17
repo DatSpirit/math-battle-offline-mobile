@@ -67,8 +67,8 @@ const LeaderboardPage: React.FC = () => {
           <span style={{ fontSize: '4rem' }}>🌐</span>
           <h2>Cần Đăng Nhập Online</h2>
           <p>Đăng nhập để xem bảng xếp hạng</p>
-          <motion.button className="lb-back-btn" onClick={() => navigate('/')} whileTap={{ scale: 0.95 }}>
-            VỀ TRANG CHỦ
+          <motion.button className="lb-back-btn" onClick={() => navigate(-1)} whileTap={{ scale: 0.95 }}>
+            QUAY LẠI
           </motion.button>
         </div>
       </div>
@@ -81,7 +81,7 @@ const LeaderboardPage: React.FC = () => {
     <div className="lb-container">
       {/* Header */}
       <div className="lb-header">
-        <motion.button className="lb-back-arrow" onClick={() => navigate('/')} whileTap={{ scale: 0.9 }}>
+        <motion.button className="lb-back-arrow" onClick={() => navigate(-1)} whileTap={{ scale: 0.9 }}>
           ←
         </motion.button>
         <h1 className="lb-title">🏆 Bảng Xếp Hạng</h1>
