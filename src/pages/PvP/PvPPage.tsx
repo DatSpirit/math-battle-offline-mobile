@@ -34,12 +34,11 @@ const PvPPage: React.FC = () => {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, [phase, hasSubmitted, timeLeft, setTimeLeft]);
 
-  // Reset selectedCards on new turn (using ref to avoid setState-in-effect)
-  const prevTurnRef = useRef(currentTurn);
-  if (prevTurnRef.current !== currentTurn) {
-    prevTurnRef.current = currentTurn;
-    if (selectedCards.length > 0) setSelectedCards([]);
-  }
+  // Reset selectedCards khi bắt đầu lượt mới
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    setSelectedCards([]);
+  }, [currentTurn]);
 
   // Cleanup on unmount
   useEffect(() => {

@@ -404,7 +404,7 @@ async function endGame(io: Server, room: RoomState, winnerId: string | null, rea
         data: {
           elo: { increment: p1EloChange },
           wins: winnerId === room.p1Id ? { increment: 1 } : undefined,
-          winStreak: winnerId === room.p1Id ? { increment: 1 } : 0,
+          winStreak: winnerId === room.p1Id ? { increment: 1 } : { set: 0 },
         },
       }),
       prisma.user.update({
@@ -412,7 +412,7 @@ async function endGame(io: Server, room: RoomState, winnerId: string | null, rea
         data: {
           elo: { increment: p2EloChange },
           wins: winnerId === p2Id ? { increment: 1 } : undefined,
-          winStreak: winnerId === p2Id ? { increment: 1 } : 0,
+          winStreak: winnerId === p2Id ? { increment: 1 } : { set: 0 },
         },
       }),
     ]);

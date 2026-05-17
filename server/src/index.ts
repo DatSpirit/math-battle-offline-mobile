@@ -13,6 +13,7 @@ import authRoutes    from './routes/auth.routes';
 import syncRoutes    from './routes/sync.routes';
 import leaderboardRoutes from './routes/leaderboard.routes';
 import balanceRoutes from './routes/balance.routes';
+import { prisma } from './lib/prisma';
 import { handleStripeWebhook } from './webhooks/stripe.webhook';
 import { handleMomoWebhook }   from './webhooks/momo.webhook';
 
@@ -108,4 +109,22 @@ httpServer.listen(PORT, () => {
   console.log('  quick_match → match_found → turn_start → submit_cards → turn_result → game_over');
   console.log('  reconnect_room | disconnect (30s window)');
   console.log('');
+
+  // ─── Room Cleanup Cron (mỗi 1h, xóa room > 2h) ──────────
+  setInterval(async () => {
+    try {
+      const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000);
+      const result = await prisma.pvpRoom.deleteMany({
+        where: {
+          status: { in: ['waiting', 'finished'] },
+          updatedAt: { lt: twoHoursAgo },
+        },
+      });
+      if (result.count > 0) {
+        console.log(`[Cleanup] 🗑️ Deleted ${result.count} stale PvP rooms`);
+      }
+    } catch (err) {
+      console.error('[Cleanup] Error:', err);
+    }
+  }, 60 * 60 * 1000); // Mỗi 1 giờ
 });

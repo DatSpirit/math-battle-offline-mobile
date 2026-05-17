@@ -59,7 +59,7 @@ export function validatePlay(
 
 /**
  * Tính giá trị biểu thức từ cards (server-side version)
- * Giống evaluatePlay() bên client nhưng simplified cho server.
+ * Sử dụng safe evaluator thay vì new Function() để tránh code injection.
  */
 export function evaluateServerPlay(cards: ServerCard[], turn: number): number | null {
   if (cards.length === 0) return null;
@@ -81,15 +81,67 @@ export function evaluateServerPlay(cards: ServerCard[], turn: number): number | 
     if (cards[i].type === 'operator' && cards[i + 1].type === 'operator') return null;
   }
 
-  const expression = cards.map(c => c.value).join('');
-
+  // Safe math evaluation (no new Function!)
   try {
-    if (/[^0-9+\-*/.\\s]/.test(expression)) return null;
-    if (/\/0(?!\.)/.test(expression)) return null;
-    const result = new Function(`"use strict"; return (${expression})`)();
+    const result = safeEval(cards);
     if (typeof result !== 'number' || !isFinite(result)) return null;
     return result;
   } catch {
     return null;
   }
+}
+
+/**
+ * Safe recursive descent parser for simple math expressions.
+ * Supports: +, -, *, / with correct precedence.
+ * NO code execution — purely arithmetic.
+ */
+function safeEval(cards: ServerCard[]): number {
+  // Build tokens: multi-digit numbers + operators
+  const tokens: { type: 'num' | 'op'; value: string }[] = [];
+  let currentNum = '';
+
+  for (const card of cards) {
+    if (card.type === 'number') {
+      currentNum += card.value;
+    } else {
+      if (currentNum) {
+        tokens.push({ type: 'num', value: currentNum });
+        currentNum = '';
+      }
+      tokens.push({ type: 'op', value: card.value });
+    }
+  }
+  if (currentNum) tokens.push({ type: 'num', value: currentNum });
+
+  // Parse with operator precedence: * / first, then + -
+  let pos = 0;
+
+  function parseExpr(): number {
+    let left = parseTerm();
+    while (pos < tokens.length && tokens[pos].type === 'op' && (tokens[pos].value === '+' || tokens[pos].value === '-')) {
+      const op = tokens[pos++].value;
+      const right = parseTerm();
+      left = op === '+' ? left + right : left - right;
+    }
+    return left;
+  }
+
+  function parseTerm(): number {
+    let left = parsePrimary();
+    while (pos < tokens.length && tokens[pos].type === 'op' && (tokens[pos].value === '*' || tokens[pos].value === '/')) {
+      const op = tokens[pos++].value;
+      const right = parsePrimary();
+      if (op === '/' && right === 0) throw new Error('Division by zero');
+      left = op === '*' ? left * right : left / right;
+    }
+    return left;
+  }
+
+  function parsePrimary(): number {
+    if (pos >= tokens.length || tokens[pos].type !== 'num') throw new Error('Expected number');
+    return parseFloat(tokens[pos++].value);
+  }
+
+  return parseExpr();
 }
