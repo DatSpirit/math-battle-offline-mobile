@@ -89,22 +89,22 @@ const CardInspector: React.FC<CardInspectorProps> = ({
         animate={{ y: 0, opacity: 1 }} 
         exit={{ y: '100%', opacity: 0 }} 
         transition={{ type: 'spring', damping: 25, stiffness: 200 }} 
-        className="w-full h-auto max-h-[85vh] flex flex-col bg-[#2a2a24] rounded-t-[48px] shadow-[0_-20px_100px_rgba(0,0,0,0.9)] border-t-4 border-primary pointer-events-auto overflow-hidden"
+        className="w-full h-auto max-h-[85vh] flex flex-col bg-[#fcfae4] rounded-t-3xl border-t-4 border-x-4 border-black shadow-[0_-8px_0_#1c1c0f] pointer-events-auto overflow-hidden"
       >
-        {/* Header HUD - Ultra Sleek */}
-        <div className="bg-primary/5 backdrop-blur-xl px-6 py-5 border-b border-primary/10 flex items-center justify-between shrink-0">
+        {/* Header HUD */}
+        <div className="bg-primary px-6 py-5 border-b-4 border-black flex items-center justify-between shrink-0">
            <div className="flex items-center gap-4">
-              <button onClick={onClose} className="size-14 flex items-center justify-center bg-black text-white rounded-2xl active:scale-90 transition-all shadow-xl border border-white/20">
+              <button onClick={onClose} className="size-12 flex items-center justify-center bg-white text-black rounded-xl active:scale-90 transition-all border-2 border-black shadow-[0_4px_0_#1c1c0f]">
                 <ChevronLeftIcon size={24} />
               </button>
                <div className="flex flex-col min-w-0">
-                  <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight wrap-break-word">{card.name}</h2>
-                  <span className="text-[0.7rem] font-black text-white/40 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
+                  <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-tight wrap-break-word drop-shadow-md">{card.name}</h2>
+                  <span className="text-[0.7rem] font-black text-white/80 uppercase tracking-[0.2em] mt-1">{activeTab === 'library' ? 'LIBRARY-ARCHIVE' : 'OWNED-PROTOCOL'}</span>
                </div>
            </div>
            <div className="flex items-center gap-3">
-              <div className="px-3.5 py-1.5 bg-primary text-white rounded-xl shadow-sm border border-white/20">
-                 <span className="text-[9px] font-black uppercase tracking-widest">{card.rarity}</span>
+              <div className="px-3.5 py-1.5 bg-white text-primary rounded-xl border-2 border-black shadow-[0_3px_0_#1c1c0f]">
+                 <span className="text-[10px] font-black uppercase tracking-widest">{card.rarity}</span>
               </div>
            </div>
         </div>
@@ -113,15 +113,14 @@ const CardInspector: React.FC<CardInspectorProps> = ({
           <div className="flex gap-4 items-stretch">
              {/* Left Column (40%): Card Visual ONLY */}
              <div className="w-[40%] flex flex-col shrink-0">
-                <div className="aspect-3/4 w-full flex justify-center items-center relative bg-white/5 rounded-3xl shadow-inner overflow-hidden h-full">
-                   <div className="w-[90%] relative z-10 drop-shadow-[0_0_20px_rgba(0,0,0,0.5)] flex justify-center">
+                <div className="aspect-3/4 w-full flex justify-center items-center relative bg-white border-4 border-black shadow-[4px_4px_0_#1c1c0f] rounded-2xl overflow-hidden h-full">
+                   <div className="w-[90%] relative z-10 flex justify-center">
                      <Card id="m-inspect" {...card} isDraggable={false} />
                    </div>
                    {/* Card count badge (xN) - Mirrored from Desktop */}
-                   <div className="absolute bottom-2 right-2 bg-black text-white px-2 py-0.5 rounded-lg border border-white/20 font-black text-[10px] shadow-xl z-20">
+                   <div className="absolute bottom-2 right-2 bg-black text-white px-2 py-0.5 rounded-lg border-2 border-white font-black text-[10px] shadow-md z-20">
                      x{card.count}
                    </div>
-                   <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-50 opacity-40"></div>
                 </div>
              </div>
 
@@ -129,52 +128,50 @@ const CardInspector: React.FC<CardInspectorProps> = ({
              <div className="flex-1 flex flex-col gap-2.5">
                 {/* Stats Row */}
                 <div className="grid grid-cols-2 gap-2">
-                   <div className="bg-black/40 p-3 rounded-lg border-2 border-white/10 flex flex-col items-center justify-center shadow-lg">
-                      <span className="text-[7px] font-black text-white/90 uppercase tracking-widest mb-1">LEVEL</span>
+                   <div className="bg-white p-3 rounded-xl border-2 border-black flex flex-col items-center justify-center shadow-[2px_2px_0_#1c1c0f]">
+                      <span className="text-[8px] font-black text-black/60 uppercase tracking-widest mb-1">LEVEL</span>
                       <div className="flex items-baseline gap-1">
-                         <span className="text-[16px] font-black text-white italic leading-none">{card.level}</span>
-                         <span className="text-[9px] font-black text-white/20">/{50 + (card.redStars || 0) * 10}</span>
+                         <span className="text-[18px] font-black text-primary italic leading-none">{card.level}</span>
+                         <span className="text-[10px] font-black text-black/40">/{50 + (card.redStars || 0) * 10}</span>
                       </div>
                    </div>
-                   <div className="bg-[#1a1a1a] p-3 rounded-lg border-2 border-white/10 flex flex-col items-center justify-center shadow-lg">
-                      <span className="text-[7px] font-black text-white/90 uppercase tracking-widest mb-1">STARS</span>
+                   <div className="bg-white p-3 rounded-xl border-2 border-black flex flex-col items-center justify-center shadow-[2px_2px_0_#1c1c0f]">
+                      <span className="text-[8px] font-black text-black/60 uppercase tracking-widest mb-1">STARS</span>
                       <div className="flex gap-1">
                         {Array.from({ length: 5 }).map((_, i) => (
-                          <StarIcon key={i} size={10} className={i < card.stars ? 'text-amber-500 fill-amber-500' : 'text-white/90 shadow-sm'} />
+                          <StarIcon key={i} size={12} className={i < card.stars ? 'text-amber-500 fill-amber-500' : 'text-gray-300'} />
                         ))}
                       </div>
                    </div>
                 </div>
 
                  {/* Flavor Text Block - Highlighted */}
-                 <div className="bg-primary/10 p-3.5 rounded-xl border border-primary/20 flex flex-col justify-center relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-8 h-8 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <p className="text-[11px] font-bold text-white/80 leading-relaxed italic text-center relative z-10">
+                 <div className="bg-primary/10 p-3.5 rounded-xl border-2 border-primary border-dashed flex flex-col justify-center relative overflow-hidden">
+                    <p className="text-[11px] font-bold text-primary leading-relaxed italic text-center relative z-10">
                        "{CARD_METADATA[card.value]?.flavorText || "Dữ liệu giới thiệu đang cập nhật..."}"
                     </p>
                  </div>
 
-                {/* Ability Block - Removed Black Background */}
-                <div className="bg-black/60 p-4 rounded-xl border-2 border-white/5 shadow-xl relative overflow-hidden flex-1 flex flex-col justify-center">
-                   <div className="absolute top-0 right-0 w-16 h-16 bg-primary/20 blur-3xl"></div>
+                {/* Ability Block */}
+                <div className="bg-white p-4 rounded-xl border-2 border-black shadow-[4px_4px_0_#1c1c0f] relative overflow-hidden flex-1 flex flex-col justify-center">
                    <div className="flex items-center gap-2 mb-2">
-                      <div className="size-2 bg-amber-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]"></div>
-                      <span className="text-[9px] font-black text-white uppercase tracking-[0.2em]">{card.abilityName || "PROTOCOL-A"}</span>
+                      <div className="size-2 bg-red-500 rounded-full animate-pulse border border-black"></div>
+                      <span className="text-[10px] font-black text-black uppercase tracking-[0.2em]">{card.abilityName || "PROTOCOL-A"}</span>
                    </div>
-                   <p className="text-[12px] font-bold text-white/90 leading-snug italic line-clamp-3">
+                   <p className="text-[12px] font-bold text-black/80 leading-snug line-clamp-3">
                     {resolveAbilityDesc(card.value, card.rarity) || "Dữ liệu kỹ năng đang được cập nhật..."}
                    </p>
                 </div>
 
                 {/* Activation Block */}
-                <div className="bg-[#1a1a1a] p-4 rounded-xl border-2 border-white/5 shadow-inner relative overflow-hidden flex flex-col justify-center">
+                <div className="bg-[#f1efd9] p-4 rounded-xl border-2 border-black shadow-[2px_2px_0_#1c1c0f] flex flex-col justify-center">
                    <div className="flex items-center gap-2 mb-2">
-                      <div className="size-5 bg-white/10 rounded-lg flex items-center justify-center shadow-sm border border-white/10">
-                         <InfoIcon size={10} className="text-white/60"/>
+                      <div className="size-5 bg-white rounded-lg flex items-center justify-center border-2 border-black">
+                         <InfoIcon size={12} className="text-black"/>
                       </div>
-                      <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.2em]">ACTIVATION</span>
+                      <span className="text-[10px] font-black text-black/60 uppercase tracking-[0.2em]">ACTIVATION</span>
                    </div>
-                   <p className="text-[11px] font-bold text-white/60 leading-snug italic line-clamp-2">
+                   <p className="text-[11px] font-bold text-black/80 leading-snug italic line-clamp-2">
                       {card.rarity === 'normal' ? "Không có điều kiện" : (card.activationCond || "Executes upon deployment into the computational grid.")}
                    </p>
                 </div>
@@ -189,18 +186,18 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                   const isReady = card.level >= nextRequiredLevel;
 
                   return (
-                    <div className="bg-black/40 p-3 rounded-xl border-2 border-white/10 shadow-lg space-y-2">
+                    <div className="bg-white p-3 rounded-xl border-2 border-black shadow-[4px_4px_0_#1c1c0f] space-y-2 mt-1">
                       <div className="flex justify-between items-center px-1">
-                        <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Evolution Progress</span>
-                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-md ${isReady ? 'bg-green-500 text-white' : 'text-primary'}`}>
-                          {isReady ? 'READY' : `${card.level}/${nextRequiredLevel}`}
+                        <span className="text-[9px] font-black text-black/60 uppercase tracking-widest">TIẾN ĐỘ THĂNG HOA</span>
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border-2 border-black ${isReady ? 'bg-green-500 text-white' : 'bg-[#f1efd9] text-black'}`}>
+                          {isReady ? 'SẴN SÀNG' : `${card.level}/${nextRequiredLevel}`}
                         </span>
                       </div>
-                      <div className="h-3 bg-black rounded-full border border-white/10 p-0.5 overflow-hidden">
+                      <div className="h-4 bg-gray-200 rounded-full border-2 border-black overflow-hidden relative">
                           <motion.div 
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
-                            className={`h-full rounded-full ${isReady ? 'bg-green-500 glow-green' : 'bg-primary'}`}
+                            className={`h-full border-r-2 border-black ${isReady ? 'bg-green-500' : 'bg-primary'}`}
                           />
                       </div>
                     </div>
@@ -215,15 +212,15 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                 <button 
                   onClick={onClaimReward}
                   disabled={isRewardClaimed || !card.isOwned}
-                  className={`flex-1 py-4.5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] shadow-[0_5px_0_rgba(0,0,0,1)] active:shadow-none active:translate-y-1 transition-all border-2 border-black flex items-center justify-center gap-2 ${isRewardClaimed || !card.isOwned ? 'bg-gray-200 text-gray-400 border-gray-300 opacity-50' : 'bg-linear-to-r from-amber-400 to-orange-500 text-white animate-pulse-slow'}`}
+                  className={`flex-1 py-4.5 rounded-2xl font-black uppercase text-xs tracking-[0.2em] active:translate-y-1 transition-all border-4 border-black flex items-center justify-center gap-2 ${isRewardClaimed || !card.isOwned ? 'bg-gray-200 text-gray-400 opacity-50 shadow-none' : 'bg-amber-400 text-black shadow-[0_6px_0_#1c1c0f] active:shadow-[0_0px_0_#1c1c0f] animate-pulse-slow'}`}
                 >
                   {isRewardClaimed ? 'ĐÃ NHẬN THƯỞNG' : !card.isOwned ? 'CHƯA SỞ HỮU' : 'NHẬN QUÀ KHAI PHÁ'}
                 </button>
              ) : (
                 <>
                   {card.rarity === 'normal' ? (
-                    <div className="flex-1 bg-white/5 border-2 border-white/10 rounded-xl py-6 flex items-center justify-center">
-                       <span className="text-[11px] font-black text-white/30 uppercase tracking-[0.3em]">KHÔNG THỂ NÂNG CẤP</span>
+                    <div className="flex-1 bg-gray-200 border-4 border-black rounded-2xl py-6 flex items-center justify-center shadow-[inset_0_4px_0_rgba(0,0,0,0.1)]">
+                       <span className="text-[12px] font-black text-black/40 uppercase tracking-[0.3em]">KHÔNG THỂ NÂNG CẤP</span>
                     </div>
                   ) : (
                     <>
@@ -234,13 +231,13 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                         onTouchStart={startAutoUpgrade}
                         onTouchEnd={stopAutoUpgrade}
                         disabled={isMaxLevel || coins < levelUpCost}
-                        className={`flex-1 py-5 rounded-xl font-black uppercase text-sm tracking-widest shadow-[0_6px_0_#000] active:shadow-none active:translate-y-1 transition-all border-2 border-black flex flex-col items-center justify-center gap-1 disabled:grayscale disabled:opacity-50 ${isMaxLevel ? 'bg-gray-400' : coins >= levelUpCost ? 'bg-green-500 text-white' : 'bg-white text-black'}`}
+                        className={`flex-1 py-4 rounded-2xl font-black uppercase text-sm tracking-widest active:translate-y-1 transition-all border-4 border-black flex flex-col items-center justify-center gap-1 disabled:grayscale disabled:opacity-50 ${isMaxLevel ? 'bg-gray-300 shadow-none' : coins >= levelUpCost ? 'bg-green-500 text-white shadow-[0_6px_0_#1c1c0f] active:shadow-none' : 'bg-white text-black shadow-[0_6px_0_#1c1c0f] active:shadow-none'}`}
                       >
                         <span>{isMaxLevel ? 'TỐI ĐA' : 'NÂNG CẤP'}</span>
                         {!isMaxLevel && (
-                          <div className="bg-black/20 text-current px-3 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 border border-black/10">
+                          <div className="bg-white text-black px-3 py-0.5 rounded-full text-[11px] font-black flex items-center gap-1 border-2 border-black shadow-[inset_0_2px_0_rgba(0,0,0,0.1)] mt-1">
                             {levelUpCost.toLocaleString()}
-                            <CoinIcon size={10} />
+                            <CoinIcon size={12} />
                           </div>
                         )}
                       </button>
@@ -248,12 +245,12 @@ const CardInspector: React.FC<CardInspectorProps> = ({
                       <button 
                         onClick={onEvolve}
                         disabled={isMaxStars}
-                        className="flex-1 bg-amber-500 text-white py-5 rounded-xl font-black uppercase text-sm tracking-widest shadow-[0_6px_0_#000] active:shadow-none active:translate-y-1 transition-all border-2 border-black flex flex-col items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 bg-amber-400 text-black py-4 rounded-2xl font-black uppercase text-sm tracking-widest shadow-[0_6px_0_#1c1c0f] active:shadow-none active:translate-y-1 transition-all border-4 border-black flex flex-col items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <span>THĂNG HOA</span>
-                        <div className="bg-black/40 text-white px-3 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 border border-white/10">
+                        <div className="bg-white text-black px-3 py-0.5 rounded-full text-[11px] font-black flex items-center gap-1 border-2 border-black shadow-[inset_0_2px_0_rgba(0,0,0,0.1)] mt-1">
                           {evolutionCost.toLocaleString()}
-                          <CoinIcon size={10} />
+                          <CoinIcon size={12} />
                         </div>
                       </button>
                     </>

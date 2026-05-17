@@ -25,7 +25,7 @@ router.get('/', async (_req, res) => {
     });
 
     // Thêm rank
-    const ranked = players.map((p, i) => ({ ...p, rank: i + 1 }));
+    const ranked = players.map((p: any, i: number) => ({ ...p, rank: i + 1 }));
     return res.json({ data: ranked });
   } catch (err) {
     console.error('[Leaderboard] Error:', err);
@@ -69,9 +69,9 @@ router.get('/around', requireAuth, async (req: AuthRequest, res) => {
     });
 
     const result = [
-      ...above.reverse().map((p, i) => ({ ...p, rank: myRank - above.length + i })),
+      ...above.reverse().map((p: any, i: number) => ({ ...p, rank: myRank - above.length + i })),
       { ...meData, rank: myRank, isMe: true },
-      ...below.map((p, i) => ({ ...p, rank: myRank + 1 + i })),
+      ...below.map((p: any, i: number) => ({ ...p, rank: myRank + 1 + i })),
     ];
 
     return res.json({ data: result, myRank });

@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
 import helmet from 'helmet';
+import compression from 'compression';
 
 import paymentRoutes from './routes/payment.routes';
 import authRoutes    from './routes/auth.routes';
@@ -65,6 +66,7 @@ app.post(
 
 // ─── Global Middleware ───────────────────────────────────────────
 app.use(helmet());                                // HTTP security headers
+app.use(compression());                           // Compress responses
 app.use(cors({ origin: ALLOWED_ORIGIN }));        // Chỉ cho phép frontend URL
 app.use(express.json({ limit: '1mb' }));          // Parse JSON body
 // ─────────────────────────────────────────────────────────────────

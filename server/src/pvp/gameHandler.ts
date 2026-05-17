@@ -77,17 +77,36 @@ function dealCards(turn: number, deck: ServerCard[]): { hand: ServerCard[]; rema
   };
 }
 
+import { createClient } from '@supabase/supabase-js';
+
+// ─── Supabase Client ────────────────────────
+const supabaseUrl = process.env.SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 // ─── Socket Handler ─────────────────────────
 export function initGameHandler(io: Server) {
-  io.on('connection', (socket: Socket) => {
-    const supabaseId = socket.handshake.auth?.supabaseId as string;
-    const username = socket.handshake.auth?.username as string || 'Player';
-
-    if (!supabaseId) {
-      socket.emit('error', { message: 'Authentication required' });
-      socket.disconnect();
-      return;
+  // Socket.IO Middleware bảo mật: Bắt buộc xác thực JWT
+  io.use(async (socket, next) => {
+    const token = socket.handshake.auth?.token;
+    if (!token) return next(new Error('Authentication required'));
+    
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) return next(new Error('Invalid or expired token'));
+      
+      // Lưu thông tin đã xác thực vào socket data an toàn
+      socket.data.supabaseId = user.id;
+      socket.data.username = socket.handshake.auth?.username || 'Player';
+      next();
+    } catch (err) {
+      return next(new Error('Authentication failed'));
     }
+  });
+
+  io.on('connection', (socket: Socket) => {
+    const supabaseId = socket.data.supabaseId;
+    const username = socket.data.username;
 
     console.log(`[PvP] ${username} connected (${supabaseId.slice(0, 8)}...)`);
 

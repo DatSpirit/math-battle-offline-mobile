@@ -35,10 +35,11 @@ const PvPPage: React.FC = () => {
   }, [phase, hasSubmitted, timeLeft, setTimeLeft]);
 
   // Reset selectedCards khi bắt đầu lượt mới
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
+  const [prevTurn, setPrevTurn] = useState(currentTurn);
+  if (currentTurn !== prevTurn) {
+    setPrevTurn(currentTurn);
     setSelectedCards([]);
-  }, [currentTurn]);
+  }
 
   // Cleanup on unmount
   useEffect(() => {

@@ -3,7 +3,7 @@
 // Dùng chung cho tất cả services, tránh tạo nhiều connection
 
 import 'dotenv/config';
-import { PrismaClient } from '.prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import path from 'path';
 
@@ -15,7 +15,4 @@ const adapter = new PrismaBetterSqlite3({
   url: `file:${absoluteDbPath}`,
 });
 
-// Type assertion: adapter option confuses TS generic inference,
-// but model accessors (user, pvpRoom, order) exist correctly at runtime.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const prisma = new PrismaClient({ adapter } as any) as PrismaClient;
+export const prisma = new PrismaClient({ adapter });

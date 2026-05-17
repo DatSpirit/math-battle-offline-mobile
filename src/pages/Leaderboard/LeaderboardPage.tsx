@@ -24,11 +24,11 @@ const LeaderboardPage: React.FC = () => {
   const [top100, setTop100] = useState<LeaderboardEntry[]>([]);
   const [aroundMe, setAroundMe] = useState<LeaderboardEntry[]>([]);
   const [myRank, setMyRank] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(isOnlineMode);
   const [tab, setTab] = useState<'top' | 'around'>('top');
 
   const fetchLeaderboard = useCallback(async () => {
-    setLoading(true);
+    Promise.resolve().then(() => setLoading(true));
     try {
       // Public: Top 100
       const topRes = await fetch(`${API_URL}/api/leaderboard`);
@@ -57,7 +57,6 @@ const LeaderboardPage: React.FC = () => {
 
   useEffect(() => {
     if (isOnlineMode) fetchLeaderboard();
-    else setLoading(false);
   }, [isOnlineMode, fetchLeaderboard]);
 
   if (!isOnlineMode) {
