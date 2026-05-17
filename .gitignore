@@ -50,6 +50,8 @@ KE_HOACH_TICH_HOP_THANH_TOAN.md
 HUONG_DAN_SETUP_PAYMENT.md
 payment_plan_v2.md
 tích hợp cổng thanh toán.md
+pvp_implementation_plan.md
+server_pvp_plan.md
 # Backend server secrets — KHÔNG BAO GIỜ commit .env thật
 server/.env
 server/node_modules/

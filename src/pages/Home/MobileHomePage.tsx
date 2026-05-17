@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Map, Users, Zap, Info } from 'lucide-react';
+import { Bot, Map, Users, Zap, Info, Swords } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 interface HomePageMobileProps {
   onStartAIBattle: (difficulty: 'easy' | 'medium' | 'hard') => void;
@@ -21,6 +22,7 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
   hasCompletedTutorial
 }) => {
   const navigate = useNavigate();
+  const { isOnlineMode } = useAuthStore();
   const [selectedDifficulty, setSelectedDifficulty] = React.useState<'easy' | 'medium' | 'hard'>('easy');
 
   return (
@@ -88,6 +90,33 @@ const HomePageMobile: React.FC<HomePageMobileProps> = ({
               <Zap size={20} fill="currentColor" />
               BẮT ĐẦU NGAY
             </motion.button>
+          </motion.div>
+
+          {/* 🔥 PVP ONLINE ARENA — NEW */}
+          <motion.div 
+            id="home-mode-pvp"
+            className="glass-panel rounded-4xl p-4 shadow-lg relative overflow-hidden flex gap-4 items-center border-4 border-black compact-mode-card"
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/pvp')}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="absolute top-0 right-0 px-4 py-1.5 bg-red-600 text-white text-[8px] font-black italic rounded-bl-xl uppercase tracking-widest">
+              {isOnlineMode ? '🔴 LIVE' : '🔒 OFFLINE'}
+            </div>
+            <div className="bg-red-500/10 p-3 rounded-xl flex items-center justify-center shrink-0">
+              <Swords size={24} className="text-red-600" />
+            </div>
+            <div className="flex-1 space-y-3">
+              <div>
+                <h3 className="text-lg font-black font-headline text-on-surface">PvP Arena</h3>
+                <p className="text-xs text-on-surface-variant font-medium">Đấu trực tuyến với người chơi thật</p>
+              </div>
+              <button className="w-full py-3 bg-red-600 text-white rounded-full text-xs font-black active:scale-95 transition-transform uppercase tracking-widest">
+                ⚔️ TÌM TRẬN
+              </button>
+            </div>
           </motion.div>
 
           {/* Campaign Mode */}

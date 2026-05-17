@@ -1,7 +1,8 @@
 // services/reward.service.ts
 // Phát thưởng sau khi thanh toán thành công
-// v2: Idempotency qua database thay vì in-memory Set
+// v3: Idempotency qua database + cập nhật User.gems/coins trong Prisma
 
+import { prisma } from '../lib/prisma';
 import {
   getOrderByOrderId,
   markOrderSuccess,
@@ -12,7 +13,7 @@ import {
  * Map itemId → loại phần thưởng
  * Phải khớp với id trong shopData.ts của frontend
  */
-const REWARD_MAP: Record<string, { gems?: number; coins?: number; cardPacks?: number; label: string }> = {
+const REWARD_MAP: Record<string, { gems?: number; coins?: number; label: string }> = {
   // ─── Special Offers ──────────────────────
   gems_limited_100k:  { gems: 10000,   label: '10,000 Gems (Rương Báu Vĩnh Cửu)' },
   gems_limited_daily: { gems: 1500,    label: '1,500 Gems (Siêu Cấp Giới Hạn)' },
@@ -35,8 +36,9 @@ const REWARD_MAP: Record<string, { gems?: number; coins?: number; cardPacks?: nu
 /**
  * Phát thưởng cho người chơi sau thanh toán thành công.
  * Idempotency: check DB → nếu đã phát thì bỏ qua.
+ * Sprint 7: Cập nhật User.gems/coins trong Prisma DB
  *
- * @param userId    - ID người chơi (từ webhook metadata)
+ * @param userId    - ID người chơi (supabaseId từ webhook metadata)
  * @param itemId    - ID sản phẩm (khớp shopData.ts)
  * @param orderId   - ID giao dịch (để đối soát + chống trùng)
  * @param transId   - Transaction ID từ cổng thanh toán
@@ -62,23 +64,57 @@ export const deliverReward = async (
   }
   // ──────────────────────────────────────────────────────────────
 
-  // Update order thành SUCCESS
-  await markOrderSuccess(orderId, transId);
-
   const reward = REWARD_MAP[itemId];
   if (!reward) {
     console.error(`[REWARD] Unknown itemId: "${itemId}" — no reward delivered`);
     return;
   }
 
-  console.log(`[REWARD] ✅ userId=${userId} received: ${reward.label} (order=${orderId})`);
+  // ─── Atomic Transaction: order success + user balance + reward flag ─
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Mark order success
+      await tx.order.update({
+        where: { orderId },
+        data: { status: 'SUCCESS', transId },
+      });
 
-  // TODO (production): Ghi vào database game để cộng gems/coins cho userId
-  // await gameDb.users.updateOne({ _id: userId }, { $inc: { gems: reward.gems ?? 0 } });
+      // 2. Update User balance (tìm theo supabaseId hoặc id)
+      const user = await tx.user.findFirst({
+        where: {
+          OR: [
+            { supabaseId: userId },
+            { id: userId },
+          ],
+        },
+      });
 
-  // TODO (production): Thông báo real-time cho frontend qua WebSocket/SSE
-  // realtimeService.notify(userId, { type: 'reward', reward });
+      if (user) {
+        await tx.user.update({
+          where: { id: user.id },
+          data: {
+            gems: { increment: reward.gems ?? 0 },
+            coins: { increment: reward.coins ?? 0 },
+          },
+        });
+        console.log(`[REWARD] ✅ User ${user.username} (${userId}) received: ${reward.label}`);
+      } else {
+        console.warn(`[REWARD] ⚠️ User not found: ${userId} — reward logged but not applied to DB`);
+      }
 
-  // Đánh dấu đã phát — tránh webhook gọi lại 2 lần
-  await markRewardDelivered(orderId);
+      // 3. Mark reward delivered
+      await tx.order.update({
+        where: { orderId },
+        data: { rewardDelivered: true },
+      });
+    });
+
+    console.log(`[REWARD] ✅ Transaction complete: orderId=${orderId}`);
+  } catch (err) {
+    console.error(`[REWARD] ❌ Transaction failed for orderId=${orderId}:`, err);
+    // Fallback: at least try to mark success + delivered separately
+    await markOrderSuccess(orderId, transId);
+    await markRewardDelivered(orderId);
+  }
 };
+

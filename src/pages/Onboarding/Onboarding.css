@@ -201,6 +201,132 @@
   to { transform: translate(100px, 100px) scale(1.1); }
 }
 
+/* ─── Auth Tabs ─── */
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: #f3f0e7;
+  padding: 0.35rem;
+  border-radius: 14px;
+  border: 3px solid #e8e5d0;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #6b6147;
+}
+
+.auth-tab.active {
+  background: white;
+  color: #8b5000;
+  box-shadow: 0 2px 8px rgba(139, 80, 0, 0.12);
+  border: 2px solid #8b5000;
+}
+
+/* ─── Google Button ─── */
+.google-button {
+  width: 100%;
+  padding: 1.1rem;
+  background: white;
+  border: 3px solid #e8e5d0;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: #1c1c0f;
+  transition: all 0.2s ease;
+}
+
+.google-button:hover:not(:disabled) {
+  border-color: #8b5000;
+  background: #fffcf5;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(139, 80, 0, 0.1);
+}
+
+.google-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.google-icon {
+  font-size: 1.3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #4285F4, #EA4335, #FBBC05, #34A853);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Divider ─── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: #e8e5d0;
+}
+
+.divider span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #9e9677;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ─── Email Form ─── */
+.email-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ─── Error & Note ─── */
+.auth-error {
+  padding: 0.75rem 1rem;
+  background: #fef2f2;
+  border: 2px solid #fca5a5;
+  border-radius: 10px;
+  color: #dc2626;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.offline-note {
+  padding: 0.6rem 1rem;
+  background: #fffbeb;
+  border: 2px solid #fcd34d;
+  border-radius: 10px;
+  color: #92400e;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+}
+
 @media (max-width: 640px) {
   .onboarding-card {
     margin: 1.5rem;
@@ -213,5 +339,10 @@
 
   .onboarding-header h1 {
     font-size: 2rem;
+  }
+
+  .auth-tab {
+    font-size: 0.7rem;
+    padding: 0.6rem 0.25rem;
   }
 }

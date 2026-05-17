@@ -1,5 +1,5 @@
-// Prisma Schema — Math Battle Payment Backend
-// Order model lưu trữ mọi giao dịch thanh toán
+// Prisma Schema — Math Battle Backend
+// Order model (payment) + User model (auth/pvp)
 
 generator client {
   provider = "prisma-client-js"
@@ -9,19 +9,56 @@ datasource db {
   provider = "sqlite"
 }
 
+// ─── PAYMENT (giữ nguyên) ──────────────────────────
 model Order {
   id              String   @id @default(cuid())
-  orderId         String   @unique          // MB_userId_timestamp — unique identifier
+  orderId         String   @unique
   userId          String
   itemId          String
   amountUsd       Float
-  amountLocal     Int                       // VND hoặc cents tùy paymentMethod
-  currency        String                    // "usd" | "vnd"
-  paymentMethod   String                    // "stripe" | "momo"
-  status          String   @default("PENDING") // PENDING | SUCCESS | FAILED
-  intentId        String?                   // Stripe paymentIntentId
-  transId         String?                   // MoMo transId
-  rewardDelivered Boolean  @default(false)  // idempotency guard — chỉ phát thưởng 1 lần
+  amountLocal     Int
+  currency        String
+  paymentMethod   String
+  status          String   @default("PENDING")
+  intentId        String?
+  transId         String?
+  rewardDelivered Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+// ─── USER & PROFILE (Sprint 1) ─────────────────────
+model User {
+  id            String   @id @default(cuid())
+  supabaseId    String?  @unique
+  username      String   @unique
+  avatarEmoji   String   @default("🐼")
+  level         Int      @default(1)
+  xp            Int      @default(0)
+  elo           Int      @default(1000)
+  coins         Int      @default(10000)
+  gems          Int      @default(50)
+  wins          Int      @default(0)
+  winStreak     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── PVP ROOM (Sprint 4–5) ─────────────────────────
+model PvpRoom {
+  id          String   @id @default(cuid())
+  roomCode    String   @unique
+  status      String   @default("waiting") // waiting | playing | finished
+  p1Id        String?  // supabaseId
+  p2Id        String?
+  p1Score     Int      @default(0)
+  p2Score     Int      @default(0)
+  currentTurn Int      @default(0)
+  winnerId    String?
+  p1Elo       Int      @default(0)
+  p2Elo       Int      @default(0)
+  p1EloChange Int      @default(0)
+  p2EloChange Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

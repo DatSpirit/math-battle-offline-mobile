@@ -157,3 +157,19 @@ export const usePlayerStore = create<PlayerState>()(
     }
   )
 );
+
+/**
+ * AUTO-SYNC: Lắng nghe thay đổi playerStore → debounce sync lên server.
+ * Chỉ active khi isOnlineMode === true (kiểm tra trong debouncedSync).
+ */
+import { debouncedSync } from './slices/syncSlice';
+
+usePlayerStore.subscribe((state) => {
+  debouncedSync({
+    coins: state.coins,
+    gems: state.gems,
+    level: state.level,
+    xp: state.xp,
+    winStreak: state.winStreak,
+  });
+});

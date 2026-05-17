@@ -13,6 +13,7 @@ import ErrorBoundary from './components/shared/ErrorBoundary';
 import OnboardingPage from './pages/Onboarding/OnboardingPage';
 import CampaignMapPage from './pages/Home/CampaignMapPage';
 import SummonPage from './pages/Summon/SummonPage';
+import PvPPage from './pages/PvP/PvPPage';
 import { useAuthStore } from './store/authStore';
 import { usePlayerStore } from './store/playerStore';
 import { useUIStore } from './store/uiStore';
@@ -74,9 +75,15 @@ function PageLoader() {
 
 function App() {
   const { checkAndResetQuests, hasHydrated, performanceMode, setPerformanceMode, isPerformanceSet, setIsPerformanceSet } = usePlayerStore();
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, initAuthListener } = useAuthStore();
   const { playBGM } = useSound();
   const { appInitialized } = useUIStore();
+
+  // Khởi tạo Supabase auth listener (Google OAuth redirect, session recovery)
+  useEffect(() => {
+    const unsubscribe = initAuthListener();
+    return () => unsubscribe();
+  }, [initAuthListener]);
 
   useEffect(() => {
     // Tự động nhận diện cấu hình máy nếu chưa có thiết lập (lần đầu chạy)
@@ -148,6 +155,7 @@ function App() {
             <Route path="shop" element={<ShopPage />} />
             <Route path="shop/success" element={<ShopSuccessPage />} />
             <Route path="campaign" element={<CampaignMapPage />} />
+            <Route path="pvp" element={<PvPPage />} />
           </Route>
         </Routes>
       </Router>

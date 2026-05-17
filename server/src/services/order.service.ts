@@ -2,10 +2,8 @@
 // Quản lý vòng đời Order trong database (Prisma)
 // Tạo order trước khi gọi cổng thanh toán → cập nhật sau khi nhận webhook
 
-import { PrismaClient } from '@prisma/client';
+import { prisma as db } from '../lib/prisma';
 import { usdToCents, usdToVnd } from '../utils/currency';
-
-const db = new PrismaClient({});
 
 /**
  * Tạo order mới trước khi gọi cổng thanh toán.
